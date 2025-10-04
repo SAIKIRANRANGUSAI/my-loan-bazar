@@ -23,7 +23,7 @@ exports.postLogin = async (req, res) => {
     // Generate JWT
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      process.env.JWT_SECRET || "12345678",
+      "12345678",
       { expiresIn: "1h" }
     );
 
