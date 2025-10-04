@@ -7,40 +7,47 @@ exports.postLogin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    // Fetch admin user
     const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [username]);
 
-    if (rows.length === 0) {
+    if (!rows.length) {
       return res.render("admin/login", { error: "Invalid username or password" });
     }
 
     const user = rows[0];
-    const match = await bcrypt.compare(password, user.password);
 
-    if (!match) {
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.render("admin/login", { error: "Invalid username or password" });
     }
+
+    // Direct JWT secret
+    const jwtSecret = "12345678"; // hardcoded directly
 
     // Generate JWT
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      "12345678",
+      jwtSecret,
       { expiresIn: "1h" }
     );
 
-    // Store JWT as cookie
+    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in production
-      sameSite: "strict"
+      secure: false, // disable for local dev
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour
     });
 
+    // Redirect to dashboard
     res.redirect("/admin/dashboard");
+
   } catch (err) {
     console.error("❌ Login error:", err);
-    res.status(500).send("Server error");
+    res.status(500).render("admin/login", { error: "Server error. Please try again." });
   }
 };
-
 // 🟢 GET /admin/logout
 exports.logout = (req, res) => {
   res.clearCookie("token");
@@ -55,7 +62,7 @@ exports.isAuthenticated = (req, res, next) => {
   if (!token) return res.redirect("/admin/login");
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "12345678");
+    const decoded = jwt.verify(token, "12345678");
     req.user = decoded; // attach user info to request
     return next();
   } catch (err) {
