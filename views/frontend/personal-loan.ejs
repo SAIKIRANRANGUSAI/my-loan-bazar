@@ -1,0 +1,372 @@
+<%- include('./partials/header') %>
+    <!-- Banner Start -->
+    <section class="banner">
+        <div class="container ">
+            <div class="row gy-4 gy-sm-0 align-items-center">
+                <div class="col-12 col-sm-12">
+                    <div class="banner__content">
+                        <h1 class="banner__title display-4 wow fadeInLeft" data-wow-duration="0.8s">Personal Loan</h1> 
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb wow fadeInRight" data-wow-duration="0.8s">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Personal loans</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    <!-- Banner End -->
+
+    <section class="personal-loan">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-6">
+                    <div class="loan-content">
+                        <h3>Personal Loan Assistance</h3>
+                        <p>A Personal Loan is an unsecured loan where you can borrow funds without having to pledge any form of security. The approval for your HDFC Bank Personal Loan will depend on your income, employment status and creditworthiness. With HDFC Bank, you get XPRESS Personal Loan up to ₹40 Lakh and repay it through pocket-friendly EMIs across flexible tenures.</p>
+                       
+                        <a href="#!" class="btn_theme btn_theme_active"
+                            data-bs-toggle="modal" data-bs-target="#enquiryModal">Enquiry Now <i class="bi bi-arrow-up-right"></i><span></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="loan-img">
+<!-- Enquiry Modal -->
+<!-- <div class="modal fade" id="enquiryModal" tabindex="-1" aria-labelledby="enquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content enquiry-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="enquiryModalLabel">Personal Loan Enquiry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="enquiry-form">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="mobile" class="form-label">Mobile Number</label>
+                            <input type="tel" class="form-control" id="mobile" name="mobile" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender</label>
+                            <div class="d-flex gap-3 align-items-center">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+                                    <label class="form-check-label" for="male"><i class="bi bi-gender-male"></i> Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                    <label class="form-check-label" for="female"><i class="bi bi-gender-female"></i> Female</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="company" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="company" name="company">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="takehome" class="form-label">Take Home Salary</label>
+                            <input type="number" class="form-control" id="takehome" name="takehome">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="monthlysalary" class="form-label">Monthly Salary</label>
+                            <input type="number" class="form-control" id="monthlysalary" name="monthlysalary">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="annualsalary" class="form-label">Annual Salary</label>
+                            <input type="number" class="form-control" id="annualsalary" name="annualsalary">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="loanamount" class="form-label">Required Loan Amount</label>
+                            <input type="number" class="form-control" id="loanamount" name="loanamount">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Present EMI</label>
+                            <div class="d-flex gap-3 align-items-center">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="emi" id="emiYes" value="yes" required>
+                                    <label class="form-check-label" for="emiYes">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="emi" id="emiNo" value="no">
+                                    <label class="form-check-label" for="emiNo">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="currentaddress" class="form-label">Current Address</label>
+                            <textarea class="form-control" id="currentaddress" name="currentaddress" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="officeaddress" class="form-label">Office Address with Pincode</label>
+                            <textarea class="form-control" id="officeaddress" name="officeaddress" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn_theme btn_theme_active w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> -->
+                        <img class="img-fluid" src="/images/personal-loan.jpg" alt="">
+                    </div>
+                </div>
+                <!--<div class="col-lg-12">
+                    <div class="benfits">
+                        <h4> Personal Loan Benefits </h4>
+                        <ul>
+                            <li>
+                                <strong>No Collateral Required</strong>
+                                <p>Enjoy hassle-free financing without pledging any  or property. Loan approval is based solely on your income and creditworthiness.</p>
+                            </li>
+                             <li>
+                                <strong>Quick Access to Funds</strong>
+                                <p>Personal Loans are processed swiftly, ensuring you receive the funds in no time—often within seconds or just a few days after approval.</p>
+                            </li>
+                             <li>
+                                <strong>Flexible Usage</strong>
+                                <p>Use your loan for virtually any purpose; be it a wedding, home renovation, medical emergency or travel. There are no restrictions on how you spend the funds.</p>
+                            </li>
+                             <li>
+                                <strong>Budget-Friendly EMIs</strong>
+                                <p>Benefit from fixed and affordable EMIs that ensure easy repayment without stretching your finances.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="eligibility">
+                        <h4>Personal Loan Eligibility Criteria</h4>
+                        <ul>
+                            <li>
+                                <strong>Age :</strong> 21 to 60 years
+                            </li>
+                            <li>
+                                <strong>Employment</strong>
+                                <ul>
+                                    <li>Employees of private limited companies</li>
+                                    <li>Employees of public sector undertakings (central, state, and local bodies)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Work Experience :</strong>Minimum of 2 years of total work experience, with at least 1 year in the current organisation
+                            </li>
+                            <li>
+                                <strong>Income :</strong>Minimum monthly net income of ₹25,000.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="documentation">
+                        <h4>Personal Loan Documentation</h4>
+                        <ul>
+                            <li><strong>100% Digital Process</strong></li>
+                            <li>Hasslefree Borrowing experience! </li>
+                            <li>No Documentation Required to get Loan for your Personal Needs.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="loan-apply">
+                        <h4>How to Apply for Personal Loan</h4>
+                        <span>Now get Loan for all your personal needs in just 3 easy steps:</span>
+                        <ul>
+                            <li>Identify Yourself</li>  
+                            <li>Choose Loan Amount</li>
+                            <li>Submit & Recieve</li>
+                        </ul>
+
+                        <strong>Apply Now : </strong>
+                        <a href="#">http://applyonline.hdfcbank.com/personal-loans</a>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </section>
+
+   
+    <!-- faq start -->
+    <section class="section faq-section personal-loan" id="faqa">
+      <div class="container">
+        <!--<div class="row justify-content-center">
+          <div class="col-12 col-lg-7 col-xxl-6">
+            <div class="section__header">
+              <span class="section__header-sub-title headingFour wow fadeInDown" data-wow-duration="0.8s" >
+                Frequently Asked Questions</span >
+              <h2 class="section__header-title wow fadeInUp" data-wow-duration="0.8s" >
+                Find Answers to Common Questions
+              </h2>
+              <p class="section__header-content wow fadeInDown" data-wow-duration="0.8s" >
+                We've compiled a list of frequently asked questions to provide
+                you with quick and helpful answers. If you have a question that
+                is not addressed below
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-8">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="accordion-item accordion_bg">
+                    <h5 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-accordion-1"          aria-expanded="true" aria-controls="faq-accordion-1" >
+                        How do I apply for a loan through your platform?
+                    </button>
+                    </h5>
+                    <div id="faq-accordion-1" class="accordion-collapse collapse show" data-bs-parent="#faq" >
+                        <div class="accordion-body">
+                            <p class="mb-0">
+                            Absolutely. We strive to provide reliable and up-to-date
+                            information. Our team follows strict editorial guidelines
+                            to ensure the accuracy and integrity of our content.
+                            However,
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+          </div>
+        </div>-->
+        <div class="row justify-content-between ">
+            <div class="col-lg-5 col-md-6">
+                <div class="loan-img">
+                    <img src="/images/personal-loan-2.jpg" alt="">
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="accordion wow fadeInUp" data-wow-duration="0.8s" id="faq2" >
+                <div class="accordion-item">
+                    <h5 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-accordion-1"       aria-expanded="true" aria-controls="faq2-accordion-1" >
+                        Personal Loan Benefits
+                    </button>
+                    </h5>
+                    <div id="faq2-accordion-1" class="accordion-collapse collapse" data-bs-parent="#faq2" >
+                        <div class="accordion-body">
+                            <ul>
+                                <li>
+                                    <strong>No Collateral Required</strong>
+                                    <p>Enjoy hassle-free financing without pledging any  or property. Loan approval is based solely on your income and creditworthiness.</p>
+                                </li>
+                                <li>
+                                    <strong>Quick Access to Funds</strong>
+                                    <p>Personal Loans are processed swiftly, ensuring you receive the funds in no time—often within seconds or just a few days after approval.</p>
+                                </li>
+                                <li>
+                                    <strong>Flexible Usage</strong>
+                                    <p>Use your loan for virtually any purpose; be it a wedding, home renovation, medical emergency or travel. There are no restrictions on how you spend the funds.</p>
+                                </li>
+                                <li>
+                                    <strong>Budget-Friendly EMIs</strong>
+                                    <p>Benefit from fixed and affordable EMIs that ensure easy repayment without stretching your finances.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h5 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-accordion-2"       aria-expanded="true" aria-controls="faq2-accordion-2" >
+                        Personal Loan Eligibility Criteria
+                    </button>
+                    </h5>
+                    <div id="faq2-accordion-2"  class="accordion-collapse collapse" data-bs-parent="#faq2" >
+                        <div class="accordion-body">
+                                <ul>
+                                <li>
+                                    <strong>Age :</strong> 21 to 60 years
+                                </li>
+                                <li>
+                                    <strong>Employment</strong>
+                                    <ul>
+                                        <li>Employees of private limited companies</li>
+                                        <li>Employees of public sector undertakings (central, state, and local bodies)</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Work Experience :</strong>Minimum of 2 years of total work experience, with at least 1 year in the current organisation
+                                </li>
+                                <li>
+                                    <strong>Income :</strong>Minimum monthly net income of ₹25,000.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h5 class="accordion-header">
+                    <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-accordion-3"     aria-expanded="true" aria-controls="faq2-accordion-3" >
+                        Personal Loan Documentation
+                    </button>
+                    </h5>
+                    <div id="faq2-accordion-3"  class="accordion-collapse collapse" data-bs-parent="#faq2" >
+                        <div class="accordion-body">
+                                <ul>
+                                <li><strong>100% Digital Process</strong></li>
+                                <li>Hasslefree Borrowing experience! </li>
+                                <li>No Documentation Required to get Loan for your Personal Needs.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h5 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-accordion-4" aria-expanded="true" aria-controls="faq2-accordion-4" >
+                        How to Apply for Personal Loan
+                    </button>
+                    </h5>
+                    <div id="faq2-accordion-4" class="accordion-collapse collapse" data-bs-parent="#faq2" >
+                        <div class="accordion-body">
+                            <span>Now get Loan for all your personal needs in just 3 easy steps:</span>
+                            <ul>
+                                <li>Identify Yourself</li>  
+                                <li>Choose Loan Amount</li>
+                                <li>Submit & Recieve</li>
+                            </ul>
+
+                            <strong>Apply Now : </strong>
+                            <a href="#">http://applyonline.hdfcbank.com/personal-loans</a>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="accordion-item">
+                    <h5 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-accordion-5" 
+                        aria-expanded="true" aria-controls="faq2-accordion-5" >
+                        Can I refinance my existing loan?
+                    </button>
+                    </h5>
+                    <div id="faq2-accordion-5" class="accordion-collapse collapse" data-bs-parent="#faq2" >
+                    <div class="accordion-body">
+                        <p class="mb-0">
+                        Absolutely. We strive to provide reliable and up-to-date
+                        information. Our team follows strict editorial guidelines
+                        to ensure the accuracy and integrity of our content.
+                        However,
+                        </p>
+                    </div>
+                    </div>
+                </div>-->
+                </div>
+
+            </div>
+        </div>
+      </div>
+    </section>
+    <!-- faq end -->
+
+
+<%- include('./partials/footer') %>

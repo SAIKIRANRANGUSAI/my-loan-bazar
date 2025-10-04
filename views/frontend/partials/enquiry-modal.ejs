@@ -1,0 +1,233 @@
+<!-- Personal Loan Enquiry Multi-Step Modal -->
+<div class="modal fade" id="enquiryModal" tabindex="-1" aria-labelledby="enquiryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content enquiry-modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="enquiryModalLabel">Personal Loan Enquiry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="enquiryForm">
+          <!-- Step 1 -->
+          <div class="enquiry-step" data-step="1">
+            <div class="mb-3">
+              <label class="form-label">Name (As per PAN Card):</label>
+              <input type="text" class="form-control" name="name" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Mobile Number:</label>
+              <input type="tel" class="form-control" name="mobile" required pattern="[0-9]{10}" maxlength="10" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Present Address (With Pin Code):</label>
+              <input type="text" class="form-control" name="address" required />
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="enquiry-step d-none" data-step="2">
+            <div class="mb-3">
+              <label class="form-label">Gender:</label>
+              <div class="d-flex gap-3">
+                <label class="btn btn-outline-secondary gender-btn">
+                  <input type="radio" name="gender" value="Male" required hidden />
+                  <i class="bi bi-gender-male" style="font-size:2rem;"></i> Male
+                </label>
+                <label class="btn btn-outline-secondary gender-btn">
+                  <input type="radio" name="gender" value="Female" required hidden />
+                  <i class="bi bi-gender-female" style="font-size:2rem;"></i> Female
+                </label>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary prev-step">Back</button>
+              <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="enquiry-step d-none" data-step="3">
+            <div class="mb-3">
+              <label class="form-label">Company Name:</label>
+              <input type="text" class="form-control" name="company_name" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Loan Amount Required:</label>
+              <input type="number" class="form-control" name="loan_amount" required min="10000" step="1000" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Monthly Salary:</label>
+              <input type="number" class="form-control" name="monthly_salary" required min="0" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">EMIs (in Amount):</label>
+              <input type="number" class="form-control" name="emis" required min="0" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Company Address:</label>
+              <input type="text" class="form-control" name="company_address" required />
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary prev-step">Back</button>
+              <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="enquiry-step d-none" data-step="4">
+            <div class="mb-3">
+              <label class="form-label">Preferred Bank/NBFC:</label>
+              <select class="form-select form-control" name="preferred_bank" required>
+                <option value="">Select</option>
+                <option value="HDFC">HDFC</option>
+                <option value="ICICI">ICICI</option>
+                <option value="SBI">SBI</option>
+                <option value="Axis">Axis</option>
+                <option value="Bajaj Finserv">Bajaj Finserv</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-check d-flex align-items-center mb-3 gap-2">
+              <input class="form-check-input" type="checkbox" value="1" id="termsCheck" required />
+              <label class="form-check-label" for="termsCheck">
+                I accept the <a href="#">terms & conditions</a>
+              </label>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary prev-step">Back</button>
+              <button type="button" class="btn btn_theme btn_theme_active" id="showOtpStep">Submit</button>
+            </div>
+          </div>
+          <!-- OTP Step -->
+          <div class="enquiry-step d-none" data-step="5">
+            <div class="mb-3">
+              <label class="form-label">Enter OTP sent to your mobile number:</label>
+              <input type="text" class="form-control" name="otp" maxlength="6" pattern="[0-9]{6}" required />
+              <div class="form-text">(For demo, enter 123456)</div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary prev-step">Back</button>
+              <button type="submit" class="btn btn_theme btn_theme_active">Verify & Submit</button>
+            </div>
+          </div>
+          <!-- Success Step -->
+          <div class="enquiry-step d-none text-center" data-step="6">
+            <div class="mb-4">
+              <i class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></i>
+              <h4 class="mt-3">Thank you!</h4>
+              <p>Your enquiry has been submitted successfully.<br>We will contact you soon.</p>
+            </div>
+            <button type="button" class="btn btn_theme btn_theme_active close-modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Enquiry Modal -->
+
+<script>
+  // Multi-step form logic
+  (function () {
+    const steps = document.querySelectorAll('.enquiry-step');
+    let currentStep = 0;
+
+    function showStep(idx) {
+      steps.forEach((step, i) => {
+        step.classList.toggle('d-none', i !== idx);
+      });
+      currentStep = idx;
+    }
+
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('next-step')) {
+        const form = e.target.closest('form');
+        const step = steps[currentStep];
+        if (form && step) {
+          // Validate required fields in current step
+          const inputs = step.querySelectorAll('input, select');
+          for (let input of inputs) {
+            if (!input.checkValidity()) {
+              input.reportValidity();
+              return;
+            }
+          }
+          showStep(currentStep + 1);
+        }
+      }
+      if (e.target.classList.contains('prev-step')) {
+        showStep(currentStep - 1);
+      }
+      // Gender button toggle
+      if (e.target.closest('.gender-btn')) {
+        const btn = e.target.closest('.gender-btn');
+        btn.parentElement.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        btn.querySelector('input[type="radio"]').checked = true;
+      }
+      // Show OTP step on submit
+      if (e.target.id === 'showOtpStep') {
+        const form = document.getElementById('enquiryForm');
+        const step = steps[currentStep];
+        if (form && step) {
+          // Validate required fields in current step
+          const inputs = step.querySelectorAll('input, select');
+          for (let input of inputs) {
+            if (!input.checkValidity()) {
+              input.reportValidity();
+              return;
+            }
+          }
+          showStep(currentStep + 1); // Show OTP step
+        }
+      }
+      // Close modal from success step
+      if (e.target.classList.contains('close-modal')) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('enquiryModal'));
+        if (modal) modal.hide();
+      }
+    });
+
+    // OTP validation and final submit
+    document.getElementById('enquiryForm').addEventListener('submit', function (e) {
+      if (currentStep === 4) {
+        // Prevent submit, show OTP step
+        e.preventDefault();
+        showStep(5);
+        return;
+      }
+      if (currentStep === 5) {
+        // Validate OTP (static: 123456)
+        const otpInput = this.querySelector('input[name="otp"]');
+        if (otpInput.value !== '123456') {
+          e.preventDefault();
+          otpInput.setCustomValidity('Invalid OTP. Please enter 123456 for demo.');
+          otpInput.reportValidity();
+          otpInput.setCustomValidity('');
+          return;
+        }
+        // Show success step
+        e.preventDefault();
+        showStep(6);
+        this.reset();
+        document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      }
+    });
+
+    // Reset form and step on modal close
+    document.getElementById('enquiryModal').addEventListener('hidden.bs.modal', function () {
+      document.getElementById('enquiryForm').reset();
+      steps.forEach((step, i) => step.classList.toggle('d-none', i !== 0));
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      currentStep = 0;
+    });
+
+    // Show modal on Enquiry Now button click
+    document.querySelectorAll('.btn_theme.btn_theme_active').forEach(btn => {
+      if (btn.textContent.includes('Enquiry Now')) {
+        btn.setAttribute('data-bs-toggle', 'modal');
+        btn.setAttribute('data-bs-target', '#enquiryModal');
+      }
+    });
+  })();
+</script>

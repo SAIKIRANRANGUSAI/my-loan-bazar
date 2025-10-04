@@ -1,0 +1,494 @@
+<%- include('../layouts/admin_layouts_header', { title: 'Admin | Home Page' , currentPage: 'home' }) %>
+<%- include('../layouts/admin_layouts_sidebar', { currentPage: 'home' }) %>
+
+<div class="admin-container">
+    <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert-success" role="alert">
+            <span class="alert-icon">✓</span>
+            <%= message %>
+            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+    <% } %>
+
+    <div class="page-header">
+        <h1 class="page-title">Home Page Management</h1>
+        <p class="page-subtitle">Configure sections for the homepage: hero banner, services, and more.</p>
+    </div>
+
+    <!-- Single Section Block -->
+    <form action="/admin/home" method="POST" enctype="multipart/form-data" class="section-form">
+        <% /* Loop through sections if needed later */ %>
+        <section class="form-section" data-section="hero-services">
+            <div class="section-header">
+                <h2 class="section-title">Hero & Services Section</h2>
+                <p class="section-description">Update hero banner and services content in one block.</p>
+            </div>
+
+            <!-- Hero Header -->
+            <div class="form-group">
+                <label for="hero_header">Hero Header</label>
+                <div class="input-wrapper">
+                    <input type="text" id="hero_header" name="hero_header"
+                        value="<%= data ? data.hero_header : '' %>"
+                        placeholder="Find the Perfect Loan for Your Needs"
+                        maxlength="50" required>
+                    <span class="char-counter">0/50</span>
+                </div>
+                <div class="form-hint">Recommended: 35–50 characters</div>
+            </div>
+
+            <!-- Hero Description -->
+            <div class="form-group">
+                <label for="hero_description">Hero Description</label>
+                <div class="input-wrapper">
+                    <textarea id="hero_description" name="hero_description" rows="4"
+                        placeholder="Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator."
+                        maxlength="180" required><%= data ? data.hero_description : '' %></textarea>
+                    <span class="char-counter">0/180</span>
+                </div>
+                <div class="form-hint">Recommended: 120–180 characters</div>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="form-group">
+                <label for="hero_image">Hero Image</label>
+                <div class="image-upload-wrapper">
+                    <% if (data && data.hero_image) { %>
+                        <div class="image-preview">
+                            <img src="<%= data.hero_image %>" alt="Current Hero Image">
+                            <!-- <button type="button" class="remove-image-btn" onclick="removeImagePreview(this)">Remove</button> -->
+                        </div>
+                        <input type="hidden" name="current_image" value="<%= data.hero_image %>">
+                    <% } else { %>
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">📷</span>
+                            <p>No image selected</p>
+                        </div>
+                    <% } %>
+                    <input type="file" id="hero_image" name="hero_image" accept="image/*">
+                    <small class="image-hint">Recommended: 692 × 756 px</small>
+                </div>
+            </div>
+
+            <!-- Services Heading -->
+            <div class="form-group">
+                <label for="services_heading">Services Heading</label>
+                <div class="input-wrapper">
+                    <input type="text" id="services_heading" name="services_heading"
+                        value="<%= data ? data.services_heading : '' %>"
+                        placeholder="Empowering You with Loan Knowledge and Comparison Tools"
+                        maxlength="80" required>
+                    <span class="char-counter">0/80</span>
+                </div>
+                <div class="form-hint">Recommended: 60–80 characters</div>
+            </div>
+
+            <!-- Services Description -->
+            <div class="form-group">
+                <label for="services_description">Services Description</label>
+                <div class="input-wrapper">
+                    <textarea id="services_description" name="services_description" rows="5"
+                        placeholder="We are dedicated to providing valuable services that simplify your loan search and empower informed borrowing decisions."
+                        maxlength="300" required><%= data ? data.services_description : '' %></textarea>
+                    <span class="char-counter">0/300</span>
+                </div>
+                <div class="form-hint">Recommended: 200–300 characters</div>
+            </div>
+
+        </section>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Update Section</button>
+            <button type="reset" class="btn-secondary">Reset</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .admin-container {
+        /* max-width: 800px;
+        margin: 0 auto 40px 280px; Adjusted for sidebar */
+        padding: 32px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        min-height: calc(100vh - 120px);
+    }
+
+    .page-header {
+        margin-bottom: 40px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 4px 0;
+    }
+
+    .page-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .alert-success {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        padding: 16px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .alert-icon {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .alert-close {
+        background: none;
+        border: none;
+        color: #ffffff;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0 4px;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+
+    .alert-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-form {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .form-section {
+        background: #f9fafb;
+        padding: 32px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        position: relative;
+    }
+
+    .section-header {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 4px 0;
+    }
+
+    .section-description {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #374151;
+        margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        background: #ffffff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .char-counter {
+        position: absolute;
+        right: 12px;
+        bottom: 8px;
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+    .form-group input[type="text"]:focus + .char-counter,
+    .form-group textarea:focus + .char-counter {
+        color: #3b82f6;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+        font-family: inherit;
+        line-height: 1.5;
+    }
+
+    .form-hint {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+        font-style: normal;
+    }
+
+    .image-upload-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .image-preview,
+    .image-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        background: #f9fafb;
+        transition: border-color 0.2s;
+    }
+
+    .image-preview:hover,
+    .image-placeholder:hover {
+        border-color: #3b82f6;
+    }
+
+    .image-preview img {
+        max-width: 180px;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .remove-image-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background 0.2s;
+    }
+
+    .remove-image-btn:hover {
+        background: #dc2626;
+    }
+
+    .image-placeholder .placeholder-icon {
+        font-size: 48px;
+        margin-bottom: 8px;
+        opacity: 0.5;
+    }
+
+    .image-placeholder p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .form-group input[type="file"] {
+        padding: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #ffffff;
+    }
+
+    .image-hint {
+        font-size: 12px;
+        color: #6b7280;
+        text-align: center;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 20px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .admin-container {
+            margin-left: 20px;
+            margin-right: 20px;
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            margin-left: 0;
+            margin-right: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+        }
+
+        .hero-form {
+            gap: 24px;
+        }
+
+        .form-section {
+            padding: 24px;
+        }
+    }
+</style>
+
+<script>
+    // Character counter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const fields = [
+            { id: 'hero_header', max: 50 },
+            { id: 'hero_description', max: 180 },
+            { id: 'services_heading', max: 80 },
+            { id: 'services_description', max: 300 }
+        ];
+
+        fields.forEach(field => updateCounter(field.id, field.max));
+
+        fields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element) {
+                element.addEventListener('input', () => updateCounter(field.id, field.max));
+            }
+        });
+
+        function updateCounter(fieldId, maxLength) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            const counter = field.parentNode.querySelector('.char-counter');
+            if (!counter) return;
+            const currentLength = field.value.length;
+            counter.textContent = `${currentLength}/${maxLength}`;
+            
+            if (currentLength > maxLength * 0.9) {
+                counter.style.color = '#ef4444';
+            } else {
+                counter.style.color = '#9ca3af';
+            }
+        }
+
+        // Image preview on file select
+        const fileInput = document.getElementById('hero_image');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let imagePreview = document.querySelector('.image-preview');
+                        if (!imagePreview) {
+                            imagePreview = document.createElement('div');
+                            imagePreview.className = 'image-preview';
+                            const placeholder = document.querySelector('.image-placeholder');
+                            if (placeholder) {
+                                placeholder.parentNode.replaceChild(imagePreview, placeholder);
+                            }
+                        }
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview"> <button type="button" class="remove-image-btn" onclick="removeImagePreview(this)">Remove</button>`;
+                        const hiddenInput = document.querySelector('input[name="current_image"]');
+                        if (hiddenInput) hiddenInput.value = '';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+
+    function removeImagePreview(button) {
+        const preview = button.parentElement;
+        const placeholder = document.createElement('div');
+        placeholder.className = 'image-placeholder';
+        placeholder.innerHTML = '<span class="placeholder-icon">📷</span><p>No image selected</p>';
+        preview.parentNode.replaceChild(placeholder, preview);
+        document.getElementById('hero_image').value = '';
+        const hiddenInput = document.querySelector('input[name="current_image"]');
+        if (hiddenInput) hiddenInput.value = '';
+    }
+</script>
