@@ -3,7 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/controllers");
 const db = require("../config/db");
 const { uploadToCloudinary, deleteFromCloudinary } = require("../helpers/cloudinaryUpload");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const multer = require("multer");
 
 // ------------------
