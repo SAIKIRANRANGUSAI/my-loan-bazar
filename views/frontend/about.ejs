@@ -32,18 +32,29 @@
             <div class="row gy-5 gy-lg-0 justify-content-between align-items-center section">
                 <div class="col-12 col-md-8 col-lg-5 mx-auto mx-lg-0 order-1 order-lg-0">
                     <div class="choose-us__thumb unset-xxl-left me-xl-4 me-xxl-0 wow fadeInDown" data-wow-duration="0.8s">
-                        <img src="/images/about.jpg" class="br-r-10" alt="images">
+                        <img src="<%= about.about_image || '/images/about.jpg' %>" class="br-r-10" alt="images">
                     </div>
                 </div>
                 <div class="col-12 col-lg-7 col-xxl-6">
                     <div class="section__content ms-lg-4 ms-xl-0">
-                        <p class="section__content-sub-title headingFour wow fadeInDown" data-wow-duration="0.8s"><img src="/images/title_vector.png" alt="vector"> Who We Are</p>
-                        <h2 class="section__content-title wow fadeInUp" data-wow-duration="0.8s">Your Trusted Source for Loan Reviews and Comparisons.</h2>
-                        <p class="section__content-text wow fadeInDown" data-wow-duration="0.8s">At My Loan Bazaar, we simplify the complex world of borrowing by offering a reliable, transparent, and user-friendly platform for loan reviews and comparisons. Our mission is to empower individuals and businesses with the right knowledge, tools, and insights to make informed financial decisions.</p>
-                        <p class="section__content-text wow fadeInDown" data-wow-duration="0.8s">With years of expertise in the financial industry, our team is committed to bringing you comprehensive loan databases, unbiased reviews, and side-by-side comparisons of loan products across categories—from personal loans, home loans, and business loans to education loans, mortgages, car loans, LAP loans, credit cards, and more.</p>
-                        <p class="section__content-text wow fadeInDown" data-wow-duration="0.8s">We believe in expertise, objectivity, and transparency. That’s why our platform is built on thorough research and data-driven insights, ensuring that you get accurate, up-to-date, and easy-to-understand information.</p>
-                        <p class="section__content-text wow fadeInDown" data-wow-duration="0.8s">At My Loan Bazaar, we don’t just list loan options—we help you find the perfect loan for your needs by combining expert guidance, real customer reviews, and interactive comparison tools.</p>
-                    </div>
+    <p class="section__content-sub-title headingFour wow fadeInDown" data-wow-duration="0.8s">
+        <img src="/images/title_vector.png" alt="vector"> Who We Are
+    </p>
+
+    <h2 class="section__content-title wow fadeInUp" data-wow-duration="0.8s">
+        <%= about.about_heading || 'Your Trusted Source for Loan Reviews and Comparisons.' %>
+    </h2>
+
+    <div class="section__content-text wow fadeInDown" data-wow-duration="0.8s">
+        <%- about.about_description || `
+            <p>At My Loan <strong>Bazaar</strong>, we simplify the complex world of borrowing by offering a reliable, transparent, and user-friendly platform for loan reviews and comparisons. Our mission is to empower individuals and businesses with the right knowledge, tools, and insights to make informed financial decisions.</p>
+            <p>With years of expertise in the financial industry, our team is committed to bringing you comprehensive loan databases, unbiased reviews, and side-by-side comparisons of loan products across categories—from personal loans, home loans, and business loans to education loans, mortgages, car loans, LAP loans, credit cards, and more.</p>
+            <p>We believe in expertise, objectivity, and transparency. That’s why our platform is built on thorough research and data-driven insights, ensuring that you get accurate, up-to-date, and easy-to-understand information.</p>
+            <p>At My Loan Bazaar, we don’t just list loan options—we help you find the perfect loan for your needs by combining expert guidance, real customer reviews, and interactive comparison tools.</p>
+        ` %>
+    </div>
+</div>
+
                 </div>
             </div>
         </div>
