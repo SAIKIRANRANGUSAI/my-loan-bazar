@@ -5,6 +5,10 @@ const db = require("../config/db");
 const { uploadToCloudinary, deleteFromCloudinary } = require("../helpers/cloudinaryUpload");
 const bcrypt = require('bcryptjs');
 const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
+const mysqldump = require('mysqldump');
+
 
 // ------------------
 // Reusable Multer setup for all routes
@@ -32,10 +36,50 @@ router.get("/logout", authController.logout);
 // -------- Protect all admin routes --------
 router.use(authController.isAuthenticated);
 
-// -------- Admin Dashboard --------
-router.get("/dashboard", (req, res) => {
-  res.render("admin/admin_dashboard", { user: req.user });
+// -------- Admin Dashboard (View Only, Paginated) --------
+// -------- Admin Dashboard (View + Delete, Paginated) --------
+router.get("/dashboard", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    const [countRows] = await db.query("SELECT COUNT(*) AS total FROM contact_submissions");
+    const totalRows = countRows[0].total;
+    const totalPages = Math.ceil(totalRows / limit);
+
+    const [rows] = await db.query(
+      "SELECT * FROM contact_submissions ORDER BY created_at DESC LIMIT ? OFFSET ?",
+      [limit, offset]
+    );
+
+    res.render("admin/admin_dashboard", {
+      user: req.user,
+      contacts: rows,
+      currentPage: page,
+      totalPages: totalPages,
+      message: req.query.message || null
+    });
+  } catch (err) {
+    console.error("Error fetching contacts:", err);
+    res.status(500).send("Server error");
+  }
 });
+
+// -------- Delete Contact Message --------
+router.post("/dashboard/delete/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.query("DELETE FROM contact_submissions WHERE id = ?", [id]);
+    res.redirect("/admin/dashboard?message=Message deleted successfully");
+  } catch (err) {
+    console.error("Error deleting message:", err);
+    res.redirect("/admin/dashboard?message=Failed to delete message");
+  }
+});
+
+
+
 
 // -------- Admin Home Page Settings --------
 router.get("/home", async (req, res) => {
@@ -641,6 +685,390 @@ router.get("/faq/:id/delete", async (req, res) => {
     }
 });
 
+// -------- GET /settings --------
+router.get("/settings", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM settings WHERE id=1 LIMIT 1");
+    const settings = rows[0] || {};
 
+    // Get admin info
+    const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
+    const adminInfo = adminRows[0] || {};
+
+    // Pagination parameters for admin logins
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    // Total login count
+    const [countRows] = await db.query("SELECT COUNT(*) AS total FROM admin_logins");
+    const totalLogins = countRows[0].total;
+    const totalPages = Math.ceil(totalLogins / limit);
+
+    // Fetch login records
+    const [logins] = await db.query(
+      "SELECT * FROM admin_logins ORDER BY login_at DESC LIMIT ? OFFSET ?",
+      [limit, offset]
+    );
+
+    res.render("admin/admin_settings", {
+      user: req.user,
+      settings,
+      adminInfo,
+      logins,
+      currentPage: page,
+      totalPages,
+      message: null
+    });
+  } catch (err) {
+    console.error("Error fetching settings:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+// -------- POST /settings --------
+router.post(
+  "/settings",
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "favicon", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const {
+        site_name,
+        emails,
+        address,
+        phone_numbers,
+        current_logo,
+        current_favicon
+      } = req.body;
+
+      // --- Logo Upload ---
+      let logo_url = current_logo;
+      if (req.files['logo'] && req.files['logo'][0]) {
+        if (current_logo) await deleteFromCloudinary(current_logo);
+        const result = await uploadToCloudinary(req.files['logo'][0].buffer);
+        logo_url = result.secure_url;
+      }
+
+      // --- Favicon Upload ---
+      let favicon_url = current_favicon;
+      if (req.files['favicon'] && req.files['favicon'][0]) {
+        if (current_favicon) await deleteFromCloudinary(current_favicon);
+        const result = await uploadToCloudinary(req.files['favicon'][0].buffer);
+        favicon_url = result.secure_url;
+      }
+
+      // --- Update Settings in DB ---
+      await db.query(
+        `UPDATE settings SET
+          site_name=?, emails=?, address=?, phone_numbers=?, logo_url=?, favicon_url=?, updated_at=NOW()
+          WHERE id=1`,
+        [site_name, emails, address, phone_numbers, logo_url, favicon_url]
+      );
+
+      // Fetch updated settings
+      const [rows] = await db.query("SELECT * FROM settings WHERE id=1 LIMIT 1");
+      const settings = rows[0] || {};
+
+      // Fetch admin info and login history for rendering
+      const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
+      const adminInfo = adminRows[0] || {};
+
+      const page = 1; // default first page
+      const limit = 10;
+      const offset = (page - 1) * limit;
+
+      const [countRows] = await db.query("SELECT COUNT(*) AS total FROM admin_logins");
+      const totalLogins = countRows[0].total;
+      const totalPages = Math.ceil(totalLogins / limit);
+
+      const [logins] = await db.query(
+        "SELECT * FROM admin_logins ORDER BY login_at DESC LIMIT ? OFFSET ?",
+        [limit, offset]
+      );
+
+      res.render("admin/admin_settings", {
+        user: req.user,
+        settings,
+        adminInfo,
+        logins,
+        currentPage: page,
+        totalPages,
+        message: "Settings updated successfully!"
+      });
+
+    } catch (err) {
+      console.error("Error updating settings:", err);
+
+      // Ensure adminInfo exists even if error occurs
+      const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
+      const adminInfo = adminRows[0] || {};
+
+      res.render("admin/admin_settings", {
+        user: req.user,
+        settings: {},
+        adminInfo,
+        logins: [],
+        currentPage: 1,
+        totalPages: 1,
+        message: "Failed to update settings"
+      });
+    }
+  }
+);
+
+// -------- POST /settings/change-credentials --------
+router.post("/settings/change-credentials", async (req, res) => {
+  try {
+    const { current_username, current_password, new_username, new_password, confirm_password } = req.body;
+
+    if (!current_username || !current_password || !new_password || !confirm_password) {
+      return res.redirect("/admin/settings?error=All fields are required");
+    }
+
+    if (new_password !== confirm_password) {
+      return res.redirect("/admin/settings?error=New passwords do not match");
+    }
+
+    const [adminRows] = await db.execute("SELECT * FROM admin LIMIT 1");
+    if (!adminRows.length) return res.redirect("/admin/settings?error=Admin account not found");
+
+    const admin = adminRows[0];
+
+    const isCurrentUsernameValid = current_username === admin.username;
+    const isCurrentPasswordValid = await bcrypt.compare(current_password, admin.password);
+
+    if (!isCurrentUsernameValid || !isCurrentPasswordValid) {
+      return res.redirect("/admin/settings?error=Current username or password is incorrect");
+    }
+
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+
+    await db.execute(
+      "UPDATE admin SET username = ?, password = ?, created_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [new_username || admin.username, hashedPassword, admin.id]
+    );
+
+    res.redirect("/admin/settings?success=Credentials updated successfully");
+  } catch (err) {
+    console.error("Error updating admin credentials:", err);
+    res.redirect("/admin/settings?error=Failed to update credentials");
+  }
+});
+
+// -------- GET /settings/download-db --------
+router.get('/settings/download-db', async (req, res) => {
+  try {
+    const backupsDir = path.join(__dirname, '..', 'backups');
+    if (!fs.existsSync(backupsDir)) fs.mkdirSync(backupsDir, { recursive: true });
+
+    const fileName = `backup_${Date.now()}.sql`;
+    const filePath = path.join(backupsDir, fileName);
+
+    await mysqldump({
+      connection: {
+        host: process.env.DB_HOST || '46.250.225.169',
+        user: process.env.DB_USER || 'demo_colormo_usr',
+        password: process.env.DB_PASSWORD || 'QRdKdVpp3pnNhXBt',
+        database: process.env.DB_NAME || 'my_loan_bazar',
+      },
+      dumpToFile: filePath,
+    });
+
+    res.download(filePath, fileName, err => {
+      if (err) {
+        console.error('Error sending backup file:', err);
+        res.status(500).send('Failed to download backup.');
+      }
+    });
+
+  } catch (err) {
+    console.error('Database export failed:', err);
+    res.status(500).send('Database export failed.');
+  }
+});
+// ========== SEO SETTINGS ROUTES (Cookie-based Flash) ==========
+
+// ---------------- LIST SEO SETTINGS ----------------
+router.get("/seo-settings", async (req, res) => {
+  try {
+    const [seoSettings] = await db.query("SELECT * FROM seo_settings ORDER BY id DESC");
+
+    res.render("admin/admin_seo", {
+      seoSettings,
+      successMessage: res.locals.successMessage,
+      errorMessage: res.locals.errorMessage,
+    });
+  } catch (err) {
+    console.error("Error loading SEO settings:", err);
+    res.setFlash("errorMessage", "Failed to load SEO settings");
+    res.redirect("/admin/seo-settings");
+  }
+});
+
+// ---------------- ADD NEW SEO SETTING ----------------
+router.post(
+  "/seo-settings/add",
+  upload.fields([
+    { name: "og_image" },
+    { name: "twitter_image" },
+  ]),
+  async (req, res) => {
+    try {
+      const {
+        page_name,
+        title,
+        description,
+        keywords,
+        author,
+        og_title,
+        og_description,
+        og_url,
+        og_type,
+        twitter_card,
+        twitter_title,
+        twitter_description,
+      } = req.body;
+
+      // Upload images to Cloudinary
+      const og_image = req.files["og_image"]
+        ? (await cloudinary.uploader.upload(req.files["og_image"][0].path, { folder: "seo" })).secure_url
+        : null;
+      const twitter_image = req.files["twitter_image"]
+        ? (await cloudinary.uploader.upload(req.files["twitter_image"][0].path, { folder: "seo" })).secure_url
+        : null;
+
+      await db.query(
+        `INSERT INTO seo_settings 
+        (page_name, title, description, keywords, author, og_title, og_description, og_image, og_url, og_type, twitter_card, twitter_title, twitter_description, twitter_image) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          page_name,
+          title,
+          description,
+          keywords,
+          author || null,
+          og_title || null,
+          og_description || null,
+          og_image,
+          og_url || null,
+          og_type || "website",
+          twitter_card || "summary_large_image",
+          twitter_title || null,
+          twitter_description || null,
+          twitter_image,
+        ]
+      );
+
+      res.setFlash("successMessage", "SEO setting added successfully!");
+      res.redirect("/admin/seo-settings");
+    } catch (err) {
+      console.error("Error adding SEO setting:", err);
+      res.setFlash("errorMessage", "Failed to add SEO setting");
+      res.redirect("/admin/seo-settings");
+    }
+  }
+);
+
+// ---------------- UPDATE SEO SETTING ----------------
+router.post(
+  "/seo-settings/:id/update",
+  upload.fields([
+    { name: "og_image" },
+    { name: "twitter_image" },
+  ]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        page_name,
+        title,
+        description,
+        keywords,
+        author,
+        og_title,
+        og_description,
+        og_url,
+        og_type,
+        twitter_card,
+        twitter_title,
+        twitter_description,
+      } = req.body;
+
+      // Upload images to Cloudinary if provided
+      const og_image = req.files["og_image"]
+        ? (await cloudinary.uploader.upload(req.files["og_image"][0].path, { folder: "seo" })).secure_url
+        : null;
+      const twitter_image = req.files["twitter_image"]
+        ? (await cloudinary.uploader.upload(req.files["twitter_image"][0].path, { folder: "seo" })).secure_url
+        : null;
+
+      const fields = [
+        "page_name = ?",
+        "title = ?",
+        "description = ?",
+        "keywords = ?",
+        "author = ?",
+        "og_title = ?",
+        "og_description = ?",
+        "og_url = ?",
+        "og_type = ?",
+        "twitter_card = ?",
+        "twitter_title = ?",
+        "twitter_description = ?",
+      ];
+      const values = [
+        page_name,
+        title,
+        description,
+        keywords,
+        author || null,
+        og_title || null,
+        og_description || null,
+        og_url || null,
+        og_type || "website",
+        twitter_card || "summary_large_image",
+        twitter_title || null,
+        twitter_description || null,
+      ];
+
+      if (og_image) {
+        fields.push("og_image = ?");
+        values.push(og_image);
+      }
+      if (twitter_image) {
+        fields.push("twitter_image = ?");
+        values.push(twitter_image);
+      }
+
+      values.push(id);
+
+      await db.query(`UPDATE seo_settings SET ${fields.join(", ")} WHERE id = ?`, values);
+
+      res.setFlash("successMessage", "SEO setting updated successfully!");
+      res.redirect("/admin/seo-settings");
+    } catch (err) {
+      console.error("Error updating SEO setting:", err);
+      res.setFlash("errorMessage", "Failed to update SEO setting");
+      res.redirect("/admin/seo-settings");
+    }
+  }
+);
+
+// ---------------- DELETE SEO SETTING ----------------
+router.post("/seo-settings/:id/delete", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.query("DELETE FROM seo_settings WHERE id = ?", [id]);
+    res.setFlash("successMessage", "SEO setting deleted successfully!");
+    res.redirect("/admin/seo-settings");
+  } catch (err) {
+    console.error("Error deleting SEO setting:", err);
+    res.setFlash("errorMessage", "Failed to delete SEO setting");
+    res.redirect("/admin/seo-settings");
+  }
+});
 module.exports = router;
 module.exports.upload = upload; // Export multer to reuse in other admin routes

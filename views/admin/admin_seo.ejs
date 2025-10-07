@@ -10,35 +10,33 @@
                         <p class="text-muted mb-0">Manage SEO meta tags and social media optimization</p>
                     </div>
                     <!-- <div class="premium-icon">
-                        <i class="fas fa-search"></i>
-                    </div> -->
+                <i class="fas fa-search"></i>
+            </div> -->
                 </div>
             </div>
 
             <!-- Success/Error Messages -->
-            <% if (successMessage) { %>
-                <div class="alert-premium-success alert-dismissible fade show mb-4" role="alert">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-3"></i>
-                        <div class="fw-medium">
-                            <%= successMessage %>
-                        </div>
-                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                    </div>
-                </div>
-                <% } %>
+            <!-- Success/Error Messages -->
+<% if (successMessage) { %>
+    <div class="alert-premium-success alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle me-3"></i>
+            <div class="fw-medium"><%= successMessage %></div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+<% } %>
 
-                    <% if (errorMessage) { %>
-                        <div class="alert-premium-error alert-dismissible fade show mb-4" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-exclamation-circle me-3"></i>
-                                <div class="fw-medium">
-                                    <%= errorMessage %>
-                                </div>
-                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                            </div>
-                        </div>
-                        <% } %>
+<% if (errorMessage) { %>
+    <div class="alert-premium-error alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-circle me-3"></i>
+            <div class="fw-medium"><%= errorMessage %></div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+<% } %>
+
 
                             <!-- Add New SEO Setting -->
                             <div class="premium-card mb-5">
@@ -64,8 +62,8 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold">Page Slug *</label>
-                                                <input type="text" class="form-control premium-input" name="page_slug"
+                                                <label class="form-label fw-semibold">Page Name *</label>
+                                                <input type="text" class="form-control premium-input" name="page_name"
                                                     placeholder="home, about, services, contact" required>
                                                 <small class="text-muted">Unique identifier for the page (e.g., 'home',
                                                     'about')</small>
@@ -190,7 +188,7 @@
                                                             <div class="seo-info">
                                                                 <h5 class="mb-1 text-primary">
                                                                     <i class="fas fa-file me-2"></i>
-                                                                    <%= seo.page_slug %>
+                                                                    <%= seo.page_name %>
                                                                 </h5>
                                                                 <% if (seo.title) { %>
                                                                     <p class="mb-1"><strong>Title:</strong>
@@ -210,16 +208,16 @@
                                                             </div>
                                                             <div class="seo-actions">
                                                                 <!-- <button class="btn-premium-icon btn-edit" 
-                                                onclick="openEditModal(<%= JSON.stringify(seo).replace(/"/g, '&quot;') %>)">
-                                            <i class="fas fa-edit"></i>
-                                        </button> -->
+                                onclick="openEditModal(<%= JSON.stringify(seo).replace(/"/g, '&quot;') %>)">
+                            <i class="fas fa-edit"></i>
+                        </button> -->
                                                                 <button class="btn-premium-icon btn-edit"
                                                                     onclick='openEditModal(<%- JSON.stringify(seo) %>)'>
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
 
                                                                 <button class="btn-premium-icon btn-danger-icon"
-                                                                    onclick="confirmDelete(<%= seo.id %>, '<%= seo.page_slug %>')">
+                                                                    onclick="confirmDelete(<%= seo.id %>, '<%= seo.page_name %>')">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </div>
@@ -266,9 +264,9 @@
                         <div class="modal-body premium-modal-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Page Slug *</label>
-                                    <input type="text" class="form-control premium-input" name="page_slug"
-                                        id="editPageSlug" required>
+                                    <label class="form-label fw-semibold">Page Name *</label>
+                                    <input type="text" class="form-control premium-input" name="page_name"
+                                        id="editPageName" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Page Title *</label>
@@ -360,7 +358,7 @@
                     <div class="modal-body premium-modal-body text-center">
                         <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
                         <h5>Delete SEO Settings</h5>
-                        <p>Are you sure you want to delete SEO settings for <strong id="deletePageSlug"></strong>?</p>
+                        <p>Are you sure you want to delete SEO settings for <strong id="deletePageName"></strong>?</p>
                         <p class="text-muted small">This action cannot be undone.</p>
                     </div>
                     <div class="modal-footer premium-modal-footer justify-content-center">
@@ -376,7 +374,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Add Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <!-- Bootstrap CSS -->
@@ -398,9 +396,10 @@
                 --premium-border: #e2e8f0;
                 --premium-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             }
-/* .modal-dialog-centered{
+
+            /* .modal-dialog-centered{
         justify-content: center !important;
-} */
+    } */
             .premium-header {
                 background: var(--primary-gradient);
                 -webkit-background-clip: text;
@@ -449,6 +448,23 @@
                 justify-content: center;
                 color: white;
             }
+            .premium-modal {
+    border-radius: 20px;
+    border: none;
+    margin: 0 auto;
+    box-shadow: var(--premium-shadow);
+}
+.modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-height: 600px;
+    overflow-y: scroll;
+    max-width: 700px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-top: 4px solid var(--primary);
+}
 
             .premium-input {
                 border: 2px solid #e2e8f0;
@@ -686,7 +702,7 @@
             // Open edit modal
             function openEditModal(seo) {
                 // Set form values
-                document.getElementById('editPageSlug').value = seo.page_slug;
+                document.getElementById('editPageName').value = seo.page_name;
                 document.getElementById('editTitle').value = seo.title || '';
                 document.getElementById('editDescription').value = seo.description || '';
                 document.getElementById('editKeywords').value = seo.keywords || '';
@@ -725,8 +741,8 @@
             }
 
             // Confirm delete
-            function confirmDelete(seoId, pageSlug) {
-                document.getElementById('deletePageSlug').textContent = pageSlug;
+            function confirmDelete(seoId, pageName) {
+                document.getElementById('deletePageName').textContent = pageName;
                 document.getElementById('deleteForm').action = `/admin/seo-settings/${seoId}/delete`;
 
                 const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));

@@ -170,29 +170,29 @@
 
         // contact form
         // ajax
-        jQuery('#frmContactus').on('submit', function (e) {
-            jQuery('#msg').html('');
-            jQuery('#submit').html('Please wait....');
-            jQuery('#submit').attr('disabled', true);
-            jQuery.ajax({
-                url: 'mail.php',
-                type: 'POST',
-                data: jQuery('#frmContactus').serialize(),
-                success: function (result) {
-                    jQuery('#msg').html(result);
-                    jQuery('#submit').html('Send Message');
-                    jQuery('#submit').attr('disabled', false);
-                    jQuery('#frmContactus')[0].reset();
+        // jQuery('#frmContactus').on('submit', function (e) {
+        //     jQuery('#msg').html('');
+        //     jQuery('#submit').html('Please wait....');
+        //     jQuery('#submit').attr('disabled', true);
+        //     jQuery.ajax({
+        //         url: 'mail.php',
+        //         type: 'POST',
+        //         data: jQuery('#frmContactus').serialize(),
+        //         success: function (result) {
+        //             jQuery('#msg').html(result);
+        //             jQuery('#submit').html('Send Message');
+        //             jQuery('#submit').attr('disabled', false);
+        //             jQuery('#frmContactus')[0].reset();
 
-                    setTimeout(function () {
-                        $('.alert-dismissible').fadeOut('slow', function () {
-                            $(this).remove();
-                        });
-                    }, 3000);
-                }
-            });
-            e.preventDefault();
-        });
+        //             setTimeout(function () {
+        //                 $('.alert-dismissible').fadeOut('slow', function () {
+        //                     $(this).remove();
+        //                 });
+        //             }, 3000);
+        //         }
+        //     });
+        //     e.preventDefault();
+        // });
 
         // Email Subscribe
         jQuery('#frmSubscribe').on('submit', function (e) {

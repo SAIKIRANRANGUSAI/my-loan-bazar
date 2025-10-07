@@ -3,6 +3,52 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 // 🟢 POST /admin/login
+// exports.postLogin = async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     // Fetch admin user
+//     const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [username]);
+
+//     if (!rows.length) {
+//       return res.render("admin/login", { error: "Invalid username or password" });
+//     }
+
+//     const user = rows[0];
+
+//     // Compare password
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.render("admin/login", { error: "Invalid username or password" });
+//     }
+
+//     // Direct JWT secret
+//     const jwtSecret = "12345678"; // hardcoded directly
+
+//     // Generate JWT
+//     const token = jwt.sign(
+//       { id: user.id, username: user.username },
+//       jwtSecret,
+//       { expiresIn: "1h" }
+//     );
+
+//     // Set cookie
+//     res.cookie("token", token, {
+//       httpOnly: true,
+//       secure: false, // disable for local dev
+//       sameSite: "strict",
+//       maxAge: 3600000, // 1 hour
+//     });
+
+//     // Redirect to dashboard
+//     res.redirect("/admin/dashboard");
+
+//   } catch (err) {
+//     console.error("❌ Login error:", err);
+//     res.status(500).render("admin/login", { error: "Server error. Please try again." });
+//   }
+// };
+
 exports.postLogin = async (req, res) => {
   const { username, password } = req.body;
 
@@ -21,6 +67,15 @@ exports.postLogin = async (req, res) => {
     if (!isMatch) {
       return res.render("admin/login", { error: "Invalid username or password" });
     }
+
+    // Log successful login
+    const ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip;
+    const user_agent = req.headers['user-agent'] || null;
+
+    await db.execute(
+      "INSERT INTO admin_logins (username, ip_address, user_agent) VALUES (?, ?, ?)",
+      [user.username, ip_address, user_agent]
+    );
 
     // Direct JWT secret
     const jwtSecret = "12345678"; // hardcoded directly
@@ -48,6 +103,7 @@ exports.postLogin = async (req, res) => {
     res.status(500).render("admin/login", { error: "Server error. Please try again." });
   }
 };
+
 // 🟢 GET /admin/logout
 exports.logout = (req, res) => {
   res.clearCookie("token");

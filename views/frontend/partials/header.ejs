@@ -3,35 +3,33 @@
 
 <head>
   <!-- required meta -->
+  <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- #favicon -->
-  <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
-  <!-- #title -->
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="<%= seo.favicon_url %>" type="image/x-icon" />
 
   <!-- Primary Meta Tags -->
-  <title>My Loan Bazar | Easy Personal, Home & Business Loans Online</title>
-  <meta name="description"
-    content="Apply for personal, home, business, and car loans at My Loan Bazar. Compare loan offers, check eligibility, and get instant approvals online with ease." />
-  <meta name="keywords"
-    content="My Loan Bazar, online loans, personal loan, home loan, business loan, car loan, loan comparison, instant loan approval, low interest loans" />
-  <meta name="author" content="My Loan Bazar" />
+  <title><%= seo.title || 'My Loan Bazar' %></title>
+  <meta name="description" content="<%= seo.description || '' %>">
+  <meta name="keywords" content="<%= seo.keywords || '' %>">
+  <meta name="author" content="<%= seo.author || '' %>">
 
   <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="My Loan Bazar | Easy Personal, Home & Business Loans Online" />
-  <meta property="og:description"
-    content="Apply for personal, home, business, and car loans at My Loan Bazar. Compare loan offers, check eligibility, and get instant approvals online with ease." />
-  <meta property="og:image" content="https://myloanbazar.com//images/loan-banner.jpg" />
-  <meta property="og:url" content="https://myloanbazar.com" />
-  <meta property="og:type" content="website" />
+  <meta property="og:title" content="<%= seo.og_title || seo.title || '' %>">
+  <meta property="og:description" content="<%= seo.og_description || seo.description || '' %>">
+  <meta property="og:image" content="<%= seo.og_image || '/images/default-og.jpg' %>">
+  <meta property="og:url" content="<%= seo.og_url || '' %>">
+  <meta property="og:type" content="<%= seo.og_type || 'website' %>">
 
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="My Loan Bazar | Easy Personal, Home & Business Loans Online" />
-  <meta name="twitter:description"
-    content="Apply for personal, home, business, and car loans at My Loan Bazar. Compare loan offers, check eligibility, and get instant approvals online with ease." />
-  <meta name="twitter:image" content="https://myloanbazar.com//images/loan-banner.jpg" />
+  <meta name="twitter:card" content="<%= seo.twitter_card || 'summary_large_image' %>">
+  <meta name="twitter:title" content="<%= seo.twitter_title || seo.title || '' %>">
+  <meta name="twitter:description" content="<%= seo.twitter_description || seo.description || '' %>">
+  <meta name="twitter:image" content="<%= seo.twitter_image || '/images/default-twitter.jpg' %>">
+</head>
 
   <!-- Favicon -->
   <link rel="icon" href="https://myloanbazar.com//images/favicon.ico" type="image/x-icon" />
@@ -58,6 +56,7 @@
   <link rel="stylesheet" href="/vendor/animate/animate.css" />
   <!-- css dependencies end  -->
 
+  
   <!-- main css -->
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
@@ -70,7 +69,7 @@
       <div class="row">
         <div class="col-12">
           <nav class="navbar navbar-expand-xl nav-shadow" id="#navbar">
-            <a class="navbar-brand" href="/"><img width="210" src="/images/logo.png" class="logo" alt="logo" /></a>
+            <a class="navbar-brand" href="/"><img width="210" src="<%= settings.logo_url %>" class="logo" alt="logo" /></a>
             <a class="navbar-toggler" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
               aria-controls="offcanvasRight">
               <i class="bi bi-list"></i>
@@ -155,7 +154,7 @@
               <button type="button" class="close-icon ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"><i
                   class="bi bi-x"></i></button>
               <div class="custom-nevbar__right-thumb mb-auto">
-                <img src="/images/logo.png" alt="logo">
+                <img src="<%= settings.logo_url %>" alt="logo">
               </div>
             </div>
             <ul class="custom-nevbar__right-location">
