@@ -141,7 +141,7 @@ router.post("/contact",
 
     try {
       // --- Verify reCAPTCHA ---
-      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "YOUR_SECRET_KEY_HERE";
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A";
       const verifyRes = await axios.post(
         `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptcha}`
       );
