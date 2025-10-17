@@ -105,6 +105,11 @@ app.use(async (req, res, next) => {
 app.use("/", frontendRoutes);       // Public pages
 app.use("/admin", adminRoutes);     // Admin panel
 
+// Replace the incorrect router.get with:
+app.get('/enquiry', (req, res) => {
+  res.render('frontend/enquiry', { title: 'Enquiry' });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

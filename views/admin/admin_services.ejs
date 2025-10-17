@@ -1,874 +1,282 @@
 <%- include('../layouts/admin_layouts_header', { title: 'Admin | Services', currentPage: 'services' }) %>
 <%- include('../layouts/admin_layouts_sidebar', { currentPage: 'services' }) %>
 
-<div class="container-fluid px-4 py-4">
-    <!-- Premium Header -->
-    <div class="premium-header mb-5">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="h3 fw-bold text-gradient mb-2">Services Management</h1>
-                <p class="text-muted mb-0">Manage your services portfolio with excellence</p>
-            </div>
-            <button class="btn-premium" onclick="openAddModal()">
-                <span>Add New Service</span>
-            </button>
-        </div>
-    </div>
+<div class="main-content container-fluid py-4">
 
-    <!-- Success/Error Messages -->
-    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
-        <div class="alert alert-premium-success alert-dismissible fade show mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-check-circle me-3"></i>
-                <div class="fw-medium"><%= successMessage %></div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </div>
-    <% } %>
-    
-    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
-        <div class="alert alert-premium-error alert-dismissible fade show mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-exclamation-circle me-3"></i>
-                <div class="fw-medium"><%= errorMessage %></div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </div>
-    <% } %>
-
-    <!-- Services Table Section -->
-    <div class="premium-card">
-        <div class="premium-card-header">
-            <div class="d-flex align-items-center">
-                <div class="premium-icon-small me-3">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <div>
-                    <h4 class="mb-1 fw-bold">Current Services</h4>
-                    <p class="mb-0 text-muted"><%= typeof services !== 'undefined' ? services.length : 0 %> services available</p>
-                </div>
-            </div>
-        </div>
-        <div class="premium-card-body">
-            <div class="table-responsive">
-                <table class="table premium-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Slug</th>
-                            <th>Image</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (typeof services !== 'undefined' && services.length > 0) { %>
-                            <% services.forEach((service, index) => { %>
-                                <tr class="premium-table-row">
-                                    <td class="text-center fw-bold"><%= index + 1 %></td>
-                                    <td>
-                                        <div class="service-title">
-                                            <%- service.title %>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="description-tooltip">
-                                            <span class="description-preview">
-                                                <%- service.description ? service.description.replace(/<[^>]*>/g, '').substring(0, 80) + '...' : 'No description' %>
-                                            </span>
-                                            <% if (service.description && service.description.length > 80) { %>
-                                                <div class="tooltip-content">
-                                                    <%- service.description.replace(/<[^>]*>/g, '') %>
-                                                </div>
-                                            <% } %>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <code class="slug-badge"><%- service.slug %></code>
-                                    </td>
-                                    <td>
-                                        <% if (service.image_url) { %>
-                                            <div class="image-preview-small" onclick="previewImage('<%= service.image_url %>')">
-                                                <img src="<%= service.image_url %>" alt="<%- service.title %>">
-                                                <div class="image-overlay-small">
-                                                    <i class="fas fa-search-plus"></i>
-                                                </div>
-                                            </div>
-                                        <% } else { %>
-                                            <span class="no-image-badge">No image</span>
-                                        <% } %>
-                                    </td>
-                                    <td>
-                                        <span class="date-badge">
-                                            <%= new Date(service.created_at).toLocaleDateString() %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-action btn-edit" onclick="openEditModal(<%= service.id %>)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-action btn-delete" onclick="confirmDelete(<%= service.id %>, '<%- service.title.replace(/'/g, "\\'") %>')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="empty-state-table">
-                                        <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
-                                        <h5>No Services Found</h5>
-                                        <p class="text-muted">Add your first service to get started</p>
-                                        <button class="btn-premium mt-3" onclick="openAddModal()">
-                                            <i class="fas fa-plus me-2"></i> Add Service
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <!-- Services Page Content -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Services Page Content</h5>
     </div>
+    <div class="card-body">
+      <form id="updateContentForm">
+        <div class="mb-3">
+          <label class="form-label">Heading</label>
+          <textarea name="heading" class="form-control ckeditor"><%= content.heading %></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control ckeditor"><%= content.description %></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Update Page Content</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Services List -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">All Services</h5>
+      <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+        + Add New Service
+      </button>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Icon</th>
+            <th>Heading</th>
+            <th>Sub Heading</th>
+            <th>Short Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (services.length > 0) { %>
+            <% services.forEach(service => { %>
+              <tr>
+                <td><img src="<%= service.icon_image %>" alt="" style="width:50px;height:50px;object-fit:contain;"></td>
+                <td><%= service.heading %></td>
+                <td><%= service.sub_heading %></td>
+                <td><%= service.short_description %></td>
+                <td>
+                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editServiceModal<%= service.id %>">Edit</button>
+                  <button class="btn btn-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#faq<%= service.id %>">FAQs</button>
+                  <button class="btn btn-danger btn-sm deleteServiceBtn" data-id="<%= service.id %>">Delete</button>
+                </td>
+              </tr>
+
+              <!-- FAQ Section -->
+              <tr class="collapse" id="faq<%= service.id %>">
+                <td colspan="5">
+                  <div class="mb-3">
+                    <h6>FAQs</h6>
+                    <form class="faqAddForm row g-2" data-service="<%= service.id %>">
+                      <input type="hidden" name="service_id" value="<%= service.id %>">
+                      <div class="col-md-5">
+                        <input type="text" name="question" class="form-control" placeholder="Question" required>
+                      </div>
+                      <div class="col-md-5">
+                        <input type="text" name="answer" class="form-control" placeholder="Answer" required>
+                      </div>
+                      <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Add FAQ</button>
+                      </div>
+                    </form>
+
+                    <% if (service.faqs && service.faqs.length > 0) { %>
+                      <ul class="list-group mt-2 faqList<%= service.id %>">
+                        <% service.faqs.forEach(faq => { %>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><strong>Q:</strong> <%= faq.question %> | <strong>A:</strong> <%= faq.answer %></div>
+                            <div>
+                              <button class="btn btn-sm btn-outline-warning editFaqBtn" data-id="<%= faq.id %>" data-question="<%= faq.question %>" data-answer="<%= faq.answer %>">Edit</button>
+                              <button class="btn btn-sm btn-outline-danger deleteFaqBtn" data-id="<%= faq.id %>">Delete</button>
+                            </div>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Edit Service Modal -->
+              <div class="modal fade" id="editServiceModal<%= service.id %>" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                      <h5 class="modal-title">Edit Service</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form class="editServiceForm" data-id="<%= service.id %>" enctype="multipart/form-data">
+                      <div class="modal-body">
+                        <input type="hidden" name="old_icon_image" value="<%= service.icon_image %>">
+                        <input type="hidden" name="old_image_1" value="<%= service.image_1 %>">
+                        <input type="hidden" name="old_image_2" value="<%= service.image_2 %>">
+                        <div class="row g-3">
+                          <div class="col-md-6">
+                            <label>Heading</label>
+                            <input type="text" name="heading" class="form-control" value="<%= service.heading %>" required>
+                          </div>
+                          <div class="col-md-6">
+                            <label>Sub Heading</label>
+                            <input type="text" name="sub_heading" class="form-control" value="<%= service.sub_heading %>">
+                          </div>
+                          <div class="col-md-6">
+                            <label>Short Description</label>
+                            <textarea name="short_description" class="form-control"><%= service.short_description %></textarea>
+                          </div>
+                          <div class="col-md-6">
+                            <label>Icon Image</label>
+                            <input type="file" name="icon_image" class="form-control" accept="image/*">
+                            <img src="<%= service.icon_image %>" class="mt-1" style="width:50px;height:50px;object-fit:contain;">
+                          </div>
+                          <div class="col-md-6">
+                            <label>Image 1</label>
+                            <input type="file" name="image_1" class="form-control" accept="image/*">
+                            <% if(service.image_1){ %>
+                              <img src="<%= service.image_1 %>" class="mt-1" style="width:50px;height:50px;object-fit:contain;">
+                            <% } %>
+                          </div>
+                          <div class="col-md-6">
+                            <label>Image 2</label>
+                            <input type="file" name="image_2" class="form-control" accept="image/*">
+                            <% if(service.image_2){ %>
+                              <img src="<%= service.image_2 %>" class="mt-1" style="width:50px;height:50px;object-fit:contain;">
+                            <% } %>
+                          </div>
+                          <div class="col-12">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control ckeditor"><%= service.description %></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="5" class="text-center">No Services Found</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <!-- Add Service Modal -->
-<div class="modal fade" id="addServiceModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content premium-modal">
-            <div class="modal-header premium-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-plus-circle me-2"></i>
-                    Add New Service
-                </h5>
-                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+<div class="modal fade" id="addServiceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Add New Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="addServiceForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label>Heading</label>
+              <input type="text" name="heading" class="form-control" required>
             </div>
-            <div class="modal-body premium-modal-body">
-                <form action="/admin/services" method="POST" enctype="multipart/form-data" id="addServiceForm">
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-heading me-2"></i>
-                            Title *
-                        </label>
-                        <input type="text" name="title" class="premium-input" placeholder="Enter service title" required>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-link me-2"></i>
-                            Slug *
-                        </label>
-                        <input type="text" name="slug" class="premium-input" placeholder="service-slug" required>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-align-left me-2"></i>
-                            Description
-                        </label>
-                        <textarea name="description" class="premium-textarea" rows="6" placeholder="Describe your service..."></textarea>
-                         <small class="text-muted">Recommended: 150–300 characters. Avoid using extremely long text.</small>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-image me-2"></i>
-                            Service Image
-                        </label>
-                        <div class="file-input-wrapper">
-                            <input type="file" name="image" class="premium-file-input" accept="image/*" id="addImage">
-                            <label for="addImage" class="file-input-label">
-                                <i class="fas fa-upload me-2"></i>
-                                Choose Image File
-                            </label>
-                            <small class="text-muted d-block mt-1">Recommended size: 480 × 300 px</small>
-                        </div>
-                    </div>
-                </form>
+            <div class="col-md-6">
+              <label>Sub Heading</label>
+              <input type="text" name="sub_heading" class="form-control">
             </div>
-            <div class="modal-footer premium-modal-footer">
-                <button type="submit" form="addServiceForm" class="btn-premium">
-                    <i class="fas fa-save me-2"></i> Add Service
-                </button>
-                <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i> Cancel
-                </button>
+            <div class="col-md-6">
+              <label>Short Description</label>
+              <textarea name="short_description" class="form-control"></textarea>
             </div>
+            <div class="col-md-6">
+              <label>Icon Image</label>
+              <input type="file" name="icon_image" class="form-control" accept="image/*" required>
+            </div>
+            <div class="col-md-6">
+              <label>Image 1</label>
+              <input type="file" name="image_1" class="form-control" accept="image/*">
+            </div>
+            <div class="col-md-6">
+              <label>Image 2</label>
+              <input type="file" name="image_2" class="form-control" accept="image/*">
+            </div>
+            <div class="col-12">
+              <label>Description</label>
+              <textarea name="description" class="form-control ckeditor"></textarea>
+            </div>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Add Service</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
-<!-- Edit Service Modal -->
-<div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content premium-modal">
-            <div class="modal-header premium-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-edit me-2"></i>
-                    Edit Service
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body premium-modal-body">
-                <form id="editServiceForm" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="edit_id" name="id">
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-heading me-2"></i>
-                            Title *
-                        </label>
-                        <input type="text" id="edit_title" name="title" class="premium-input" required>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-link me-2"></i>
-                            Slug *
-                        </label>
-                        <input type="text" id="edit_slug" name="slug" class="premium-input" required>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-align-left me-2"></i>
-                            Description
-                        </label>
-                        <textarea id="edit_description" name="description" class="premium-textarea" rows="6"></textarea>
-                    </div>
-                    
-                    <div class="form-group-premium">
-                        <label class="form-label-premium">
-                            <i class="fas fa-image me-2"></i>
-                            Update Image
-                        </label>
-                        <div class="file-input-wrapper">
-                            <input type="file" name="image" class="premium-file-input" accept="image/*" id="editImage">
-                            <label for="editImage" class="file-input-label">
-                                <i class="fas fa-upload me-2"></i>
-                                Choose New Image
-                            </label>
-                        </div>
-                        <div id="currentImagePreview" class="current-image-preview mt-3"></div>
-                    </div>
-                    <div class="modal-footer premium-modal-footer">
-                <button type="submit" class="btn-premium">
-                    <i class="fas fa-save me-2"></i> Save Changes
-                </button>
-                <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i> Cancel
-                </button>
-            </div>
-                </form>
-            </div>
-            
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content premium-modal">
-            <div class="modal-header premium-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Confirm Deletion
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body premium-modal-body text-center">
-                <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
-                <h5>Delete Service</h5>
-                <p>Are you sure you want to delete "<span id="deleteServiceName" class="fw-bold"></span>"?</p>
-                <p class="text-muted small">This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer premium-modal-footer justify-content-center">
-                <form id="deleteForm" method="POST" class="d-inline">
-                    <button type="submit" class="btn-danger">
-                        <i class="fas fa-trash-alt me-2"></i> Delete
-                    </button>
-                </form>
-                <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i> Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Image Preview Modal -->
-<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content premium-modal">
-            <div class="modal-header premium-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-search me-2"></i>
-                    Image Preview
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body premium-modal-body text-center">
-                <img id="previewImage" src="" class="preview-image" alt="Preview">
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<!-- Bootstrap JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    /* Premium Styles */
-    :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        --danger-gradient: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-        --premium-bg: #f8fafc;
-        --premium-border: #e2e8f0;
-        --premium-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    }
-.premium-header{
-    -webkit-text-fill-color: unset !important;
-}
-    /* Modal Styles */
-    .modal {
-        backdrop-filter: blur(5px);
-    }
-
-    .modal-dialog-centered {
-        display: flex;
-        align-items: center;
-        min-height: calc(100% - 1rem);
-        justify-content: center;
-    }
-
-    .modal-dialog-scrollable .modal-body {
-        max-height: 60vh;
-        overflow-y: auto;
-    }
-
-    /* Custom scrollbar */
-    .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .modal-body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb {
-        background: var(--primary-gradient);
-        border-radius: 10px;
-    }
-
-    /* Alert Styles */
-    .alert-premium-success {
-        background: var(--success-gradient);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 1rem 1.5rem;
-    }
-
-    .alert-premium-error {
-        background: var(--danger-gradient);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 1rem 1.5rem;
-    }
-
-    .premium-header {
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .premium-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: 1px solid var(--premium-border);
-        overflow: hidden;
-    }
-
-    .premium-card-header {
-        background: var(--premium-bg);
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--premium-border);
-    }
-
-    .premium-card-body {
-        padding: 1.5rem;
-    }
-
-    .premium-icon-small {
-        width: 40px;
-        height: 40px;
-        background: var(--primary-gradient);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    }
-
-    /* Table Styles */
-    .premium-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .premium-table th {
-        background: var(--primary-gradient);
-        color: white;
-        font-weight: 600;
-        padding: 1rem;
-        border: none;
-        font-size: 0.9rem;
-    }
-
-    .premium-table td {
-        padding: 1rem;
-        border-bottom: 1px solid var(--premium-border);
-        vertical-align: middle;
-    }
-
-    .premium-table-row:hover {
-        background: rgba(102, 126, 234, 0.04);
-        transition: all 0.3s ease;
-    }
-
-    /* Modal Styles */
-    .premium-modal {
-        border-radius: 15px;
-        border: none;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-    }
-
-    .premium-modal-header {
-        background: var(--primary-gradient);
-        color: white;
-        border-radius: 15px 15px 0 0;
-        padding: 1.5rem;
-        border: none;
-    }
-
-    .premium-modal-body {
-        padding: 1.5rem;
-    }
-
-    .premium-modal-footer {
-        border-radius: 0 0 15px 15px;
-        padding: 1.5rem;
-        border-top: 1px solid var(--premium-border);
-    }
-
-    /* Buttons */
-    .btn-premium {
-        background: var(--primary-gradient);
-        color: rgb(255, 255, 255);
-        border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-premium:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-secondary {
-        background: #e2e8f0;
-        color: #4a5568;
-        border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-        background: #cbd5e0;
-    }
-
-    .btn-danger {
-        background: var(--danger-gradient);
-        color: white;
-        border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    /* Form Styles */
-    .form-group-premium {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label-premium {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-    }
-
-    .premium-input, .premium-textarea {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .premium-input:focus, .premium-textarea:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        outline: none;
-    }
-
-    .premium-textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    /* Action Buttons */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .btn-action {
-        width: 35px;
-        height: 35px;
-        border: none;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-edit {
-        background: #e6f3ff;
-        color: #3182ce;
-    }
-
-    .btn-edit:hover {
-        background: #3182ce;
-        color: white;
-    }
-
-    .btn-delete {
-        background: #fed7d7;
-        color: #e53e3e;
-    }
-
-    .btn-delete:hover {
-        background: #e53e3e;
-        color: white;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .modal-dialog {
-            margin: 1rem;
-        }
-        .premium-modal-body {
-            padding: 1rem;
-        }
-    }
-    /* Table Alignment Fixes */
-.premium-table th,
-.premium-table td {
-    vertical-align: middle;
-    text-align: center;
-    padding: 1rem 0.75rem;
-    border-bottom: 1px solid var(--premium-border);
-    font-size: 0.95rem;
-}
-
-.premium-table td {
-    word-break: break-word;
-}
-
-.description-tooltip {
-    position: relative;
-    display: inline-block;
-    max-width: 220px;
-    text-align: left;
-}
-
-.description-preview {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.description-tooltip:hover .tooltip-content {
-    display: block;
-}
-
-.tooltip-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 10;
-    width: 300px;
-    background: #ffffff;
-    color: #2d3748;
-    border: 1px solid #e2e8f0;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    font-size: 0.875rem;
-}
-
-.image-preview-small {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 1px solid #e2e8f0;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.image-preview-small img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.image-overlay-small {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(102, 126, 234, 0.4);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.image-preview-small:hover .image-overlay-small {
-    opacity: 1;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-action {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.btn-edit {
-    background: #e6f3ff;
-    color: #3182ce;
-}
-
-.btn-edit:hover {
-    background: #3182ce;
-    color: white;
-}
-
-.btn-delete {
-    background: #fed7d7;
-    color: #e53e3e;
-}
-
-.btn-delete:hover {
-    background: #e53e3e;
-    color: white;
-}
-
-.premium-table-row:hover {
-    background: rgba(102, 126, 234, 0.05);
-}
-
-/* Slug & Date Badges */
-.slug-badge {
-    display: inline-block;
-    background: #edf2ff;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: #3c366b;
-}
-
-.date-badge {
-    display: inline-block;
-    background: #f0f4f8;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: #4a5568;
-}
-
-/* No image badge */
-.no-image-badge {
-    display: inline-block;
-    font-size: 0.85rem;
-    color: #a0aec0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .description-tooltip {
-        max-width: 150px;
-    }
-    .tooltip-content {
-        width: 200px;
-    }
-    .image-preview-small {
-        width: 50px;
-        height: 50px;
-    }
-}
-
-</style>
-
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Services data
-    const servicesData = {
-        <% if (typeof services !== 'undefined') { %>
-            <% services.forEach(service => { %>
-                <%= service.id %>: {
-                    title: `<%= service.title.replace(/'/g, "\\'") %>`,
-                    slug: `<%= service.slug.replace(/'/g, "\\'") %>`,
-                    description: `<%= service.description ? service.description.replace(/'/g, "\\'") : '' %>`,
-                    image: "<%= service.image_url || '' %>"
-                },
-            <% }) %>
-        <% } %>
-    };
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".ckeditor").forEach(el => CKEDITOR.replace(el));
 
-    // Simple modal functions
-    function openAddModal() {
-        console.log('Opening add modal');
-        const modal = new bootstrap.Modal(document.getElementById('addServiceModal'));
-        modal.show();
-    }
+  // Add Service
+  document.getElementById("addServiceForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    let form = new FormData(e.target);
+    const res = await fetch("/admin/services/add", { method: "POST", body: form });
+    const data = await res.json();
+    Swal.fire(data.success ? 'Success' : 'Error', data.message, data.success ? 'success' : 'error')
+      .then(() => { if(data.success) location.reload(); });
+  });
 
-    function openEditModal(id) {
-        console.log('Opening edit modal for:', id);
-        const service = servicesData[id];
-        if (!service) {
-            alert('Service not found!');
-            return;
-        }
-
-        // Fill form data
-        document.getElementById('edit_id').value = id;
-        document.getElementById('edit_title').value = service.title;
-        document.getElementById('edit_slug').value = service.slug;
-        document.getElementById('edit_description').value = service.description;
-        document.getElementById('editServiceForm').action = `/admin/services/${id}/edit`;
-
-        // Show current image
-        const previewContainer = document.getElementById('currentImagePreview');
-        previewContainer.innerHTML = '';
-        if (service.image) {
-            previewContainer.innerHTML = `
-                <div class="text-center">
-                    <p class="small text-muted mb-2">Current Image:</p>
-                    <img src="${service.image}" alt="Current Image" 
-                         style="max-width: 200px; border-radius: 8px; cursor: pointer;"
-                         onclick="previewImage('${service.image}')">
-                </div>
-            `;
-        }
-
-        const modal = new bootstrap.Modal(document.getElementById('editServiceModal'));
-        modal.show();
-        
-    }
-
-    function confirmDelete(id, title) {
-        document.getElementById('deleteServiceName').textContent = title;
-        document.getElementById('deleteForm').action = `/admin/services/${id}/delete`;
-        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        modal.show();
-    }
-
-    function previewImage(src) {
-        document.getElementById('previewImage').src = src;
-        const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
-        modal.show();
-    }
-
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Page loaded successfully');
-        
-        // File input handlers
-        const addImageInput = document.getElementById('addImage');
-        if (addImageInput) {
-            addImageInput.addEventListener('change', function() {
-                const label = this.nextElementSibling;
-                if (this.files.length > 0) {
-                    label.innerHTML = `<i class="fas fa-check me-2"></i>${this.files[0].name}`;
-                    label.style.background = '#f0fff4';
-                }
-            });
-        }
-
-        const editImageInput = document.getElementById('editImage');
-        if (editImageInput) {
-            editImageInput.addEventListener('change', function() {
-                const label = this.nextElementSibling;
-                if (this.files.length > 0) {
-                    label.innerHTML = `<i class="fas fa-check me-2"></i>${this.files[0].name}`;
-                    label.style.background = '#f0fff4';
-                }
-            });
-        }
-
-        // Auto-close alerts
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            setTimeout(() => {
-                bootstrap.Alert.getOrCreateInstance(alert).close();
-            }, 5000);
-        });
+  // Edit Service
+  document.querySelectorAll(".editServiceForm").forEach(form => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      let id = form.dataset.id;
+      let formData = new FormData(form);
+      const res = await fetch("/admin/services/edit/" + id, { method: "POST", body: formData });
+      const data = await res.json();
+      Swal.fire(data.success ? 'Success' : 'Error', data.message, data.success ? 'success' : 'error')
+        .then(() => { if(data.success) location.reload(); });
     });
+  });
+
+  // Delete Service
+  document.querySelectorAll(".deleteServiceBtn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      let id = btn.dataset.id;
+      Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!'
+      }).then(async (result) => {
+        if(result.isConfirmed){
+          const res = await fetch("/admin/services/delete/" + id);
+          const data = await res.json();
+          Swal.fire(data.success ? 'Deleted' : 'Error', data.message, data.success ? 'success' : 'error')
+            .then(() => { if(data.success) location.reload(); });
+        }
+      });
+    });
+  });
+
+  // Add FAQ
+  document.querySelectorAll(".faqAddForm").forEach(form => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      let formData = new FormData(form);
+      const res = await fetch("/admin/services/faq/add", { method: "POST", body: formData });
+      const data = await res.json();
+      Swal.fire(data.success ? 'Success' : 'Error', data.message, data.success ? 'success' : 'error')
+        .then(() => { if(data.success) location.reload(); });
+    });
+  });
+
+  // TODO: Add Edit FAQ modal + Delete FAQ SweetAlert
+});
 </script>
 
 <%- include('../layouts/admin_layouts_footer') %>

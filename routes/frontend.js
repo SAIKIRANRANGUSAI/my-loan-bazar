@@ -50,6 +50,9 @@ router.get("/", async (req, res) => {
     const [sectionRows] = await db.query("SELECT * FROM testimonials_section WHERE id = 1");
     const testimonialsSection = sectionRows[0] || {};
 
+    const [servicesRows] = await db.query("SELECT * FROM services_content WHERE id = 1");
+    const services = servicesRows[0] || { heading: "", description: "" };
+
     const [testimonialRows] = await db.query("SELECT * FROM testimonials ORDER BY id ASC");
     const testimonials = testimonialRows || []; // fetch all, default empty array
 
@@ -69,6 +72,7 @@ router.get("/", async (req, res) => {
       testimonials,
       faqSection,
       faqs,
+      services,
     });
   } catch (err) {
     console.error("Error fetching frontend home data:", err);
@@ -97,13 +101,63 @@ router.get("/about", async (req, res) => {
 });
 
 // Services
-router.get("/services", (req, res) => {
-  res.render("frontend/services", { title: "Services" });
+// Services Page
+router.get("/services", async (req, res) => {
+  try {
+    // Keep current content query
+    const [rows] = await db.query("SELECT heading, description FROM services_content LIMIT 1");
+    const content = rows[0] || { heading: "", description: "" };
+
+    // New: fetch all services for display (icon, heading, short_description)
+    const [services] = await db.query(
+      "SELECT id, icon_image, heading, short_description FROM services ORDER BY id ASC"
+    );
+
+    res.render("frontend/services", {
+      title: "Services",
+      heading: content.heading,
+      description: content.description,
+      services, // added new services data
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
-// Personal Loan
-router.get("/personal-loan", (req, res) => {
-  res.render("frontend/personal-loan", { title: "Personal Loan" });
+// Personal Loan Page
+router.get("/personal-loan/:id", async (req, res) => {
+  try {
+    // If no ID is provided, default to 1
+    const serviceId = req.params.id || 1;
+
+    // Fetch main service content
+    const [serviceRows] = await db.query(
+      "SELECT heading, description, short_description, icon_image FROM services WHERE id = ?",
+      [serviceId]
+    );
+    const service = serviceRows[0] || {
+      heading: "Personal Loan",
+      description: "",
+      short_description: "",
+      icon_image: "/images/personal-loan.jpg",
+    };
+
+    // Fetch FAQs
+    const [faqRows] = await db.query(
+      "SELECT question, answer FROM services_faq WHERE service_id = ?",
+      [serviceId]
+    );
+
+    res.render("frontend/personal-loan", {
+      title: service.heading,
+      service,
+      faqs: faqRows,
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
 // Contact
@@ -212,5 +266,7 @@ router.post("/contact",
     }
   }
 );
+
+
 
 module.exports = router;

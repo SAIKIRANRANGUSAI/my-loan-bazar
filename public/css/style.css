@@ -9187,3 +9187,17 @@ label.error {
 .offcanvas a {
   color: white;
 }
+.institution-label {
+    border: 1px solid #eeeeee;
+}
+
+
+.enquiry-form {
+  padding: 80px 0px;
+}
+.form-control {
+  height: 50px;
+}
+.nice-select {
+  margin-bottom: 15px;
+}
