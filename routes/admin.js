@@ -66,21 +66,30 @@ router.get("/dashboard", async (req, res) => {
   }
 });
 
-
+// router.get("/unread-count", async (req, res) => {
+//   try {
+//     // Replace with your actual messages/notifications table query
+//     const [unreadMessages] = await db.query("SELECT COUNT(*) as count FROM messages WHERE is_read = 0");
+//     res.json({ count: unreadMessages[0].count || 0 });
+//   } catch (err) {
+//     console.error("Error fetching unread count:", err);
+//     res.json({ count: 0 });
+//   }
+// });
 // -------- Delete Contact Message --------
 router.post("/dashboard/delete/:id", async (req, res) => {
   try {// routes/admin.js
-router.get("/admin/unread-count", async (req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT COUNT(*) AS total_unread FROM contact_submissions WHERE is_read = 0"
-    );
-    res.json({ unreadCount: rows[0].total_unread });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ unreadCount: 0 });
-  }
-});
+// router.get("/admin/unread-count", async (req, res) => {
+//   try {
+//     const [rows] = await db.query(
+//       "SELECT COUNT(*) AS total_unread FROM contact_submissions WHERE is_read = 0"
+//     );
+//     res.json({ unreadCount: rows[0].total_unread });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ unreadCount: 0 });
+//   }
+// });
 
     const { id } = req.params;
     await db.query("DELETE FROM contact_submissions WHERE id = ?", [id]);
@@ -1084,57 +1093,59 @@ router.post("/seo-settings/:id/delete", async (req, res) => {
   }
 });
 
+
 // ------------------------------
 // GET: Admin Services Page
 // ------------------------------
 router.get("/services", async (req, res) => {
   try {
-    const [services] = await db.query("SELECT * FROM services ORDER BY id DESC");
     const [contentRows] = await db.query("SELECT * FROM services_content LIMIT 1");
     const content = contentRows[0] || { heading: "", description: "" };
+    const [services] = await db.query("SELECT * FROM services ORDER BY id DESC");
 
     // Fetch FAQs for each service
-    for (let s of services) {
-      const [faqs] = await db.query("SELECT * FROM services_faq WHERE service_id=? ORDER BY id DESC", [s.id]);
-      s.faqs = faqs;
+    for (let service of services) {
+      const [faqs] = await db.query("SELECT * FROM services_faq WHERE service_id = ?", [service.id]);
+      service.faqs = faqs || [];
     }
 
     res.render("admin/admin_services", {
       title: "Admin | Services",
       currentPage: "services",
-      services,
-      content
+      content,
+      services
     });
   } catch (err) {
-    console.error("Error fetching services page:", err);
+    console.error(err);
     res.status(500).send("Server error");
   }
 });
 
 // ------------------------------
-// POST: Update Services Page Content
+// POST: Update Services Content
 // ------------------------------
 router.post("/services/content/update", async (req, res) => {
   try {
-    const { heading = "", description = "" } = req.body;
-    if (!heading || !description) return res.json({ success: false, message: "Heading and description required" });
+    const { heading, description } = req.body;
+    const [rows] = await db.query("SELECT * FROM services_content LIMIT 1");
 
-    const [exists] = await db.query("SELECT id FROM services_content LIMIT 1");
-
-    if (exists.length > 0) {
+    if (rows.length > 0) {
       await db.query("UPDATE services_content SET heading=?, description=? WHERE id=?", [
         heading,
         description,
-        exists[0].id,
+        rows[0].id
       ]);
     } else {
-      await db.query("INSERT INTO services_content (heading, description) VALUES (?, ?)", [heading, description]);
+      await db.query("INSERT INTO services_content (heading, description) VALUES (?, ?)", [
+        heading,
+        description
+      ]);
     }
 
-    res.json({ success: true, message: "Content updated successfully!" });
+    res.json({ success: true, message: "Services content updated successfully!" });
   } catch (err) {
-    console.error("Content update error:", err);
-    res.json({ success: false, message: "Database error" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -1147,24 +1158,38 @@ router.post("/services/add", upload.fields([
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const { heading='', sub_heading='', short_description='', description='' } = req.body;
+    const { heading, sub_heading, short_description, description, faqs } = req.body;
 
-    if (!heading) return res.json({ success: false, message: "Heading required" });
-    if (!req.files.icon_image) return res.json({ success: false, message: "Icon image required" });
+    if (!heading || !heading.trim()) return res.json({ success: false, message: "Heading is required" });
+    if (!req.files || !req.files.icon_image) return res.json({ success: false, message: "Icon image is required" });
 
-    const icon_image = (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url;
-    const image_1 = req.files.image_1 ? (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url : '';
-    const image_2 = req.files.image_2 ? (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url : '';
+    // Upload images
+    let icon_image = req.files.icon_image ? (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url : null;
+    let image_1 = req.files.image_1 ? (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url : null;
+    let image_2 = req.files.image_2 ? (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url : null;
 
-    await db.query(
-      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, image_1, image_2) VALUES (?,?,?,?,?,?,?)",
+    // Insert service
+    const [result] = await db.query(
+      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, image_1, image_2) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [heading, sub_heading, short_description, description, icon_image, image_1, image_2]
     );
 
-    res.json({ success: true, message: "Service added successfully!" });
+    const serviceId = result.insertId;
+
+    // Insert FAQs
+    if (faqs) {
+      const faqList = JSON.parse(faqs);
+      for (const f of faqList) {
+        if (f.question && f.answer) {
+          await db.query("INSERT INTO services_faq (service_id, question, answer) VALUES (?, ?, ?)", [serviceId, f.question, f.answer]);
+        }
+      }
+    }
+
+    res.json({ success: true, message: 'Service added successfully!' });
   } catch (err) {
-    console.error("Add service error:", err);
-    res.json({ success: false, message: "Failed to add service" });
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error: ' + err.message });
   }
 });
 
@@ -1177,106 +1202,123 @@ router.post("/services/edit/:id", upload.fields([
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const id = req.params.id;
-    const { heading='', sub_heading='', short_description='', description='', old_icon_image='', old_image_1='', old_image_2='' } = req.body;
+    const { heading, sub_heading, short_description, description, faqs, current_icon_image, current_image_1, current_image_2 } = req.body;
+    const serviceId = req.params.id;
 
-    let icon_image = old_icon_image, image_1 = old_image_1, image_2 = old_image_2;
+    if (!heading || !heading.trim()) return res.json({ success: false, message: "Heading is required" });
 
-    if (req.files.icon_image) {
-      if (old_icon_image) await deleteFromCloudinary(old_icon_image);
-      icon_image = (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url;
-    }
-    if (req.files.image_1) {
-      if (old_image_1) await deleteFromCloudinary(old_image_1);
-      image_1 = (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url;
-    }
-    if (req.files.image_2) {
-      if (old_image_2) await deleteFromCloudinary(old_image_2);
-      image_2 = (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url;
+    let icon_image = current_icon_image;
+    let image_1 = current_image_1;
+    let image_2 = current_image_2;
+
+    // Replace images if new uploaded
+    if (req.files) {
+      if (req.files.icon_image) {
+        if (current_icon_image) await deleteFromCloudinary(current_icon_image);
+        icon_image = (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url;
+      }
+      if (req.files.image_1) {
+        if (current_image_1) await deleteFromCloudinary(current_image_1);
+        image_1 = (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url;
+      }
+      if (req.files.image_2) {
+        if (current_image_2) await deleteFromCloudinary(current_image_2);
+        image_2 = (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url;
+      }
     }
 
     await db.query(
       "UPDATE services SET heading=?, sub_heading=?, short_description=?, description=?, icon_image=?, image_1=?, image_2=? WHERE id=?",
-      [heading, sub_heading, short_description, description, icon_image, image_1, image_2, id]
+      [heading, sub_heading, short_description, description, icon_image, image_1, image_2, serviceId]
     );
+
+    // Update FAQs
+    if (faqs) {
+      await db.query("DELETE FROM services_faq WHERE service_id=?", [serviceId]);
+      const faqList = JSON.parse(faqs);
+      for (const f of faqList) {
+        if (f.question && f.answer) await db.query("INSERT INTO services_faq (service_id, question, answer) VALUES (?, ?, ?)", [serviceId, f.question, f.answer]);
+      }
+    }
 
     res.json({ success: true, message: "Service updated successfully!" });
   } catch (err) {
-    console.error("Edit service error:", err);
-    res.json({ success: false, message: "Failed to update service" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error: " + err.message });
   }
 });
 
 // ------------------------------
 // DELETE: Service
 // ------------------------------
-router.get("/services/delete/:id", async (req, res) => {
+router.delete("/services/delete/:id", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT icon_image, image_1, image_2 FROM services WHERE id=?", [req.params.id]);
-    if (rows.length === 0) return res.redirect("/admin/services");
+    const serviceId = req.params.id;
 
-    const { icon_image, image_1, image_2 } = rows[0];
-    if (icon_image) await deleteFromCloudinary(icon_image);
-    if (image_1) await deleteFromCloudinary(image_1);
-    if (image_2) await deleteFromCloudinary(image_2);
+    const [service] = await db.query("SELECT icon_image, image_1, image_2 FROM services WHERE id=?", [serviceId]);
+    if (service.length) {
+      const { icon_image, image_1, image_2 } = service[0];
+      if (icon_image) await deleteFromCloudinary(icon_image);
+      if (image_1) await deleteFromCloudinary(image_1);
+      if (image_2) await deleteFromCloudinary(image_2);
+    }
 
-    await db.query("DELETE FROM services WHERE id=?", [req.params.id]);
-    await db.query("DELETE FROM services_faq WHERE service_id=?", [req.params.id]);
+    await db.query("DELETE FROM services_faq WHERE service_id=?", [serviceId]);
+    await db.query("DELETE FROM services WHERE id=?", [serviceId]);
 
-    res.redirect("/admin/services");
+    res.json({ success: true, message: "Service deleted successfully!" });
   } catch (err) {
-    console.error("Delete service error:", err);
-    res.redirect("/admin/services");
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
 // ------------------------------
-// POST: Add FAQ
+// FAQs Routes
 // ------------------------------
+router.get("/services/faq/list/:serviceId", async (req, res) => {
+  try {
+    const [faqs] = await db.query("SELECT * FROM services_faq WHERE service_id=?", [req.params.serviceId]);
+    res.json({ success: true, faqs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, faqs: [] });
+  }
+});
+
 router.post("/services/faq/add", async (req, res) => {
   try {
-    const { service_id='', question='', answer='' } = req.body;
-    if (!service_id || !question || !answer) return res.json({ success: false, message: "All fields required" });
-
-    await db.query("INSERT INTO services_faq (service_id, question, answer) VALUES (?,?,?)", [service_id, question, answer]);
+    const { service_id, question, answer } = req.body;
+    if (!question || !answer) return res.json({ success: false, message: "Question and answer are required" });
+    await db.query("INSERT INTO services_faq (service_id, question, answer) VALUES (?, ?, ?)", [service_id, question, answer]);
     res.json({ success: true, message: "FAQ added successfully!" });
   } catch (err) {
-    console.error("FAQ add error:", err);
-    res.json({ success: false, message: "Failed to add FAQ" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// ------------------------------
-// POST: Edit FAQ
-// ------------------------------
 router.post("/services/faq/edit/:id", async (req, res) => {
   try {
-    const id = req.params.id;
-    const { question='', answer='' } = req.body;
-    if (!question || !answer) return res.json({ success: false, message: "All fields required" });
-
-    await db.query("UPDATE services_faq SET question=?, answer=? WHERE id=?", [question, answer, id]);
+    const { question, answer } = req.body;
+    const faqId = req.params.id;
+    if (!question || !answer) return res.json({ success: false, message: "Question and answer are required" });
+    await db.query("UPDATE services_faq SET question=?, answer=? WHERE id=?", [question, answer, faqId]);
     res.json({ success: true, message: "FAQ updated successfully!" });
   } catch (err) {
-    console.error("FAQ edit error:", err);
-    res.json({ success: false, message: "Failed to update FAQ" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// ------------------------------
-// DELETE: FAQ
-// ------------------------------
-router.get("/services/faq/delete/:id", async (req, res) => {
+router.delete("/services/faq/delete/:id", async (req, res) => {
   try {
     await db.query("DELETE FROM services_faq WHERE id=?", [req.params.id]);
     res.json({ success: true, message: "FAQ deleted successfully!" });
   } catch (err) {
-    console.error("FAQ delete error:", err);
-    res.json({ success: false, message: "Failed to delete FAQ" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
-
-
 module.exports = router;
 module.exports.upload = upload; // Export multer to reuse in other admin routes
