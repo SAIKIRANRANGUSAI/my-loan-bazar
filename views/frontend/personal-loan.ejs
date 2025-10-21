@@ -27,14 +27,21 @@
                 <div class="loan-content">
                     <h3><%- service.heading %> Assistance</h3>
                     <p><%- service.description %></p>
-                    <a href="enquiry" class="btn_theme btn_theme_active">
-                        Enquiry Now <i class="bi bi-arrow-up-right"></i><span></span>
-                    </a>
+                    <a href="/enquiry/<%= service.id %>" class="btn_theme btn_theme_active">
+  Enquiry Now <i class="bi bi-arrow-up-right"></i><span></span>
+</a>
+
+
+
+
+
+
+
                 </div>
             </div>
             <div class="col-lg-5 col-md-6">
                 <div class="loan-img">
-                    <img class="img-fluid" src="<%- service.icon_image %>" alt="">
+                    <img class="img-fluid" src="<%- service.image_1 %>" alt="">
                 </div>
             </div>
         </div>
@@ -47,7 +54,7 @@
         <div class="row justify-content-between">
             <div class="col-lg-5 col-md-6">
                 <div class="loan-img">
-                    <img src="/images/personal-loan-2.jpg" alt="">
+                    <img src="<%- service.image_2 %>" alt="">
                 </div>
             </div>
             <div class="col-lg-7 col-md-6">

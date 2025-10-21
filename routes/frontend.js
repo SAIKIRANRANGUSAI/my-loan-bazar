@@ -126,21 +126,25 @@ router.get("/services", async (req, res) => {
 });
 
 // Personal Loan Page
+// Personal Loan Page
 router.get("/personal-loan/:id", async (req, res) => {
   try {
-    // If no ID is provided, default to 1
     const serviceId = req.params.id || 1;
 
-    // Fetch main service content
+    // Fetch main service content (include id here!)
     const [serviceRows] = await db.query(
-      "SELECT heading, description, short_description, icon_image FROM services WHERE id = ?",
+      "SELECT id, heading, description, short_description, icon_image, image_1, image_2 FROM services WHERE id = ?",
       [serviceId]
     );
+
     const service = serviceRows[0] || {
+      id: 0,
       heading: "Personal Loan",
       description: "",
       short_description: "",
       icon_image: "/images/personal-loan.jpg",
+      image_1: "/images/default1.jpg",
+      image_2: "/images/default2.jpg",
     };
 
     // Fetch FAQs
@@ -267,6 +271,122 @@ router.post("/contact",
   }
 );
 
+// GET: Enquiry form for a specific service
+router.get("/enquiry/:serviceId", async (req, res) => {
+  const serviceId = req.params.serviceId;
 
+  try {
+    const [serviceRows] = await db.query(
+      "SELECT id, heading, description, short_description, icon_image FROM services WHERE id = ?",
+      [serviceId]
+    );
+
+    if (serviceRows.length === 0) {
+      return res.status(404).send("Service not found");
+    }
+
+    const service = serviceRows[0];
+
+    // Fetch states and districts for dropdowns
+    const [states] = await db.query("SELECT id, name FROM states ORDER BY name");
+    const [districts] = await db.query("SELECT id, state_id, name FROM districts ORDER BY name");
+
+    res.render("frontend/enquiry", {
+      title: service.heading + " - Enquiry",
+      service,
+      states,
+      districts
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Server Error");
+  }
+});
+
+// POST: Submit enquiry
+router.post("/enquiry/:serviceId", async (req, res) => {
+  const serviceId = req.params.serviceId;
+
+  try {
+    console.log("Received enquiry for serviceId:", serviceId);
+    console.log("Request body:", req.body);
+
+    const {
+      name,
+      mobile,
+      address,
+      state_id,
+      district_id,
+      pincode,
+      gender,
+      company_name,
+      loan_amount,
+      monthly_salary,
+      emis,
+      company_address,
+      preferred_type,
+      preferred_institution
+    } = req.body;
+
+    // Get state and district names
+    let state_name = null;
+    let district_name = null;
+
+    if (state_id) {
+      const [stateRows] = await db.query("SELECT name FROM states WHERE id = ?", [state_id]);
+      state_name = stateRows[0]?.name || null;
+    }
+
+    if (district_id) {
+      const [districtRows] = await db.query("SELECT name FROM districts WHERE id = ?", [district_id]);
+      district_name = districtRows[0]?.name || null;
+    }
+
+    // Fetch service name
+    const [serviceRows] = await db.query("SELECT heading FROM services WHERE id = ?", [serviceId]);
+    const service_name = serviceRows[0]?.heading || null;
+
+    // Prepare values for insertion
+    const insertValues = [
+      serviceId,
+      service_name,             // service_name column
+      name || null,
+      mobile || null,
+      address || null,
+      state_id || null,
+      district_id || null,
+      pincode || null,
+      gender || null,
+      company_name || null,
+      parseFloat(loan_amount) || 0,
+      parseFloat(monthly_salary) || 0,
+      parseFloat(emis) || 0,
+      company_address || null,
+      preferred_type || null,
+      preferred_institution || null,
+      preferred_institution || null, // institution_name column
+      state_name || null,            // state column
+      district_name || null,         // district column
+      0 // otp_verified default
+    ];
+
+    const sql = `
+      INSERT INTO enquiries 
+      (service_id, service_name, name, mobile, address, state_id, district_id, pincode, gender,
+       company_name, loan_amount, monthly_salary, emis, company_address, preferred_type,
+       preferred_institution, institution_name, state, district, otp_verified, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+    `;
+
+    const [result] = await db.query(sql, insertValues);
+
+    console.log("DB insert result:", result);
+
+    res.json({ success: true, message: "Enquiry submitted successfully!" });
+  } catch (err) {
+    console.error("Enquiry submission error:", err);
+    res.status(500).json({ success: false, message: err.message || "Server error" });
+  }
+});
 
 module.exports = router;
