@@ -43,7 +43,7 @@
           }).init();
           
         //   niceSelect
-        $('select').niceSelect();
+        // $('select').niceSelect();
 
         // magnific-popup
         $('.popup-video').magnificPopup({

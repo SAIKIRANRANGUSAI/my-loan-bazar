@@ -62,6 +62,10 @@ router.get("/", async (req, res) => {
     const [faqRows] = await db.query("SELECT * FROM faqs ORDER BY id ASC");
     const faqs = faqRows || []; // fetch all, default empty array
 
+    const [allServicesRows] = await db.query("SELECT * FROM services ORDER BY id ASC");
+    const allServices = allServicesRows || [];
+
+
     res.render("frontend/index", {
       title: "Home",
       hero, // pass hero to template
@@ -73,6 +77,7 @@ router.get("/", async (req, res) => {
       faqSection,
       faqs,
       services,
+      allServices,
     });
   } catch (err) {
     console.error("Error fetching frontend home data:", err);
@@ -271,122 +276,187 @@ router.post("/contact",
   }
 );
 
-// GET: Enquiry form for a specific service
-router.get("/enquiry/:serviceId", async (req, res) => {
-  const serviceId = req.params.serviceId;
-
+// ------------------------------
+// GET: Enquiry form without serviceId (menu)
+// ------------------------------
+router.get("/enquiry", async (req, res) => {
   try {
     const [serviceRows] = await db.query(
-      "SELECT id, heading, description, short_description, icon_image FROM services WHERE id = ?",
-      [serviceId]
+      "SELECT id, heading, short_description, icon_image FROM services ORDER BY id ASC LIMIT 1"
+    );
+    const service = serviceRows[0] || {
+      id: 0,
+      heading: "General Enquiry",
+      short_description: "Fill the form below for general enquiries",
+      icon_image: "/default-icon.png",
+    };
+
+    const [states] = await db.query("SELECT id, name FROM states ORDER BY name");
+    const [institutions] = await db.query(
+      "SELECT id, type, name, logo, details FROM institutions ORDER BY type, name"
     );
 
-    if (serviceRows.length === 0) {
-      return res.status(404).send("Service not found");
-    }
-
-    const service = serviceRows[0];
-
-    // Fetch states and districts for dropdowns
-    const [states] = await db.query("SELECT id, name FROM states ORDER BY name");
-    const [districts] = await db.query("SELECT id, state_id, name FROM districts ORDER BY name");
-
     res.render("frontend/enquiry", {
-      title: service.heading + " - Enquiry",
+      title: `${service.heading} - Enquiry`,
       service,
       states,
-      districts
+      institutions,
     });
   } catch (err) {
-    console.error("Database error:", err);
+    console.error("Error fetching enquiry form:", err);
     res.status(500).send("Server Error");
   }
 });
 
-// POST: Submit enquiry
-router.post("/enquiry/:serviceId", async (req, res) => {
-  const serviceId = req.params.serviceId;
-
+// ------------------------------
+// GET: Enquiry form for specific service
+// ------------------------------
+router.get("/enquiry/:serviceId", async (req, res) => {
   try {
-    console.log("Received enquiry for serviceId:", serviceId);
-    console.log("Request body:", req.body);
+    const serviceId = req.params.serviceId;
+    const [serviceRows] = await db.query(
+      "SELECT id, heading, short_description, icon_image FROM services WHERE id = ?",
+      [serviceId]
+    );
 
-    const {
-      name,
-      mobile,
-      address,
-      state_id,
-      district_id,
-      pincode,
-      gender,
-      company_name,
-      loan_amount,
-      monthly_salary,
-      emis,
-      company_address,
-      preferred_type,
-      preferred_institution
-    } = req.body;
+    if (!serviceRows.length) return res.status(404).send("Service not found");
 
-    // Get state and district names
-    let state_name = null;
-    let district_name = null;
+    const service = serviceRows[0];
+    const [states] = await db.query("SELECT id, name FROM states ORDER BY name");
+    const [institutions] = await db.query(
+      "SELECT id, type, name, logo, details FROM institutions ORDER BY type, name"
+    );
 
-    if (state_id) {
-      const [stateRows] = await db.query("SELECT name FROM states WHERE id = ?", [state_id]);
-      state_name = stateRows[0]?.name || null;
-    }
+    res.render("frontend/enquiry", {
+      title: `${service.heading} - Enquiry`,
+      service,
+      states,
+      institutions,
+    });
+  } catch (err) {
+    console.error("Error fetching enquiry form:", err);
+    res.status(500).send("Server Error");
+  }
+});
 
-    if (district_id) {
-      const [districtRows] = await db.query("SELECT name FROM districts WHERE id = ?", [district_id]);
-      district_name = districtRows[0]?.name || null;
-    }
+// ------------------------------
+// GET: Districts by state ID (AJAX)
+// ------------------------------
+router.get("/districts/:stateId", async (req, res) => {
+  try {
+    const stateId = req.params.stateId;
+    if (!stateId || isNaN(stateId)) return res.status(400).json({ error: "Invalid state ID" });
 
-    // Fetch service name
-    const [serviceRows] = await db.query("SELECT heading FROM services WHERE id = ?", [serviceId]);
-    const service_name = serviceRows[0]?.heading || null;
+    const [districts] = await db.query(
+      "SELECT id, name FROM districts WHERE state_id = ? ORDER BY name",
+      [stateId]
+    );
+    res.json(districts);
+  } catch (err) {
+    console.error("Error fetching districts:", err);
+    res.status(500).json({ error: "Failed to fetch districts" });
+  }
+});
 
-    // Prepare values for insertion
-    const insertValues = [
-      serviceId,
-      service_name,             // service_name column
-      name || null,
-      mobile || null,
-      address || null,
-      state_id || null,
-      district_id || null,
-      pincode || null,
-      gender || null,
-      company_name || null,
-      parseFloat(loan_amount) || 0,
-      parseFloat(monthly_salary) || 0,
-      parseFloat(emis) || 0,
-      company_address || null,
-      preferred_type || null,
-      preferred_institution || null,
-      preferred_institution || null, // institution_name column
-      state_name || null,            // state column
-      district_name || null,         // district column
-      0 // otp_verified default
-    ];
+// ------------------------------
+// POST: Enquiry without serviceId (menu)
+// ------------------------------
+router.post("/enquiry", async (req, res) => {
+  try {
+    const [serviceRows] = await db.query(
+      "SELECT id, heading FROM services ORDER BY id ASC LIMIT 1"
+    );
+    const service = serviceRows[0] || { id: 0, heading: "General Enquiry" };
 
-    const sql = `
-      INSERT INTO enquiries 
-      (service_id, service_name, name, mobile, address, state_id, district_id, pincode, gender,
-       company_name, loan_amount, monthly_salary, emis, company_address, preferred_type,
-       preferred_institution, institution_name, state, district, otp_verified, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-    `;
-
-    const [result] = await db.query(sql, insertValues);
-
-    console.log("DB insert result:", result);
-
+    await saveEnquiry(req.body, service.id, service.heading);
     res.json({ success: true, message: "Enquiry submitted successfully!" });
   } catch (err) {
     console.error("Enquiry submission error:", err);
     res.status(500).json({ success: false, message: err.message || "Server error" });
   }
 });
+
+// ------------------------------
+// POST: Enquiry with serviceId
+// ------------------------------
+router.post("/enquiry/:serviceId", async (req, res) => {
+  try {
+    const serviceId = req.params.serviceId;
+    const [serviceRows] = await db.query("SELECT heading FROM services WHERE id = ?", [serviceId]);
+    const service_name = serviceRows[0]?.heading || "General Enquiry";
+
+    await saveEnquiry(req.body, serviceId, service_name);
+    res.json({ success: true, message: "Enquiry submitted successfully!" });
+  } catch (err) {
+    console.error("Enquiry submission error:", err);
+    res.status(500).json({ success: false, message: err.message || "Server error" });
+  }
+});
+
+async function saveEnquiry(body, serviceId, service_name) {
+  const {
+    name, mobile, address, pincode, gender,
+    company_name, loan_amount, monthly_salary, emis, company_address,
+    preferred_type, preferred_institution, otp,
+    state_id, district_id
+  } = body;
+
+  // Validation
+  if (!name || !mobile || !address || !pincode || !gender ||
+      !company_name || !loan_amount || !monthly_salary || !emis || !company_address ||
+      !preferred_type || !preferred_institution || !otp) {
+    throw new Error("All fields are required");
+  }
+  if (!/^[6-9][0-9]{9}$/.test(mobile)) throw new Error("Invalid mobile number");
+  if (!/^[1-9][0-9]{5}$/.test(pincode)) throw new Error("Invalid pincode");
+  if (!/^\d{6}$/.test(otp)) throw new Error("Invalid OTP");
+
+  // Fetch state and district names if IDs provided
+  let state_name = null;
+  let district_name = null;
+
+  if (state_id) {
+    const [stateRows] = await db.query("SELECT name FROM states WHERE id = ?", [state_id]);
+    state_name = stateRows[0]?.name || null;
+  }
+
+  if (district_id) {
+    const [districtRows] = await db.query("SELECT name FROM districts WHERE id = ?", [district_id]);
+    district_name = districtRows[0]?.name || null;
+  }
+
+  // ✅ Insert into table without state_id / district_id columns
+  const insertValues = [
+    serviceId,
+    service_name,
+    name,
+    mobile,
+    address,
+    pincode,
+    gender,
+    company_name,
+    parseFloat(loan_amount),
+    parseFloat(monthly_salary),
+    parseFloat(emis),
+    company_address,
+    preferred_type,
+    preferred_institution,
+    preferred_institution, // institution_name
+    state_name,
+    district_name,
+    1 // otp_verified
+  ];
+
+  const sql = `
+    INSERT INTO enquirie_s
+    (service_id, service_name, name, mobile, address, pincode, gender,
+     company_name, loan_amount, monthly_salary, emis, company_address,
+     preferred_type, preferred_institution, institution_name, state, district, otp_verified)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  await db.query(sql, insertValues);
+}
+
 
 module.exports = router;

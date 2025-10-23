@@ -37,69 +37,119 @@ router.get("/logout", authController.logout);
 router.use(authController.isAuthenticated);
 
 // -------- Admin Dashboard (View Only, Paginated) --------
-// -------- Admin Dashboard (View + Delete, Paginated) --------
+// ------------------------------
+// GET: Dashboard with both contacts and enquiries
+// ------------------------------
 router.get("/dashboard", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
+    const pageContacts = parseInt(req.query.pageContacts) || 1;
+    const pageEnquiries = parseInt(req.query.pageEnquiries) || 1;
     const limit = 10;
-    const offset = (page - 1) * limit;
 
-    const [countRows] = await db.query("SELECT COUNT(*) AS total FROM contact_submissions");
-    const totalRows = countRows[0].total;
-    const totalPages = Math.ceil(totalRows / limit);
+    // Contacts pagination
+    const contactOffset = (pageContacts - 1) * limit;
+    const [contactCountRows] = await db.query("SELECT COUNT(*) AS total FROM contact_submissions");
+    const totalContacts = contactCountRows[0].total;
+    const totalPagesContacts = Math.ceil(totalContacts / limit);
 
-    const [rows] = await db.query(
+    const [contactRows] = await db.query(
       "SELECT * FROM contact_submissions ORDER BY created_at DESC LIMIT ? OFFSET ?",
-      [limit, offset]
+      [limit, contactOffset]
     );
+
+    // Enquiries pagination
+    const enquiryOffset = (pageEnquiries - 1) * limit;
+    const [enquiryCountRows] = await db.query("SELECT COUNT(*) AS total FROM enquirie_s");
+    const totalEnquiries = enquiryCountRows[0].total;
+    const totalPagesEnquiries = Math.ceil(totalEnquiries / limit);
+
+    const [enquiryRows] = await db.query(
+      "SELECT * FROM enquirie_s ORDER BY created_at DESC LIMIT ? OFFSET ?",
+      [limit, enquiryOffset]
+    );
+
+    // Stats for dashboard
+    const [contactStatsRows] = await db.query(`
+      SELECT 
+        COUNT(*) as total,
+        COUNT(CASE WHEN DATE(created_at) = CURDATE() THEN 1 END) as today
+      FROM contact_submissions
+    `);
+
+    const [enquiryStatsRows] = await db.query(`
+      SELECT 
+        COUNT(*) as total,
+        COUNT(CASE WHEN DATE(created_at) = CURDATE() THEN 1 END) as today
+      FROM enquirie_s
+    `);
 
     res.render("admin/admin_dashboard", {
       user: req.user,
-      contacts: rows,
-      currentPage: page,
-      totalPages: totalPages,
+      contacts: contactRows,
+      enquiries: enquiryRows,
+      currentPageContacts: pageContacts,
+      currentPageEnquiries: pageEnquiries,
+      totalPagesContacts: totalPagesContacts,
+      totalPagesEnquiries: totalPagesEnquiries,
+      contactStats: contactStatsRows[0],
+      enquiryStats: enquiryStatsRows[0],
       message: req.query.message || null
     });
   } catch (err) {
-    console.error("Error fetching contacts:", err);
+    console.error("Error fetching dashboard data:", err);
     res.status(500).send("Server error");
   }
 });
 
-// router.get("/unread-count", async (req, res) => {
-//   try {
-//     // Replace with your actual messages/notifications table query
-//     const [unreadMessages] = await db.query("SELECT COUNT(*) as count FROM messages WHERE is_read = 0");
-//     res.json({ count: unreadMessages[0].count || 0 });
-//   } catch (err) {
-//     console.error("Error fetching unread count:", err);
-//     res.json({ count: 0 });
-//   }
-// });
-// -------- Delete Contact Message --------
+// ------------------------------
+// DELETE: Contact submission
+// ------------------------------
 router.post("/dashboard/delete/:id", async (req, res) => {
-  try {// routes/admin.js
-// router.get("/admin/unread-count", async (req, res) => {
-//   try {
-//     const [rows] = await db.query(
-//       "SELECT COUNT(*) AS total_unread FROM contact_submissions WHERE is_read = 0"
-//     );
-//     res.json({ unreadCount: rows[0].total_unread });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ unreadCount: 0 });
-//   }
-// });
-
-    const { id } = req.params;
-    await db.query("DELETE FROM contact_submissions WHERE id = ?", [id]);
-    res.redirect("/admin/dashboard?message=Message deleted successfully");
+  try {
+    const contactId = req.params.id;
+    
+    await db.query("DELETE FROM contact_submissions WHERE id = ?", [contactId]);
+    
+    res.redirect("/admin/dashboard?message=Contact+deleted+successfully");
   } catch (err) {
-    console.error("Error deleting message:", err);
-    res.redirect("/admin/dashboard?message=Failed to delete message");
+    console.error("Error deleting contact:", err);
+    res.redirect("/admin/dashboard?message=Error+deleting+contact");
   }
 });
 
+// ------------------------------
+// DELETE: Enquiry
+// ------------------------------
+router.post("/dashboard/delete-enquiry/:id", async (req, res) => {
+  try {
+    const enquiryId = req.params.id;
+    
+    await db.query("DELETE FROM enquirie_s WHERE id = ?", [enquiryId]);
+    
+    res.redirect("/admin/dashboard?message=Enquiry+deleted+successfully");
+  } catch (err) {
+    console.error("Error deleting enquiry:", err);
+    res.redirect("/admin/dashboard?message=Error+deleting+enquiry");
+  }
+});
+
+// ------------------------------
+// GET: Unread count (to fix 404 error)
+// ------------------------------
+router.get("/unread-count", async (req, res) => {
+  try {
+    const [contactCount] = await db.query("SELECT COUNT(*) as count FROM contact_submissions");
+    const [enquiryCount] = await db.query("SELECT COUNT(*) as count FROM enquirie_s");
+    
+    res.json({
+      success: true,
+      total: contactCount[0].count + enquiryCount[0].count
+    });
+  } catch (err) {
+    console.error("Error fetching unread count:", err);
+    res.json({ success: false, total: 0 });
+  }
+});
 
 
 
@@ -1319,6 +1369,166 @@ router.delete("/services/faq/delete/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
+});
+
+
+// ---------- Institutions ----------
+router.get('/enquiry', async (req, res) => {
+    try {
+        const [institutions] = await db.query('SELECT * FROM institutions ORDER BY created_at DESC');
+        const [states] = await db.query('SELECT * FROM states ORDER BY name ASC');
+        const [districts] = await db.query(`
+            SELECT d.*, s.name as state_name FROM districts d 
+            LEFT JOIN states s ON s.id = d.state_id
+            ORDER BY d.name ASC
+        `);
+
+        res.render('admin/admin_enquiry', { 
+            institutions: institutions || [], 
+            states: states || [], 
+            districts: districts || [],
+            message: req.query.message || '',
+            error: req.query.error || ''
+        });
+    } catch (error) {
+        console.error('Error fetching enquiry data:', error);
+        res.status(500).render('error', { message: 'Error loading enquiry data' });
+    }
+});
+
+router.post('/institutions/add', upload.single('logo'), async (req, res) => {
+    try {
+        console.log('Request body:', req.body);
+        console.log('Request file:', req.file);
+
+        if (!req.body.type || !req.body.name) {
+            return res.status(400).json({ success: false, message: 'Type and Name are required fields' });
+        }
+
+        let logoUrl = '';
+        if (req.file && req.file.buffer) {
+            try {
+                const result = await uploadToCloudinary(req.file.buffer);
+                logoUrl = result.secure_url;
+            } catch (uploadError) {
+                console.error('Error uploading logo:', uploadError);
+                return res.status(500).json({ success: false, message: 'Error uploading logo' });
+            }
+        }
+
+        await db.query(
+            'INSERT INTO institutions (type, name, logo, details) VALUES (?, ?, ?, ?)',
+            [req.body.type, req.body.name, logoUrl, req.body.details || '']
+        );
+
+        res.json({ success: true, message: 'Institution added successfully' });
+    } catch (error) {
+        console.error('Error adding institution:', error);
+        res.status(500).json({ success: false, message: 'Error adding institution: ' + error.message });
+    }
+});
+
+router.post('/institutions/edit/:id', upload.single('logo'), async (req, res) => {
+    try {
+        const institutionId = req.params.id;
+
+        if (!req.body.type || !req.body.name) {
+            return res.status(400).json({ success: false, message: 'Type and Name are required' });
+        }
+
+        let logoUrl = req.body.currentLogo || '';
+        if (req.file && req.file.buffer) {
+            try {
+                const result = await uploadToCloudinary(req.file.buffer);
+                logoUrl = result.secure_url;
+
+                if (req.body.currentLogo) {
+                    await deleteFromCloudinary(req.body.currentLogo);
+                }
+            } catch (uploadError) {
+                return res.status(500).json({ success: false, message: 'Error uploading logo' });
+            }
+        }
+
+        await db.query(
+            'UPDATE institutions SET type=?, name=?, logo=?, details=? WHERE id=?',
+            [req.body.type, req.body.name, logoUrl, req.body.details || '', institutionId]
+        );
+
+        res.json({ success: true, message: 'Institution updated successfully' });
+    } catch (error) {
+        console.error('Error updating institution:', error);
+        res.status(500).json({ success: false, message: 'Error updating institution: ' + error.message });
+    }
+});
+
+
+// Delete Institution - FIXED
+router.post('/institutions/delete/:id', async (req, res) => {
+    try {
+        const institutionId = req.params.id;
+        
+        // Delete logo from cloudinary if exists
+        const [institution] = await db.query('SELECT logo FROM institutions WHERE id = ?', [institutionId]);
+        if (institution.length > 0 && institution[0].logo) {
+            await deleteFromCloudinary(institution[0].logo);
+        }
+
+        await db.query('DELETE FROM institutions WHERE id = ?', [institutionId]);
+        res.redirect('/admin/enquiry?message=Institution deleted successfully');
+    } catch (error) {
+        console.error('Error deleting institution:', error);
+        res.redirect('/admin/enquiry?error=Error deleting institution: ' + error.message);
+    }
+});
+
+// ---------- States ----------
+router.post('/states/add', async (req, res) => {
+    try {
+        await db.query('INSERT INTO states(name) VALUES(?)', [req.body.name]);
+        res.redirect('/admin/enquiry?message=State added successfully');
+    } catch (error) {
+        console.error('Error adding state:', error);
+        res.redirect('/admin/enquiry?error=Error adding state');
+    }
+});
+
+router.post('/states/delete/:id', async (req, res) => {
+    try {
+        // Check if state has districts before deleting
+        const [districts] = await db.query('SELECT id FROM districts WHERE state_id = ?', [req.params.id]);
+        
+        if (districts.length > 0) {
+            return res.redirect('/admin/enquiry?error=Cannot delete state. It has associated districts.');
+        }
+
+        await db.query('DELETE FROM states WHERE id=?', [req.params.id]);
+        res.redirect('/admin/enquiry?message=State deleted successfully');
+    } catch (error) {
+        console.error('Error deleting state:', error);
+        res.redirect('/admin/enquiry?error=Error deleting state');
+    }
+});
+
+// ---------- Districts ----------
+router.post('/districts/add', async (req, res) => {
+    try {
+        await db.query('INSERT INTO districts(state_id, name) VALUES(?, ?)', [req.body.state_id, req.body.name]);
+        res.redirect('/admin/enquiry?message=District added successfully');
+    } catch (error) {
+        console.error('Error adding district:', error);
+        res.redirect('/admin/enquiry?error=Error adding district');
+    }
+});
+
+router.post('/districts/delete/:id', async (req, res) => {
+    try {
+        await db.query('DELETE FROM districts WHERE id=?', [req.params.id]);
+        res.redirect('/admin/enquiry?message=District deleted successfully');
+    } catch (error) {
+        console.error('Error deleting district:', error);
+        res.redirect('/admin/enquiry?error=Error deleting district');
+    }
 });
 module.exports = router;
 module.exports.upload = upload; // Export multer to reuse in other admin routes

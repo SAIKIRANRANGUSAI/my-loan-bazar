@@ -96,220 +96,32 @@
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-1.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="/personal-loan">Personal loan</a>
-                </h4>
-                <p class="fs-small">
-                  Reference site about Lorem Ipsum, giving information on its
-                  origins, as well as a random Lipsum generator.
-                </p>
-                <a href="/personal-loan" class="btn_theme social_box"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
+  <% if (allServices && allServices.length > 0) { %>
+    <% allServices.forEach((service) => { %>
+      <div class="col-md-3 mb-3">
+        <div class="card card--custom">
+          <div class="card__icon">
+            <img src="<%= service.icon_image %>" width="50" alt="" />
           </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-2.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="/home">Home loan</a>
-                </h4>
-                <p class="fs-small">
-                  Reference site about Lorem Ipsum, giving information on its
-                  origins, as well as a random Lipsum generator.
-                </p>
-                <a href="#!" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
+          <div class="card__content">
+            <h4 class="card__title">
+              <a href="/personal-loan/<%= service.id %>"><%= service.heading %></a>
+            </h4>
+            <p class="fs-small">
+              <%= service.short_description %>
+            </p>
+            <a href="/personal-loan/<%= service.id %>" class="btn_theme social_box">
+              <i class="bi bi-arrow-up-right"></i><span></span>
+            </a>
           </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-3.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Business loan </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#!" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-4.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Mortgage loan </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#1" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-5.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Doctor loan </a>
-                </h4>
-                <p class="fs-small">
-                  Provide comprehensive and unbiased reviews of various types of
-                  loans, including personal loans
-                </p>
-                <a href="#!" class="btn_theme social_box"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-6.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">CA loan </a>
-                </h4>
-                <p class="fs-small">
-                  Develop interactive tools or tables that allow users to
-                  compare different loan options side by side
-                </p>
-                <a href="#!" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-7.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">New cars/Used cars </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#!" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-8.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Lap Loan </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#1" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img src="/images/service-icon-9.png" width="50" alt="" />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Education loan </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#1" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
-
-          <div class="col-md-3 mb-3">
-            <div class="card card--custom">
-              <div class="card__icon">
-                <img
-                  src="/images/service-icon-10.png"
-                  width="50"
-                  alt=""
-                />
-              </div>
-              <div class="card__content">
-                <h4 class="card__title">
-                  <a href="#!">Credit cards </a>
-                </h4>
-                <p class="fs-small">
-                  Provide informative articles, guides, and resources to educate
-                  users about different types of loans
-                </p>
-                <a href="#1" class="btn_theme social_box btn_bg_white"
-                  ><i class="bi bi-arrow-up-right"></i><span></span
-                ></a>
-              </div>
-            </div>
-          </div>
-          <!--col-md-3-->
         </div>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No services found.</p>
+  <% } %>
+</div>
+
         <!--row-->
       </div>
     </section>
