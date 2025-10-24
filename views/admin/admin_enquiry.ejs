@@ -20,7 +20,7 @@
     <% } %>
 
     <!-- ===================== Institutions ===================== -->
-    <section class="section-box">
+    <section class="section-box" id="institutionBoxs">
         <h2>Institutions</h2>
         <button onclick="showInstitutionForm()" class="btn-primary">Add Institution</button>
         
@@ -278,19 +278,19 @@
         }
         // Clear error messages
         document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
-        console.log('Institution form reset'); // Debug log
+        // console.log('Institution form reset'); // Debug log
     }
 
     function editInstitution(inst) {
-        console.log('Editing institution:', inst); // Debug log
+        // console.log('Editing institution:', inst); // Debug log
         try {
             // Sanitize inst data to prevent XSS
             const institution = {
-                id: inst.id || '',
-                type: inst.type || '',
-                name: inst.name || '',
-                logo: inst.logo || '',
-                details: inst.details || ''
+            id: inst.id || '',
+            type: inst.type || '',
+            name: inst.name || '',
+            logo: inst.logo || '',
+            details: inst.details || ''
             };
 
             showInstitutionForm();
@@ -304,14 +304,14 @@
             const submitBtn = document.getElementById('institutionSubmitBtn');
 
             if (!form || !institutionId || !institutionType || !institutionName || !currentLogoInput || !currentLogo || !submitBtn) {
-                console.error('Form elements missing');
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Form elements not found. Please try again.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
+            console.error('Form elements missing');
+            Swal.fire({
+                title: 'Error',
+                text: 'Form elements not found. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+             // Reload page
             }
 
             // Set form action for edit
@@ -322,34 +322,64 @@
 
             // Handle logo
             if (institution.logo) {
-                currentLogo.src = institution.logo;
-                currentLogo.style.display = 'inline';
-                currentLogoInput.value = institution.logo;
+            currentLogo.src = institution.logo;
+            currentLogo.style.display = 'inline';
+            currentLogoInput.value = institution.logo;
             } else {
-                currentLogo.style.display = 'none';
-                currentLogoInput.value = '';
+            currentLogo.style.display = 'none';
+            currentLogoInput.value = '';
             }
 
             // Set CKEditor content with delay to ensure editor is ready
             if (institutionEditor) {
-                setTimeout(() => {
-                    institutionEditor.setData(institution.details);
-                    console.log('CKEditor data set:', institution.details); // Debug log
-                }, 100);
+            setTimeout(() => {
+                institutionEditor.setData(institution.details);
+                console.log('CKEditor data set:', institution.details); // Debug log
+            }, 100);
             } else {
-                console.warn('CKEditor not initialized, setting textarea directly');
-                document.getElementById('institutionDetails').value = institution.details;
+            console.warn('CKEditor not initialized, setting textarea directly');
+            document.getElementById('institutionDetails').value = institution.details;
             }
 
             submitBtn.textContent = 'Update Institution';
 
-            Swal.fire({
-                title: 'Edit Mode',
-                text: `You are now editing ${institution.name}`,
-                icon: 'info',
-                timer: 2000,
-                showConfirmButton: false
-            });
+            // Swal.fire({
+            // title: 'Edit Mode',
+            // text: `You are now editing ${institution.name}`,
+            // icon: 'info',
+            // timer: 2000,
+            // showConfirmButton: false
+            // });
+
+            // Smooth scroll to the institutions section (no location.href)
+            (function scrollToSection() {
+            const target = document.getElementById('institutionBoxs') || document.getElementById('institutionBox');
+            if (!target) {
+                console.warn('Target scroll element not found');
+                return;
+            }
+            // Make target focusable for accessibility, then focus without scrolling
+            const hadTabindex = target.hasAttribute('tabindex');
+            const prevTabindex = target.getAttribute('tabindex');
+            if (!hadTabindex) target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+
+            // Compute offset (adjust 20px for spacing/header if needed)
+            const offset = 20;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+            window.scrollTo({ top, behavior: 'smooth' });
+
+            // Restore tabindex if it didn't exist before
+            // if (!hadTabindex) {
+            //     // remove tabindex after a short delay to allow focus behavior
+            //     setTimeout(() => {
+            //     target.removeAttribute('tabindex');
+            //     }, 1000);
+            // } else if (prevTabindex !== null) {
+            //     target.setAttribute('tabindex', prevTabindex);
+            // }
+            })();
         } catch (error) {
             console.error('Error in editInstitution:', error);
             Swal.fire({
@@ -607,6 +637,9 @@
 </script>
 
 <style>
+    *{
+    padding: revert;
+  }
     .section-box {
         background: white;
         padding: 20px;
@@ -623,7 +656,7 @@
         margin: 20px 0;
         border-left: 4px solid #007bff;
         position: relative;
-        z-index: 1000;
+        z-index: 1;
         transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
