@@ -23,6 +23,7 @@
             </label>
             <div id="headingEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
             <input type="hidden" id="heading" name="heading" value="<%- content.heading || '' %>">
+            <small class="text-muted d-block">Use up to 65 characters for heading to keep design consistent.</small>
           </div>
           <div class="col-12 mb-4">
             <label class="form-label fw-bold fs-6 mb-2">
@@ -31,6 +32,7 @@
             </label>
             <div id="descriptionEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
             <input type="hidden" id="description" name="description" value="<%- content.description || '' %>">
+            <small class="text-muted d-block">Use up to 200 characters for description to maintain layout.</small>
           </div>
         </div>
         <div class="d-flex justify-content-end">
@@ -61,6 +63,9 @@
             </label>
             <div id="serviceHeadingEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
             <input type="hidden" id="serviceHeading" name="heading" required>
+            <small class="text-muted d-block">
+  Use up to 15 characters for heading (current: 13).
+</small>
           </div>
           <div class="col-md-6 mb-4">
             <label class="form-label fw-bold fs-6 mb-2">
@@ -69,6 +74,9 @@
             </label>
             <div id="serviceSubHeadingEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
             <input type="hidden" id="serviceSubHeading" name="sub_heading">
+            <small class="text-muted d-block">
+  Use up to 25 characters for heading (current: 24).
+</small>
           </div>
           <div class="col-12 mb-4">
             <label class="form-label fw-bold fs-6 mb-2">
@@ -77,14 +85,20 @@
             </label>
             <div id="serviceShortDescEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
             <input type="hidden" id="serviceShortDesc" name="short_description">
+            <small class="text-muted d-block">
+  Use up to 130 characters for description (current: 123).
+</small>
           </div>
           <div class="col-12 mb-4">
             <label class="form-label fw-bold fs-6 mb-2">
               <i class="fas fa-align-justify text-success me-1"></i>
               Description
             </label>
-            <div id="serviceDescEditor" class="ckeditor-container border rounded p-2 bg-light"></div>
+            <div id="serviceDescEditor" class="ckeditor-container border <small class="text-muted d-block">
+  Use up to 25 characters for heading (current: 24).
+</small>rounded p-2 bg-light"></div>
             <input type="hidden" id="serviceDesc" name="description">
+
           </div>
         </div>
 
@@ -98,7 +112,8 @@
             <input type="file" id="iconImage" name="icon_image" class="form-control" accept="image/*">
             <div id="iconPreview" class="mt-2 border rounded p-3 bg-light d-flex justify-content-center"></div>
             <input type="hidden" id="currentIconImage">
-            <small class="text-muted d-block mt-1">Required for new services</small>
+            <small class="text-muted d-block mt-1">Required for new services, Aspect ratio value: 707∶830 (7 characters)</small>
+            
           </div>
           <div class="col-md-4 mb-4">
             <label class="form-label fw-bold fs-6 mb-2">
@@ -106,7 +121,11 @@
               Image 1
             </label>
             <input type="file" id="image1" name="image_1" class="form-control" accept="image/*">
+            
             <div id="image1Preview" class="mt-2 border rounded p-3 bg-light d-flex justify-content-center"></div>
+            <small class="text-muted d-block">
+  Use up to 450 characters for description (current: 449).
+</small>
             <input type="hidden" id="currentImage1">
           </div>
           <div class="col-md-4 mb-4">
@@ -115,7 +134,11 @@
               Image 2
             </label>
             <input type="file" id="image2" name="image_2" class="form-control" accept="image/*">
+            
             <div id="image2Preview" class="mt-2 border rounded p-3 bg-light d-flex justify-content-center"></div>
+            <small class="text-muted d-block">
+  Use up to 450 characters for description (current: 449).
+</small>
             <input type="hidden" id="currentImage2">
           </div>
         </div>

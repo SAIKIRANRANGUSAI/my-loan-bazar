@@ -49,7 +49,8 @@
                 <div class="form-group">
                     <label for="institutionLogo">Logo</label>
                     <input type="file" name="logo" id="institutionLogo" accept="image/jpeg,image/png,image/gif">
-                    <small>Accepted formats: JPG, PNG, GIF. Max size: 2MB</small>
+                    <small>Accepted formats: JPG, PNG, GIF. Max size: 2MB, Aspect ratio value: 1679∶1678</small>
+                    
                     <div id="logoPreview" style="margin-top: 10px;">
                         <img id="currentLogo" style="max-width:100px; display:none;" loading="lazy">
                     </div>
@@ -58,6 +59,9 @@
                 <div class="form-group">
                     <label for="institutionDetails">Details</label>
                     <textarea name="details" id="institutionDetails" rows="4"></textarea>
+                    <small class="text-muted d-block">
+  Use up to 120 characters for rate details.
+</small>
                 </div>
                 
                 <div class="form-buttons">
