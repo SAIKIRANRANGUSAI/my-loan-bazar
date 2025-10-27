@@ -27,9 +27,18 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-main">
-                        <h3 class="stat-number"><%= contactStats?.total || 0 %></h3>
-                        <span class="stat-trend up">+12%</span>
-                    </div>
+  <%
+    const contactTotal = contactStats?.total || 0;
+    const contactTrendVal = contactStats?.trend || 0;
+    const contactTrendClass = contactTrendVal >= 0 ? 'up' : 'down';
+  %>
+
+  <h3 class="stat-number"><%= contactTotal %></h3>
+  <span class="stat-trend <%= contactTrendClass %>">
+    <%= contactTrendVal >= 0 ? '+' + contactTrendVal + '%' : contactTrendVal + '%' %>
+  </span>
+</div>
+
                     <p class="stat-label">Total Contacts</p>
                     <div class="stat-meta">
                         <span class="stat-meta-item">
@@ -48,9 +57,18 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-main">
-                        <h3 class="stat-number"><%= enquiryStats?.total || 0 %></h3>
-                        <span class="stat-trend up">+8%</span>
-                    </div>
+  <%
+    const enquiryTotal = enquiryStats?.total || 0;
+    const enquiryTrendVal = enquiryStats?.trend || 0;
+    const enquiryTrendClass = enquiryTrendVal >= 0 ? 'up' : 'down';
+  %>
+
+  <h3 class="stat-number"><%= enquiryTotal %></h3>
+  <span class="stat-trend <%= enquiryTrendClass %>">
+    <%= enquiryTrendVal >= 0 ? '+' + enquiryTrendVal + '%' : enquiryTrendVal + '%' %>
+  </span>
+</div>
+
                     <p class="stat-label">Loan Enquiries</p>
                     <div class="stat-meta">
                         <span class="stat-meta-item">
@@ -69,9 +87,23 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-main">
-                        <h3 class="stat-number"><%= (contactStats?.total || 0) + (enquiryStats?.total || 0) %></h3>
-                        <span class="stat-trend up">+15%</span>
-                    </div>
+  <%
+    const combinedTotalStats = (contactStats?.total || 0) + (enquiryStats?.total || 0);
+
+    const contactTrendValue_combined = contactStats?.trend || 0;
+    const enquiryTrendValue_combined = enquiryStats?.trend || 0;
+
+    const combinedTrendValue = Math.round((contactTrendValue_combined + enquiryTrendValue_combined) / 2);
+
+    const combinedTrendClassName = combinedTrendValue >= 0 ? 'up' : 'down';
+  %>
+
+  <h3 class="stat-number"><%= combinedTotalStats %></h3>
+  <span class="stat-trend <%= combinedTrendClassName %>">
+    <%= combinedTrendValue >= 0 ? '+' + combinedTrendValue + '%' : combinedTrendValue + '%' %>
+  </span>
+</div>
+
                     <p class="stat-label">Total Submissions</p>
                     <div class="stat-meta">
                         <span class="stat-meta-item">
@@ -90,9 +122,25 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-main">
-                        <h3 class="stat-number"><%= (contactStats?.today || 0) + (enquiryStats?.today || 0) %></h3>
-                        <span class="stat-trend up">+25%</span>
-                    </div>
+  <%
+    // Use unique variable names to avoid collisions
+    const todayCombinedTotal_stats = (contactStats?.today || 0) + (enquiryStats?.today || 0);
+
+    const contactTrendToday_stats = contactStats?.trend || 0;
+    const enquiryTrendToday_stats = enquiryStats?.trend || 0;
+
+    // Combine the two trends — you can average or customize logic
+    const todayCombinedTrend_stats = Math.round((contactTrendToday_stats + enquiryTrendToday_stats) / 2);
+
+    const todayCombinedTrendClass_stats = todayCombinedTrend_stats >= 0 ? 'up' : 'down';
+  %>
+
+  <h3 class="stat-number"><%= todayCombinedTotal_stats %></h3>
+  <span class="stat-trend <%= todayCombinedTrendClass_stats %>">
+    <%= todayCombinedTrend_stats >= 0 ? '+' + todayCombinedTrend_stats + '%' : todayCombinedTrend_stats + '%' %>
+  </span>
+</div>
+
                     <p class="stat-label">Today's Activity</p>
                     <div class="stat-meta">
                         <span class="stat-meta-item">
