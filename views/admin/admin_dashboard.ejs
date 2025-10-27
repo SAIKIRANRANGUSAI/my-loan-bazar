@@ -64,9 +64,9 @@
   %>
 
   <h3 class="stat-number"><%= enquiryTotal %></h3>
-  <!-- <span class="stat-trend <%= enquiryTrendClass %>">
+  <span class="stat-trend <%= enquiryTrendClass %>">
     <%= enquiryTrendVal >= 0 ? '+' + enquiryTrendVal + '%' : enquiryTrendVal + '%' %>
-  </span> -->
+  </span>
 </div>
 
                     <p class="stat-label">Loan Enquiries</p>
@@ -172,7 +172,7 @@
             <button class="tab-button active" data-tab="enquiries">
                 <i class="fas fa-file-invoice-dollar"></i>
                 Loan Enquiries
-                <!-- <span class="tab-badge"><%= enquiryStats?.total || 0 %></span> -->
+                <span class="tab-badge"><%= enquiryStats?.total || 0 %></span>
             </button>
             <button class="tab-button" data-tab="contacts">
                 <i class="fas fa-envelope"></i>
