@@ -219,7 +219,7 @@
                         <table class="premium-table">
                             <thead>
                                 <tr>
-                                    <th width="60">ID</th>
+                                    <th width="60">S.No</th>
                                     <th>Customer</th>
                                     <th>Contact Info</th>
                                     <th>Financial Details</th>
@@ -232,9 +232,14 @@
                             <tbody>
                                 <% enquiries.forEach((enquiry, index) => { %>
                                     <tr class="enquiry-row" data-enquiry='<%= JSON.stringify(enquiry).replace(/'/g, "&#39;") %>'>
-                                        <td class="text-center">
-                                            <span class="id-badge">#<%= enquiry.id %></span>
-                                        </td>
+                                       <td class="text-center">
+    <%
+        const safeCurrentPage = typeof currentPageEnquiries !== 'undefined' ? currentPageEnquiries : 1;
+        const safeLimit = typeof limitEnquiries !== 'undefined' ? limitEnquiries : 10;
+    %>
+    <span class="id-badge"><%= (safeCurrentPage - 1) * safeLimit + index + 1 %></span>
+</td>
+
                                         <td>
                                             <div class="user-info">
                                                 <div class="user-avatar">
@@ -421,7 +426,7 @@
                         <table class="premium-table">
                             <thead>
                                 <tr>
-                                    <th width="60">ID</th>
+                                    <th width="60">S.No</th>
                                     <th>Contact Person</th>
                                     <th>Contact Information</th>
                                     <th>Subject</th>
@@ -434,8 +439,13 @@
                                 <% contacts.forEach((contact, index) => { %>
                                     <tr>
                                         <td class="text-center">
-                                            <span class="id-badge">#<%= contact.id %></span>
-                                        </td>
+  <span class="id-badge">
+    <%= ( (typeof currentPageContacts !== 'undefined' ? currentPageContacts : 1) - 1 ) 
+        * ( typeof limitContacts !== 'undefined' ? limitContacts : 10 ) 
+        + (index + 1) %>
+  </span>
+</td>
+
                                         <td>
                                             <div class="user-info">
                                                 <div class="user-avatar contact">
@@ -1254,6 +1264,31 @@ document.addEventListener('DOMContentLoaded', function() {
     top: 0;
     z-index: 10;
 }
+/* Keep table header visible while scrolling */
+.premium-table thead th {
+    position: sticky;
+    top: 0;
+    background: #1c1c1c; /* dark background for better contrast */
+    color: #fff;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Optional: make the header text look cleaner */
+.premium-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 12px 10px;
+}
+
+/* Optional for smoother appearance */
+.table-scroll-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 
 .premium-table td {
     padding: 1rem;
