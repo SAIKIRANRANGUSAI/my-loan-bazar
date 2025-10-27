@@ -34,9 +34,9 @@
   %>
 
   <h3 class="stat-number"><%= contactTotal %></h3>
-  <span class="stat-trend <%= contactTrendClass %>">
+  <!-- <span class="stat-trend <%= contactTrendClass %>">
     <%= contactTrendVal >= 0 ? '+' + contactTrendVal + '%' : contactTrendVal + '%' %>
-  </span>
+  </span> -->
 </div>
 
                     <p class="stat-label">Total Contacts</p>
@@ -64,9 +64,9 @@
   %>
 
   <h3 class="stat-number"><%= enquiryTotal %></h3>
-  <span class="stat-trend <%= enquiryTrendClass %>">
+  <!-- <span class="stat-trend <%= enquiryTrendClass %>">
     <%= enquiryTrendVal >= 0 ? '+' + enquiryTrendVal + '%' : enquiryTrendVal + '%' %>
-  </span>
+  </span> -->
 </div>
 
                     <p class="stat-label">Loan Enquiries</p>
@@ -99,9 +99,9 @@
   %>
 
   <h3 class="stat-number"><%= combinedTotalStats %></h3>
-  <span class="stat-trend <%= combinedTrendClassName %>">
+  <!-- <span class="stat-trend <%= combinedTrendClassName %>">
     <%= combinedTrendValue >= 0 ? '+' + combinedTrendValue + '%' : combinedTrendValue + '%' %>
-  </span>
+  </span> -->
 </div>
 
                     <p class="stat-label">Total Submissions</p>
@@ -136,9 +136,9 @@
   %>
 
   <h3 class="stat-number"><%= todayCombinedTotal_stats %></h3>
-  <span class="stat-trend <%= todayCombinedTrendClass_stats %>">
+  <!-- <span class="stat-trend <%= todayCombinedTrendClass_stats %>">
     <%= todayCombinedTrend_stats >= 0 ? '+' + todayCombinedTrend_stats + '%' : todayCombinedTrend_stats + '%' %>
-  </span>
+  </span> -->
 </div>
 
                     <p class="stat-label">Today's Activity</p>
@@ -172,7 +172,7 @@
             <button class="tab-button active" data-tab="enquiries">
                 <i class="fas fa-file-invoice-dollar"></i>
                 Loan Enquiries
-                <span class="tab-badge"><%= enquiryStats?.total || 0 %></span>
+                <!-- <span class="tab-badge"><%= enquiryStats?.total || 0 %></span> -->
             </button>
             <button class="tab-button" data-tab="contacts">
                 <i class="fas fa-envelope"></i>
