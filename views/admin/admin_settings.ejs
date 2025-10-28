@@ -17,98 +17,142 @@
 
     <!-- General Settings Section -->
     <section class="form-section">
-        <div class="section-header">
-            <h2 class="section-title">General Settings</h2>
-            <p class="section-description">Configure your website basic information and branding.</p>
+    <div class="section-header">
+        <h2 class="section-title">General Settings</h2>
+        <p class="section-description">Configure your website’s basic information and branding.</p>
+    </div>
+
+    <form action="/admin/settings" method="POST" enctype="multipart/form-data">
+        <!-- Basic Info -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="site_name">Site Name *</label>
+                <div class="input-wrapper">
+                    <input type="text" id="site_name" name="site_name"
+                        value="<%= settings.site_name || '' %>"
+                        placeholder="Enter your site name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="emails">Contact Emails</label>
+                <div class="input-wrapper">
+                    <input type="text" id="emails" name="emails"
+                        value="<%= settings.emails || '' %>"
+                        placeholder="email1@example.com, email2@example.com">
+                </div>
+                <div class="form-hint">Separate multiple emails with commas</div>
+            </div>
         </div>
 
-        <form action="/admin/settings" method="POST" enctype="multipart/form-data">
-            <div class="form-row">
-                <!-- Site Name -->
-                <div class="form-group">
-                    <label for="site_name">Site Name *</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="site_name" name="site_name" 
-                               value="<%= settings.site_name || '' %>" 
-                               placeholder="Enter your site name" required>
-                    </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="phone_numbers">Phone Numbers</label>
+                <div class="input-wrapper">
+                    <input type="text" id="phone_numbers" name="phone_numbers"
+                        value="<%= settings.phone_numbers || '' %>"
+                        placeholder="+1234567890, +0987654321">
                 </div>
-
-                <!-- Contact Emails -->
-                <div class="form-group">
-                    <label for="emails">Contact Emails</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="emails" name="emails" 
-                               value="<%= settings.emails || '' %>" 
-                               placeholder="email1@example.com, email2@example.com">
-                    </div>
-                    <div class="form-hint">Separate multiple emails with commas</div>
-                </div>
+                <div class="form-hint">Separate multiple numbers with commas</div>
             </div>
 
-            <div class="form-row">
-                <!-- Phone Numbers -->
-                <div class="form-group">
-                    <label for="phone_numbers">Phone Numbers</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="phone_numbers" name="phone_numbers" 
-                               value="<%= settings.phone_numbers || '' %>" 
-                               placeholder="+1234567890, +0987654321">
-                    </div>
-                    <div class="form-hint">Separate multiple numbers with commas</div>
-                </div>
-
-                <!-- Address -->
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <div class="input-wrapper">
-                        <textarea id="address" name="address" rows="3"
-                                  placeholder="Enter your business address"><%= settings.address || '' %></textarea>
-                    </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <div class="input-wrapper">
+                    <textarea id="address" name="address" rows="3"
+                        placeholder="Enter your business address"><%= settings.address || '' %></textarea>
                 </div>
             </div>
+        </div>
 
-            <div class="form-row">
-                <!-- Logo Upload -->
-                <div class="form-group">
-                    <label for="logo">Site Logo</label>
-                    <% if (settings.logo_url) { %>
-                        <div class="current-image-preview">
-                            <p class="current-image-label">Current Logo:</p>
-                            <img src="<%= settings.logo_url %>" class="image-preview" alt="Current Logo">
-                        </div>
-                    <% } %>
-                    <div class="input-wrapper">
-                        <input type="file" id="logo" name="logo" accept="image/*">
+        <!-- Logos -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="logo">Site Logo</label>
+                <% if (settings.logo_url) { %>
+                    <div class="current-image-preview">
+                        <p class="current-image-label">Current Logo:</p>
+                        <img src="<%= settings.logo_url %>" class="image-preview" alt="Current Logo">
                     </div>
-                    <input type="hidden" name="current_logo" value="<%= settings.logo_url %>">
-                    <div class="form-hint">Recommended size: 442 × 147 px for optimal display</div>
+                <% } %>
+                <div class="input-wrapper">
+                    <input type="file" id="logo" name="logo" accept="image/*">
                 </div>
-
-                <!-- Favicon Upload -->
-                <div class="form-group">
-                    <label for="favicon">Favicon</label>
-                    <% if (settings.favicon_url) { %>
-                        <div class="current-image-preview">
-                            <p class="current-image-label">Current Favicon:</p>
-                            <img src="<%= settings.favicon_url %>" class="image-preview favicon-preview" alt="Current Favicon">
-                        </div>
-                    <% } %>
-                    <div class="input-wrapper">
-                        <input type="file" id="favicon" name="favicon" accept="image/*">
-                    </div>
-                    <input type="hidden" name="current_favicon" value="<%= settings.favicon_url %>">
-                    <div class="form-hint">Recommended: 32x32 px .ico or .png file</div>
-                </div>
+                <input type="hidden" name="current_logo" value="<%= settings.logo_url %>">
+                <div class="form-hint">Recommended size: 442 × 147 px</div>
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-save me-2"></i>Update Settings
-                </button>
+            <div class="form-group">
+                <label for="favicon">Favicon</label>
+                <% if (settings.favicon_url) { %>
+                    <div class="current-image-preview">
+                        <p class="current-image-label">Current Favicon:</p>
+                        <img src="<%= settings.favicon_url %>" class="image-preview favicon-preview" alt="Current Favicon">
+                    </div>
+                <% } %>
+                <div class="input-wrapper">
+                    <input type="file" id="favicon" name="favicon" accept="image/*">
+                </div>
+                <input type="hidden" name="current_favicon" value="<%= settings.favicon_url %>">
+                <div class="form-hint">Recommended: 32×32 px (.ico or .png)</div>
             </div>
-        </form>
-    </section>
+        </div>
+
+        <!-- 🟢 Social Media Links -->
+        <div class="form-divider"></div>
+        <div class="section-header mt-4">
+            <h3 class="section-title">Social Media Links</h3>
+            <p class="section-description">Add your official social media handles.</p>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="facebook_url"><i class="fab fa-facebook-f me-1"></i> Facebook</label>
+                <input type="url" id="facebook_url" name="facebook_url"
+                    value="<%= settings.facebook_url || '' %>"
+                    placeholder="https://facebook.com/yourpage">
+            </div>
+
+            <div class="form-group">
+                <label for="instagram_url"><i class="fab fa-instagram me-1"></i> Instagram</label>
+                <input type="url" id="instagram_url" name="instagram_url"
+                    value="<%= settings.instagram_url || '' %>"
+                    placeholder="https://instagram.com/yourhandle">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="whatsapp_url"><i class="fab fa-whatsapp me-1"></i> WhatsApp</label>
+                <input type="url" id="whatsapp_url" name="whatsapp_url"
+                    value="<%= settings.whatsapp_url || '' %>"
+                    placeholder="https://wa.me/your-number">
+            </div>
+
+            <div class="form-group">
+                <label for="twitter_url"><i class="fab fa-x-twitter me-1"></i> Twitter / X</label>
+                <input type="url" id="twitter_url" name="twitter_url"
+                    value="<%= settings.twitter_url || '' %>"
+                    placeholder="https://x.com/yourhandle">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="youtube_url"><i class="fab fa-youtube me-1"></i> YouTube</label>
+                <input type="url" id="youtube_url" name="youtube_url"
+                    value="<%= settings.youtube_url || '' %>"
+                    placeholder="https://youtube.com/@yourchannel">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-save me-2"></i>Update Settings
+            </button>
+        </div>
+    </form>
+</section>
 
     <!-- Admin Credentials Section -->
     <section class="form-section">

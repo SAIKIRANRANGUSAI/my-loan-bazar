@@ -282,7 +282,7 @@ router.post("/contact",
 router.get("/enquiry", async (req, res) => {
   try {
     const [serviceRows] = await db.query(
-      "SELECT id,enquiry_icon_image FROM services ORDER BY id ASC LIMIT 1"
+      "SELECT id, heading, enquiry_icon_image FROM services ORDER BY id ASC LIMIT 1"
     );
     const service = serviceRows[0] || {
       id: 0,

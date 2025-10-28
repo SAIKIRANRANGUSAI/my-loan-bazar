@@ -799,6 +799,7 @@ router.get("/settings", async (req, res) => {
   }
 });
 
+
 // -------- POST /settings --------
 router.post(
   "/settings",
@@ -813,43 +814,70 @@ router.post(
         emails,
         address,
         phone_numbers,
+        facebook_url,
+        instagram_url,
+        whatsapp_url,
+        twitter_url,
+        youtube_url,
         current_logo,
         current_favicon
       } = req.body;
 
       // --- Logo Upload ---
       let logo_url = current_logo;
-      if (req.files['logo'] && req.files['logo'][0]) {
+      if (req.files["logo"] && req.files["logo"][0]) {
         if (current_logo) await deleteFromCloudinary(current_logo);
-        const result = await uploadToCloudinary(req.files['logo'][0].buffer);
+        const result = await uploadToCloudinary(req.files["logo"][0].buffer);
         logo_url = result.secure_url;
       }
 
       // --- Favicon Upload ---
       let favicon_url = current_favicon;
-      if (req.files['favicon'] && req.files['favicon'][0]) {
+      if (req.files["favicon"] && req.files["favicon"][0]) {
         if (current_favicon) await deleteFromCloudinary(current_favicon);
-        const result = await uploadToCloudinary(req.files['favicon'][0].buffer);
+        const result = await uploadToCloudinary(req.files["favicon"][0].buffer);
         favicon_url = result.secure_url;
       }
 
       // --- Update Settings in DB ---
       await db.query(
         `UPDATE settings SET
-          site_name=?, emails=?, address=?, phone_numbers=?, logo_url=?, favicon_url=?, updated_at=NOW()
-          WHERE id=1`,
-        [site_name, emails, address, phone_numbers, logo_url, favicon_url]
+          site_name=?, 
+          emails=?, 
+          address=?, 
+          phone_numbers=?, 
+          facebook_url=?, 
+          instagram_url=?, 
+          whatsapp_url=?, 
+          twitter_url=?, 
+          youtube_url=?, 
+          logo_url=?, 
+          favicon_url=?, 
+          updated_at=NOW()
+        WHERE id=1`,
+        [
+          site_name,
+          emails,
+          address,
+          phone_numbers,
+          facebook_url,
+          instagram_url,
+          whatsapp_url,
+          twitter_url,
+          youtube_url,
+          logo_url,
+          favicon_url
+        ]
       );
 
-      // Fetch updated settings
+      // --- Fetch Updated Data ---
       const [rows] = await db.query("SELECT * FROM settings WHERE id=1 LIMIT 1");
       const settings = rows[0] || {};
 
-      // Fetch admin info and login history for rendering
       const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
       const adminInfo = adminRows[0] || {};
 
-      const page = 1; // default first page
+      const page = 1;
       const limit = 10;
       const offset = (page - 1) * limit;
 
@@ -871,11 +899,9 @@ router.post(
         totalPages,
         message: "Settings updated successfully!"
       });
-
     } catch (err) {
       console.error("Error updating settings:", err);
 
-      // Ensure adminInfo exists even if error occurs
       const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
       const adminInfo = adminRows[0] || {};
 
@@ -891,6 +917,7 @@ router.post(
     }
   }
 );
+
 
 // -------- POST /settings/change-credentials --------
 router.post("/settings/change-credentials", async (req, res) => {

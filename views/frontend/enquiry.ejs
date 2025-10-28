@@ -92,7 +92,7 @@
 </div>
 
       <div class="col-md-6">
-        <h3 class="modal-title mb-5 text-center" id="enquiryModalLabel">Enquiry Form - <%- service.heading %></h3>
+        <h3 class="modal-title mb-5 text-center" id="enquiryModalLabel">Enquiry Form  <%- service.heading %></h3>
         <!-- <form id="enquiryForm" action="/enquiry/<%= service.id %>" method="POST" novalidate> -->
           <form id="enquiryForm" action="/enquiry<%= service.id && service.id > 0 ? '/' + service.id : '' %>
 " method="POST" novalidate>
