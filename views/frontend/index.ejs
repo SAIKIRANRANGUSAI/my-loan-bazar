@@ -86,10 +86,10 @@
                 Featured Services</span
               >
               <h2 class="section__header-title wow fadeInUp" data-wow-duration="0.8s">
-  <%= hero.services_heading || "Empowering You with Loan Knowledge and Comparison testimonial" %>
+  <%- hero.services_heading || "Empowering You with Loan Knowledge and Comparison testimonial" %>
 </h2>
 <p class="section__header-content wow fadeInDown" data-wow-duration="0.8s">
-  <%= hero.services_description || "We are dedicated to providing you with valuable services that simplify your loan search and empower you to make informed borrowing decisions. Our comprehensive range of services" %>
+  <%- hero.services_description || "We are dedicated to providing you with valuable services that simplify your loan search and empower you to make informed borrowing decisions. Our comprehensive range of services" %>
 </p>
 
             </div>
@@ -105,10 +105,10 @@
           </div>
           <div class="card__content">
             <h4 class="card__title">
-              <a href="/personal-loan/<%= service.id %>"><%= service.heading %></a>
+              <a href="/personal-loan/<%= service.id %>"><%- service.heading %></a>
             </h4>
             <p class="fs-small">
-              <%= service.short_description %>
+              <%- service.short_description %>
             </p>
             <a href="/personal-loan/<%= service.id %>" class="btn_theme social_box">
               <i class="bi bi-arrow-up-right"></i><span></span>

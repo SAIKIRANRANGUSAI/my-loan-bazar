@@ -10,6 +10,7 @@ const path = require('path');
 const mysqldump = require('mysqldump');
 
 
+
 // ------------------
 // Reusable Multer setup for all routes
 // ------------------
@@ -798,6 +799,7 @@ router.get("/settings", async (req, res) => {
   }
 });
 
+
 // -------- POST /settings --------
 router.post(
   "/settings",
@@ -812,43 +814,70 @@ router.post(
         emails,
         address,
         phone_numbers,
+        facebook_url,
+        instagram_url,
+        whatsapp_url,
+        twitter_url,
+        youtube_url,
         current_logo,
         current_favicon
       } = req.body;
 
       // --- Logo Upload ---
       let logo_url = current_logo;
-      if (req.files['logo'] && req.files['logo'][0]) {
+      if (req.files["logo"] && req.files["logo"][0]) {
         if (current_logo) await deleteFromCloudinary(current_logo);
-        const result = await uploadToCloudinary(req.files['logo'][0].buffer);
+        const result = await uploadToCloudinary(req.files["logo"][0].buffer);
         logo_url = result.secure_url;
       }
 
       // --- Favicon Upload ---
       let favicon_url = current_favicon;
-      if (req.files['favicon'] && req.files['favicon'][0]) {
+      if (req.files["favicon"] && req.files["favicon"][0]) {
         if (current_favicon) await deleteFromCloudinary(current_favicon);
-        const result = await uploadToCloudinary(req.files['favicon'][0].buffer);
+        const result = await uploadToCloudinary(req.files["favicon"][0].buffer);
         favicon_url = result.secure_url;
       }
 
       // --- Update Settings in DB ---
       await db.query(
         `UPDATE settings SET
-          site_name=?, emails=?, address=?, phone_numbers=?, logo_url=?, favicon_url=?, updated_at=NOW()
-          WHERE id=1`,
-        [site_name, emails, address, phone_numbers, logo_url, favicon_url]
+          site_name=?, 
+          emails=?, 
+          address=?, 
+          phone_numbers=?, 
+          facebook_url=?, 
+          instagram_url=?, 
+          whatsapp_url=?, 
+          twitter_url=?, 
+          youtube_url=?, 
+          logo_url=?, 
+          favicon_url=?, 
+          updated_at=NOW()
+        WHERE id=1`,
+        [
+          site_name,
+          emails,
+          address,
+          phone_numbers,
+          facebook_url,
+          instagram_url,
+          whatsapp_url,
+          twitter_url,
+          youtube_url,
+          logo_url,
+          favicon_url
+        ]
       );
 
-      // Fetch updated settings
+      // --- Fetch Updated Data ---
       const [rows] = await db.query("SELECT * FROM settings WHERE id=1 LIMIT 1");
       const settings = rows[0] || {};
 
-      // Fetch admin info and login history for rendering
       const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
       const adminInfo = adminRows[0] || {};
 
-      const page = 1; // default first page
+      const page = 1;
       const limit = 10;
       const offset = (page - 1) * limit;
 
@@ -870,11 +899,9 @@ router.post(
         totalPages,
         message: "Settings updated successfully!"
       });
-
     } catch (err) {
       console.error("Error updating settings:", err);
 
-      // Ensure adminInfo exists even if error occurs
       const [adminRows] = await db.query("SELECT * FROM admin LIMIT 1");
       const adminInfo = adminRows[0] || {};
 
@@ -890,6 +917,7 @@ router.post(
     }
   }
 );
+
 
 // -------- POST /settings/change-credentials --------
 router.post("/settings/change-credentials", async (req, res) => {
@@ -930,37 +958,36 @@ router.post("/settings/change-credentials", async (req, res) => {
   }
 });
 
-// -------- GET /settings/download-db --------
 router.get('/settings/download-db', async (req, res) => {
   try {
-    const backupsDir = path.join(__dirname, '..', 'backups');
-    if (!fs.existsSync(backupsDir)) fs.mkdirSync(backupsDir, { recursive: true });
-
+    // ✅ use /tmp directory for serverless environment
+    const backupsDir = '/tmp';
     const fileName = `backup_${Date.now()}.sql`;
     const filePath = path.join(backupsDir, fileName);
 
     await mysqldump({
       connection: {
-        host: process.env.DB_HOST || '46.250.225.169',
-        user: process.env.DB_USER || 'demo_colormo_usr',
-        password: process.env.DB_PASSWORD || 'QRdKdVpp3pnNhXBt',
-        database: process.env.DB_NAME || 'my_loan_bazar',
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
       },
       dumpToFile: filePath,
     });
 
-    res.download(filePath, fileName, err => {
+    // ✅ stream file to user
+    res.download(filePath, fileName, (err) => {
       if (err) {
         console.error('Error sending backup file:', err);
         res.status(500).send('Failed to download backup.');
       }
     });
-
   } catch (err) {
     console.error('Database export failed:', err);
     res.status(500).send('Database export failed.');
   }
 });
+
 // ========== SEO SETTINGS ROUTES (Cookie-based Flash) ==========
 
 // ---------------- LIST SEO SETTINGS ----------------
@@ -1204,6 +1231,7 @@ router.post("/services/content/update", async (req, res) => {
 // ------------------------------
 router.post("/services/add", upload.fields([
   { name: "icon_image", maxCount: 1 },
+  { name: "enquiry_icon_image", maxCount: 1 },
   { name: "image_1", maxCount: 1 },
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
@@ -1215,13 +1243,14 @@ router.post("/services/add", upload.fields([
 
     // Upload images
     let icon_image = req.files.icon_image ? (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url : null;
+    let enquiry_icon_image = req.files.enquiry_icon_image ? (await uploadToCloudinary(req.files.enquiry_icon_image[0].buffer)).secure_url : null;
     let image_1 = req.files.image_1 ? (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url : null;
     let image_2 = req.files.image_2 ? (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url : null;
 
     // Insert service
     const [result] = await db.query(
-      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, image_1, image_2) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [heading, sub_heading, short_description, description, icon_image, image_1, image_2]
+      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2]
     );
 
     const serviceId = result.insertId;
@@ -1248,16 +1277,18 @@ router.post("/services/add", upload.fields([
 // ------------------------------
 router.post("/services/edit/:id", upload.fields([
   { name: "icon_image", maxCount: 1 },
+  { name: "enquiry_icon_image", maxCount: 1 },
   { name: "image_1", maxCount: 1 },
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const { heading, sub_heading, short_description, description, faqs, current_icon_image, current_image_1, current_image_2 } = req.body;
+    const { heading, sub_heading, short_description, description, faqs, current_icon_image, current_enquiry_icon_image, current_image_1, current_image_2 } = req.body;
     const serviceId = req.params.id;
 
     if (!heading || !heading.trim()) return res.json({ success: false, message: "Heading is required" });
 
     let icon_image = current_icon_image;
+    let enquiry_icon_image = current_enquiry_icon_image;
     let image_1 = current_image_1;
     let image_2 = current_image_2;
 
@@ -1266,6 +1297,10 @@ router.post("/services/edit/:id", upload.fields([
       if (req.files.icon_image) {
         if (current_icon_image) await deleteFromCloudinary(current_icon_image);
         icon_image = (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url;
+      }
+      if (req.files.enquiry_icon_image) {
+        if (current_enquiry_icon_image) await deleteFromCloudinary(current_enquiry_icon_image);
+        enquiry_icon_image = (await uploadToCloudinary(req.files.enquiry_icon_image[0].buffer)).secure_url;
       }
       if (req.files.image_1) {
         if (current_image_1) await deleteFromCloudinary(current_image_1);
@@ -1278,8 +1313,8 @@ router.post("/services/edit/:id", upload.fields([
     }
 
     await db.query(
-      "UPDATE services SET heading=?, sub_heading=?, short_description=?, description=?, icon_image=?, image_1=?, image_2=? WHERE id=?",
-      [heading, sub_heading, short_description, description, icon_image, image_1, image_2, serviceId]
+      "UPDATE services SET heading=?, sub_heading=?, short_description=?, description=?, icon_image=?, enquiry_icon_image=?, image_1=?, image_2=? WHERE id=?",
+      [heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2, serviceId]
     );
 
     // Update FAQs
@@ -1305,10 +1340,11 @@ router.delete("/services/delete/:id", async (req, res) => {
   try {
     const serviceId = req.params.id;
 
-    const [service] = await db.query("SELECT icon_image, image_1, image_2 FROM services WHERE id=?", [serviceId]);
+    const [service] = await db.query("SELECT icon_image, enquiry_icon_image, image_1, image_2 FROM services WHERE id=?", [serviceId]);
     if (service.length) {
-      const { icon_image, image_1, image_2 } = service[0];
+      const { icon_image, enquiry_icon_image, image_1, image_2 } = service[0];
       if (icon_image) await deleteFromCloudinary(icon_image);
+      if (enquiry_icon_image) await deleteFromCloudinary(enquiry_icon_image);
       if (image_1) await deleteFromCloudinary(image_1);
       if (image_2) await deleteFromCloudinary(image_2);
     }

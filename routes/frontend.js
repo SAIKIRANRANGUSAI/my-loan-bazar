@@ -282,7 +282,7 @@ router.post("/contact",
 router.get("/enquiry", async (req, res) => {
   try {
     const [serviceRows] = await db.query(
-      "SELECT id, heading, short_description, icon_image FROM services ORDER BY id ASC LIMIT 1"
+      "SELECT id, heading, enquiry_icon_image FROM services ORDER BY id ASC LIMIT 1"
     );
     const service = serviceRows[0] || {
       id: 0,
@@ -315,7 +315,7 @@ router.get("/enquiry/:serviceId", async (req, res) => {
   try {
     const serviceId = req.params.serviceId;
     const [serviceRows] = await db.query(
-      "SELECT id, heading, short_description, icon_image FROM services WHERE id = ?",
+      "SELECT id, enquiry_icon_image FROM services WHERE id = ?",
       [serviceId]
     );
 
@@ -393,25 +393,40 @@ router.post("/enquiry/:serviceId", async (req, res) => {
   }
 });
 
+// ------------------------------
+// SAVE ENQUIRY (Unified Function)
+// ------------------------------
 async function saveEnquiry(body, serviceId, service_name) {
   const {
     name, mobile, address, pincode, gender,
-    company_name, loan_amount, monthly_salary, emis, company_address,
+    company_name, loan_amount, monthly_salary, emis,
     preferred_type, preferred_institution, otp,
-    state_id, district_id
+    state_id, district_id, employment_type
   } = body;
 
-  // Validation
-  if (!name || !mobile || !address || !pincode || !gender ||
-      !company_name || !loan_amount || !monthly_salary || !emis || !company_address ||
-      !preferred_type || !preferred_institution || !otp) {
+  const type_of_employment = employment_type || body.type_of_employment;
+
+  // ✅ Log what is received
+  console.log('Received data:', body);
+
+  // ✅ Validation
+  if (
+    !name || !mobile || !address || !pincode ||
+    !gender || !company_name || !loan_amount ||
+    !monthly_salary || !emis || !preferred_type || !otp || !type_of_employment
+  ) {
     throw new Error("All fields are required");
   }
+
+  if (preferred_type !== 'Other' && !preferred_institution) {
+    throw new Error("Institution required for Bank or NBFC");
+  }
+
   if (!/^[6-9][0-9]{9}$/.test(mobile)) throw new Error("Invalid mobile number");
   if (!/^[1-9][0-9]{5}$/.test(pincode)) throw new Error("Invalid pincode");
   if (!/^\d{6}$/.test(otp)) throw new Error("Invalid OTP");
 
-  // Fetch state and district names if IDs provided
+  // ✅ Fetch state & district names if IDs exist
   let state_name = null;
   let district_name = null;
 
@@ -425,10 +440,22 @@ async function saveEnquiry(body, serviceId, service_name) {
     district_name = districtRows[0]?.name || null;
   }
 
-  // ✅ Insert into table without state_id / district_id columns
+  // Handle preferred_type for enum constraint
+  const insert_preferred_type = preferred_type === 'Other' ? null : preferred_type;
+
+  // ✅ Insert record
+  const sql = `
+    INSERT INTO enquirie_s
+    (service_id, service_name, type_of_employment, name, mobile, address, pincode, gender,
+     company_name, loan_amount, monthly_salary, emis, preferred_type, preferred_institution,
+     institution_name, state, district, otp_verified)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
   const insertValues = [
     serviceId,
     service_name,
+    type_of_employment,
     name,
     mobile,
     address,
@@ -438,22 +465,13 @@ async function saveEnquiry(body, serviceId, service_name) {
     parseFloat(loan_amount),
     parseFloat(monthly_salary),
     parseFloat(emis),
-    company_address,
-    preferred_type,
+    insert_preferred_type,
     preferred_institution,
     preferred_institution, // institution_name
     state_name,
     district_name,
     1 // otp_verified
   ];
-
-  const sql = `
-    INSERT INTO enquirie_s
-    (service_id, service_name, name, mobile, address, pincode, gender,
-     company_name, loan_amount, monthly_salary, emis, company_address,
-     preferred_type, preferred_institution, institution_name, state, district, otp_verified)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
 
   await db.query(sql, insertValues);
 }
