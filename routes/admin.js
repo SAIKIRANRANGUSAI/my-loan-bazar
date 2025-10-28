@@ -10,6 +10,7 @@ const path = require('path');
 const mysqldump = require('mysqldump');
 
 
+
 // ------------------
 // Reusable Multer setup for all routes
 // ------------------
@@ -35,7 +36,7 @@ router.get("/logout", authController.logout);
 
 // -------- Protect all admin routes --------
 router.use(authController.isAuthenticated);
-
+const filePath = path.join("/tmp", `backup_${Date.now()}.sql`);
 // -------- Admin Dashboard (View Only, Paginated) --------
 // ------------------------------
 // GET: Dashboard with both contacts and enquiries
