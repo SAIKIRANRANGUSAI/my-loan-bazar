@@ -1,0 +1,557 @@
+<%- include('./partials/header') %>
+    <!-- Banner Start -->
+    <section class="banner">
+        <div class="container ">
+            <div class="row gy-4 gy-sm-0 align-items-center">
+                <div class="col-12 col-sm-12">
+                    <div class="banner__content">
+                        <h1 class="banner__title display-4 wow fadeInLeft" data-wow-duration="0.8s">Enquiry</h1> 
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb wow fadeInRight" data-wow-duration="0.8s">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Enquiry</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    <!-- Banner End -->
+
+    <section class="enquiry-form" id="enquiryModal">
+      <div class="container">
+      <div class="row align-items-start justify-content-between">
+      <div class="col-md-4">
+        <img src="assets/images/about4-thumb.png" alt="">
+      </div>
+      <div class="col-md-6">
+        <h3 class="modal-title mb-5 text-center" id="enquiryModalLabel">Personal Loan Enquiry</h3>
+        <form id="enquiryForm">
+          <!-- Step 1 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step" data-step="1">
+                <div class="mb-3 text-center">
+                  <label class="form-label text-center">Type of Employment</label>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-salary-voucher.png" class="img-fluid"><br>
+                        Salaried<br>
+                        <small>Earn regular monthly income</small>
+                      </label>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-online-analytical.png" class="img-fluid"><br>
+                        Business Owner<br>
+                        <small>Run own business</small>
+                      </label>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-self-employed.png" class="img-fluid"><br>
+                        Self-employed Professional<br>
+                        <small>Own a practice (e.g. Doctor, CA)</small>
+                      </label>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-contractor.png" class="img-fluid"><br>
+                        Independent Worker<br>
+                        <small>(e.g. driver, electrician, farmer, shopkeeper, etc.)</small>
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-graduating-student.png" class="img-fluid"><br>
+                        Student
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-retirement.png" class="img-fluid"><br>
+                        Retired
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="employment-btn">
+                        <input type="radio" name="gender" value="Male"  /><br>
+                        <img src="assets/images/emp-maid.png" class="img-fluid"><br>
+                        Homemaker
+                      </label>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback" id="genderError">
+                    Please select employment type
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="2">
+                <div class="mb-3">
+                  <label class="form-label">Name (As per PAN Card):</label>
+                  <input type="text" class="form-control" name="name"  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Mobile Number:</label>
+                  <input type="tel" class="form-control" name="mobile" pattern="[0-9]{10}" maxlength="10" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Present Address (With Pin Code):</label>
+                  <input type="text" class="form-control" name="address" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">State:</label>
+                  <select class="form-control">
+                    <option>Select State</option>
+                    <option>Andhra Pradesh</option>
+                    <option>Telangana</option>
+                    <option>Karnataka</option>
+                    <option>Tamilnadu</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">District:</label>
+                  <select class="form-control">
+                    <option>Select District</option>
+                    <option>Adilabad</option>
+                    <option>Bhadradri Kothagudem</option>
+                    <option>Hanumakonda</option>
+                    <option>Hyderabad</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Pincode:</label>
+                  <input type="text" class="form-control" name="pincode" placeholder="Pincode" />
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="3">
+                <div class="mb-3">
+                  <label class="form-label">Gender:</label>
+                  <div class="d-flex gap-3">
+                    <label class="btn btn-outline-secondary gender-btn">
+                      <input type="radio" name="gender" value="Male"  hidden />
+                      <i class="bi bi-gender-male" style="font-size:2rem;"></i> Male
+                    </label>
+                    <label class="btn btn-outline-secondary gender-btn">
+                      <input type="radio" name="gender" value="Female"  hidden />
+                      <i class="bi bi-gender-female" style="font-size:2rem;"></i> Female
+                    </label>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="4">
+                <div class="mb-3">
+                  <label class="form-label">Company Name:</label>
+                  <input type="text" class="form-control" name="company_name"  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Loan Amount Required:</label>
+                  <input type="number" class="form-control" name="loan_amount"  min="10000" step="1000" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Monthly Salary:</label>
+                  <input type="number" class="form-control" name="monthly_salary"  min="0" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">EMIs (in Amount):</label>
+                  <input type="number" class="form-control" name="emis"  min="0" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Company Address:</label>
+                  <input type="text" class="form-control" name="company_address"  />
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 5 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="5">
+                <div class="mb-3">
+                  <label class="form-label">Preferred Bank/NBFC:</label>
+                  <div class="d-flex gap-3 align-items-center">
+                    <label class="btn btn-outline-secondary p-2 mb-0">
+                      <input type="radio" name="preferred_type" value="Bank" required /> Bank
+                    </label>
+                    <label class="btn btn-outline-secondary p-2 mb-0">
+                      <input type="radio" name="preferred_type" value="NBFC" required /> NBFC
+                    </label>
+                  </div>
+                  <div class="invalid-feedback">
+                    Please select either Bank or NBFC.
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 6 -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="6">
+                <!-- Institution list (shown after selecting Bank/NBFC) -->
+                <div id="institutionList" class="mb-3">
+                  <label class="form-label">Choose Institution:</label>
+                  <div class="d-flex flex-wrap gap-2" id="institutionsContainer">
+                    <!-- Banks group -->
+                    <div id="banksContainer" class="d-flex flex-wrap gap-2 d-none">
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="HDFC" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%&#10;15-20 lakhs 10%&#10;20 - 25 laks 11%&#10;Above 25 lakhs 15%&#10;Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="HDFC" style="display:none;" required />
+                        <img src="assets/images/bank-hdfc.png" alt="HDFC" style="height:32px"> <span>HDFC</span>
+                      </label>
+                      <!-- Other bank options remain unchanged -->
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="ICICI" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%&#10;15-20 lakhs 10%&#10;20 - 25 laks 11%&#10;Above 25 lakhs 15%&#10;Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="ICICI" style="display:none;" required />
+                        <img src="assets/images/bank-icici.png" alt="ICICI" style="height:32px"> <span>ICICI</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="SBI" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%&#10;15-20 lakhs 10%&#10;20 - 25 laks 11%&#10;Above 25 lakhs 15%&#10;Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="SBI" style="display:none;" required />
+                        <img src="assets/images/bank-sbi.png" alt="SBI" style="height:32px"> <span>SBI</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Axis" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%&#10;15-20 lakhs 10%&#10;20 - 25 laks 11%&#10;Above 25 lakhs 15%&#10;Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Axis" style="display:none;" required />
+                        <img src="assets/images/bank-axis.png" alt="Axis" style="height:32px"> <span>Axis</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Bajaj Finserv" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%&#10;15-20 lakhs 10%&#10;20 - 25 laks 11%&#10;Above 25 lakhs 15%&#10;Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Bajaj Finserv" style="display:none;" required />
+                        <img src="assets/images/bank-bajaj.png" alt="Bajaj" style="height:32px"> <span>Bajaj Finserv</span>
+                      </label>
+                    </div>
+                    <!-- NBFCs group -->
+                    <div id="nbfcContainer" class="d-flex flex-wrap gap-2 d-none">
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Bajaj Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="0-5 laks 7%&#10;5-10 lakhs 8%&#10;10-15 lakhs 9%">
+                        <input type="radio" class="institution-radio" name="institution" value="Bajaj Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-bajaj.png" alt="Bajaj Finance" style="height:32px"> <span>Bajaj Finance</span>
+                      </label>
+                      <!-- Other NBFC options remain unchanged -->
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Tata Capital" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="5-10 lakhs 8%&#10;10-20 lakhs 9%">
+                        <input type="radio" class="institution-radio" name="institution" value="Tata Capital" style="display:none;" required />
+                        <img src="assets/images/nbfc-tata.png" alt="Tata Capital" style="height:32px"> <span>Tata Capital</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Aditya Birla" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="10-15 lakhs 9%">
+                        <input type="radio" class="institution-radio" name="institution" value="Aditya Birla" style="display:none;" required />
+                        <img src="assets/images/nbfc-aditya.png" alt="Aditya Birla" style="height:32px"> <span>Aditya Birla</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="SMFG India Credit" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="15-20 lakhs 10%">
+                        <input type="radio" class="institution-radio" name="institution" value="SMFG India Credit" style="display:none;" required />
+                        <img src="assets/images/nbfc-smfg.png" alt="SMFG India Credit" style="height:32px"> <span>SMFG India Credit</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Axis Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="20-25 lakhs 11%">
+                        <input type="radio" class="institution-radio" name="institution" value="Axis Finance" style="display:none;" required />
+                        <img src="assets/images/nbfx-axis.png" alt="Axis Finance" style="height:32px"> <span>Axis Finance</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Muthoot Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Above 25 lakhs 15%">
+                        <input type="radio" class="institution-radio" name="institution" value="Muthoot Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-muthoot.png" alt="Muthoot Finance" style="height:32px"> <span>Muthoot Finance</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Hero Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Hero Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-hero.png" alt="Hero Finance" style="height:32px"> <span>Hero Finance</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Poonawalla Fincorp" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Poonawalla Fincorp" style="display:none;" required />
+                        <img src="assets/images/nbfx-poonawalla.png" alt="Poonawalla Fincorp" style="height:32px"> <span>Poonawalla Fincorp</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="INcred" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="INcred" style="display:none;" required />
+                        <img src="assets/images/nbfc-incred.jpg" alt="INcred" style="height:32px"> <span>INcred</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Sriram Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Sriram Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-sriram.jpg" alt="Sriram Finance" style="height:32px"> <span>Sriram Finance</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Finnable Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Finnable Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-finable.jpg" alt="Finnable Finance" style="height:32px"> <span>Finnable Finance</span>
+                      </label>
+                      <label class="institution-label btn btn-outline-secondary d-flex align-items-center gap-2 p-2" title="Piramal Finance" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Processing fee -">
+                        <input type="radio" class="institution-radio" name="institution" value="Piramal Finance" style="display:none;" required />
+                        <img src="assets/images/nbfc-piramal.jpg" alt="Piramal Finance" style="height:32px"> <span>Piramal Finance</span>
+                      </label>
+                    </div>
+                  </div>
+                  <input type="hidden" name="preferred_institution" id="preferredInstitution" />
+                  <div class="invalid-feedback">
+                    Please select an institution.
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="button" class="btn btn_theme btn_theme_active next-step">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- OTP Step -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none" data-step="7">
+                <div class="mb-3">
+                  <label class="form-label">Enter OTP sent to your mobile number:</label>
+                  <input type="text" class="form-control" name="otp" maxlength="6" pattern="[0-9]{6}" required />
+                  <div class="form-text">(For demo, enter 123456)</div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary prev-step">Back</button>
+                  <button type="submit" class="btn btn_theme btn_theme_active">Verify & Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Success Step -->
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="enquiry-step d-none text-center" data-step="8">
+                <div class="mb-4">
+                  <i class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></i>
+                  <h4 class="mt-3">Thank you!</h4>
+                  <p>Your enquiry has been submitted successfully.<br>We will contact you soon.</p>
+                </div>
+                <button type="button" class="btn btn_theme btn_theme_active close-modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      </div>
+      </div>
+      </div>
+      </section>
+<!-- End Enquiry Modal -->
+
+<script>
+// Multi-step form logic
+// Multi-step form logic
+(function() {
+  const steps = document.querySelectorAll('.enquiry-step');
+  let currentStep = 0;
+
+  function showStep(idx) {
+    steps.forEach((step, i) => {
+      step.classList.toggle('d-none', i !== idx);
+    });
+    currentStep = idx;
+    // If entering Step 6, update institution visibility
+    if (idx === 5) { // Step 6 has data-step="6", but array is 0-based, so idx=5
+      updateInstitutionVisibility();
+      // Ensure popovers are initialized after rendering
+      setTimeout(initPopovers, 50);
+    }
+  }
+
+  // Helper: initialize popovers for any elements inside the modal
+  function initPopovers() {
+    const popoverTriggerList = document.querySelectorAll('#enquiryModal [data-bs-toggle="popover"]');
+    popoverTriggerList.forEach(el => {
+      if (!bootstrap.Popover.getInstance(el)) {
+        const raw = el.getAttribute('data-bs-content') || '';
+        const htmlContent = raw.replace(/&#10;|\n/g, '<br>');
+        new bootstrap.Popover(el, { html: true, content: htmlContent, sanitize: false, placement: 'top' });
+      }
+    });
+  }
+
+  // Helper: show or hide institution list based on preferred_type
+  function updateInstitutionVisibility() {
+    const prefRadio = document.querySelector('input[name="preferred_type"]:checked');
+    const prefVal = prefRadio ? prefRadio.value : '';
+    const list = document.getElementById('institutionList');
+    const banks = document.getElementById('banksContainer');
+    const nbfc = document.getElementById('nbfcContainer');
+    const prefInst = document.getElementById('preferredInstitution');
+
+    if (!list || !banks || !nbfc) return;
+
+    if (prefVal === 'Bank' || prefVal === 'NBFC') {
+      list.classList.remove('d-none');
+      banks.classList.toggle('d-none', prefVal !== 'Bank');
+      nbfc.classList.toggle('d-none', prefVal !== 'NBFC');
+      initPopovers(); // Initialize popovers for visible items
+    } else {
+      list.classList.add('d-none');
+      banks.classList.add('d-none');
+      nbfc.classList.add('d-none');
+      if (prefInst) prefInst.value = '';
+      document.querySelectorAll('.institution-label').forEach(b => b.classList.remove('active'));
+    }
+  }
+
+  // Initialize popovers on page load
+  try { initPopovers(); } catch (err) {}
+
+  // Handle preferred_type change
+  document.addEventListener('change', function(e) {
+    const target = e.target;
+    if (target.name === 'preferred_type') {
+      updateInstitutionVisibility();
+      setTimeout(initPopovers, 40); // Ensure popovers render
+    }
+  });
+
+  // Reset to Step 1 and initialize popovers when modal is shown
+  const enquiryModalEl = document.getElementById('enquiryModal');
+  if (enquiryModalEl) {
+    enquiryModalEl.addEventListener('shown.bs.modal', function () {
+      showStep(0);
+      try { initPopovers(); } catch (err) {}
+    });
+  }
+
+  // Handle button clicks
+  document.addEventListener('click', function(e) {
+    const target = e.target;
+
+    // Next step
+    if (target.classList.contains('next-step')) {
+      const form = target.closest('form');
+      const step = steps[currentStep];
+      if (form && step) {
+        // Validate required fields in current step
+        const inputs = step.querySelectorAll('input[required], select[required]');
+        let valid = true;
+        inputs.forEach(input => {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            valid = false;
+          }
+        });
+        if (!valid) return;
+
+        // For Step 6, ensure an institution is selected
+        if (currentStep === 5) { // Step 6 (data-step="6", idx=5)
+          const selectedInst = document.getElementById('preferredInstitution').value;
+          if (!selectedInst) {
+            const institutionRadios = step.querySelector('input[name="institution"]');
+            if (institutionRadios) {
+              institutionRadios.setCustomValidity('Please select an institution.');
+              institutionRadios.reportValidity();
+              institutionRadios.setCustomValidity('');
+            }
+            return;
+          }
+        }
+
+        showStep(currentStep + 1);
+      }
+    }
+
+    // Previous step
+    if (target.classList.contains('prev-step')) {
+      showStep(currentStep - 1);
+    }
+
+    // Gender button toggle
+    if (target.closest('.gender-btn')) {
+      const btn = target.closest('.gender-btn');
+      btn.parentElement.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      btn.querySelector('input[type="radio"]').checked = true;
+    }
+
+    // Institution label click/select
+    if (target.closest('.institution-label')) {
+      const label = target.closest('.institution-label');
+      document.querySelectorAll('.institution-label').forEach(l => l.classList.remove('active'));
+      label.classList.add('active');
+      const radio = label.querySelector('.institution-radio');
+      if (radio) {
+        radio.checked = true;
+        document.getElementById('preferredInstitution').value = radio.value;
+      }
+    }
+
+    // Close modal from success step
+    if (target.classList.contains('close-modal')) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('enquiryModal'));
+      if (modal) modal.hide();
+    }
+  });
+
+  // Form submission (OTP validation)
+  document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (currentStep === 6) { // Step 7 (OTP step, idx=6)
+      const otpInput = this.querySelector('input[name="otp"]');
+      if (otpInput.value !== '123456') {
+        otpInput.setCustomValidity('Invalid OTP. Please enter 123456 for demo.');
+        otpInput.reportValidity();
+        otpInput.setCustomValidity('');
+        return;
+      }
+      showStep(7); // Show success step (Step 8, idx=7)
+      this.reset();
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('institutionList').classList.add('d-none');
+    }
+  });
+
+  // Reset form and step on modal close
+  document.getElementById('enquiryModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('enquiryForm').reset();
+    steps.forEach((step, i) => step.classList.toggle('d-none', i !== 0));
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.institution-label').forEach(b => b.classList.remove('active'));
+    document.getElementById('preferredInstitution').value = '';
+    const banks = document.getElementById('banksContainer');
+    const nbfc = document.getElementById('nbfcContainer');
+    if (banks) banks.classList.add('d-none');
+    if (nbfc) nbfc.classList.add('d-none');
+    document.getElementById('institutionList').classList.add('d-none');
+    currentStep = 0;
+  });
+
+  // Show modal on Enquiry Now button click
+  document.querySelectorAll('.btn_theme.btn_theme_active').forEach(btn => {
+    if (btn.textContent.includes('Enquiry Now')) {
+      btn.setAttribute('data-bs-toggle', 'modal');
+      btn.setAttribute('data-bs-target', '#enquiryModal');
+    }
+  });
+})();
+</script>
+
+
+
+<%- include('./partials/footer') %>

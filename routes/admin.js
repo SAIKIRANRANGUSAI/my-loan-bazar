@@ -1204,6 +1204,7 @@ router.post("/services/content/update", async (req, res) => {
 // ------------------------------
 router.post("/services/add", upload.fields([
   { name: "icon_image", maxCount: 1 },
+  { name: "enquiry_icon_image", maxCount: 1 },
   { name: "image_1", maxCount: 1 },
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
@@ -1215,13 +1216,14 @@ router.post("/services/add", upload.fields([
 
     // Upload images
     let icon_image = req.files.icon_image ? (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url : null;
+    let enquiry_icon_image = req.files.enquiry_icon_image ? (await uploadToCloudinary(req.files.enquiry_icon_image[0].buffer)).secure_url : null;
     let image_1 = req.files.image_1 ? (await uploadToCloudinary(req.files.image_1[0].buffer)).secure_url : null;
     let image_2 = req.files.image_2 ? (await uploadToCloudinary(req.files.image_2[0].buffer)).secure_url : null;
 
     // Insert service
     const [result] = await db.query(
-      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, image_1, image_2) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [heading, sub_heading, short_description, description, icon_image, image_1, image_2]
+      "INSERT INTO services (heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2]
     );
 
     const serviceId = result.insertId;
@@ -1248,16 +1250,18 @@ router.post("/services/add", upload.fields([
 // ------------------------------
 router.post("/services/edit/:id", upload.fields([
   { name: "icon_image", maxCount: 1 },
+  { name: "enquiry_icon_image", maxCount: 1 },
   { name: "image_1", maxCount: 1 },
   { name: "image_2", maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const { heading, sub_heading, short_description, description, faqs, current_icon_image, current_image_1, current_image_2 } = req.body;
+    const { heading, sub_heading, short_description, description, faqs, current_icon_image, current_enquiry_icon_image, current_image_1, current_image_2 } = req.body;
     const serviceId = req.params.id;
 
     if (!heading || !heading.trim()) return res.json({ success: false, message: "Heading is required" });
 
     let icon_image = current_icon_image;
+    let enquiry_icon_image = current_enquiry_icon_image;
     let image_1 = current_image_1;
     let image_2 = current_image_2;
 
@@ -1266,6 +1270,10 @@ router.post("/services/edit/:id", upload.fields([
       if (req.files.icon_image) {
         if (current_icon_image) await deleteFromCloudinary(current_icon_image);
         icon_image = (await uploadToCloudinary(req.files.icon_image[0].buffer)).secure_url;
+      }
+      if (req.files.enquiry_icon_image) {
+        if (current_enquiry_icon_image) await deleteFromCloudinary(current_enquiry_icon_image);
+        enquiry_icon_image = (await uploadToCloudinary(req.files.enquiry_icon_image[0].buffer)).secure_url;
       }
       if (req.files.image_1) {
         if (current_image_1) await deleteFromCloudinary(current_image_1);
@@ -1278,8 +1286,8 @@ router.post("/services/edit/:id", upload.fields([
     }
 
     await db.query(
-      "UPDATE services SET heading=?, sub_heading=?, short_description=?, description=?, icon_image=?, image_1=?, image_2=? WHERE id=?",
-      [heading, sub_heading, short_description, description, icon_image, image_1, image_2, serviceId]
+      "UPDATE services SET heading=?, sub_heading=?, short_description=?, description=?, icon_image=?, enquiry_icon_image=?, image_1=?, image_2=? WHERE id=?",
+      [heading, sub_heading, short_description, description, icon_image, enquiry_icon_image, image_1, image_2, serviceId]
     );
 
     // Update FAQs
@@ -1305,10 +1313,11 @@ router.delete("/services/delete/:id", async (req, res) => {
   try {
     const serviceId = req.params.id;
 
-    const [service] = await db.query("SELECT icon_image, image_1, image_2 FROM services WHERE id=?", [serviceId]);
+    const [service] = await db.query("SELECT icon_image, enquiry_icon_image, image_1, image_2 FROM services WHERE id=?", [serviceId]);
     if (service.length) {
-      const { icon_image, image_1, image_2 } = service[0];
+      const { icon_image, enquiry_icon_image, image_1, image_2 } = service[0];
       if (icon_image) await deleteFromCloudinary(icon_image);
+      if (enquiry_icon_image) await deleteFromCloudinary(enquiry_icon_image);
       if (image_1) await deleteFromCloudinary(image_1);
       if (image_2) await deleteFromCloudinary(image_2);
     }
