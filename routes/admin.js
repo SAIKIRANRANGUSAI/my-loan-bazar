@@ -36,7 +36,7 @@ router.get("/logout", authController.logout);
 
 // -------- Protect all admin routes --------
 router.use(authController.isAuthenticated);
-const filePath = path.join("/tmp", `backup_${Date.now()}.sql`);
+
 // -------- Admin Dashboard (View Only, Paginated) --------
 // ------------------------------
 // GET: Dashboard with both contacts and enquiries
@@ -931,37 +931,36 @@ router.post("/settings/change-credentials", async (req, res) => {
   }
 });
 
-// -------- GET /settings/download-db --------
 router.get('/settings/download-db', async (req, res) => {
   try {
-    const backupsDir = path.join(__dirname, '..', 'backups');
-    if (!fs.existsSync(backupsDir)) fs.mkdirSync(backupsDir, { recursive: true });
-
+    // ✅ use /tmp directory for serverless environment
+    const backupsDir = '/tmp';
     const fileName = `backup_${Date.now()}.sql`;
     const filePath = path.join(backupsDir, fileName);
 
     await mysqldump({
-  connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  },
-  dumpToFile: filePath,
-});
+      connection: {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+      },
+      dumpToFile: filePath,
+    });
 
-    res.download(filePath, fileName, err => {
+    // ✅ stream file to user
+    res.download(filePath, fileName, (err) => {
       if (err) {
         console.error('Error sending backup file:', err);
         res.status(500).send('Failed to download backup.');
       }
     });
-
   } catch (err) {
     console.error('Database export failed:', err);
     res.status(500).send('Database export failed.');
   }
 });
+
 // ========== SEO SETTINGS ROUTES (Cookie-based Flash) ==========
 
 // ---------------- LIST SEO SETTINGS ----------------
