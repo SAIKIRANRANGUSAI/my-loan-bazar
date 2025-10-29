@@ -172,12 +172,11 @@ router.get("/personal-loan/:id", async (req, res) => {
 // Contact
 // GET Contact Page
 router.get("/contact", (req, res) => {
-  res.render("frontend/contact", { 
+  res.render("frontend/contact", {
     title: "Contact Us",
     msg: null // define it so template won't throw error
   });
 });
-
 
 // POST Contact Form
 // POST /contact route
@@ -191,17 +190,25 @@ router.post("/contact",
     body("g-recaptcha-response").notEmpty().withMessage("reCAPTCHA verification failed")
   ],
   async (req, res) => {
+    // Check if it's an AJAX request
+    const isAjax = req.headers['x-requested-with'] === 'XMLHttpRequest' || req.xhr;
+
     // Basic express-validator checks
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      if (isAjax) {
+        return res.status(400).json({
+          success: false,
+          type: "error",
+          text: errors.array()[0].msg
+        });
+      }
       return res.render("frontend/contact", {
         title: "Contact Us",
         msg: { type: "error", text: errors.array()[0].msg }
       });
     }
-
     const { name, email, phone, subject, message, "g-recaptcha-response": recaptcha } = req.body;
-
     try {
       // --- Verify reCAPTCHA ---
       const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A";
@@ -209,12 +216,18 @@ router.post("/contact",
         `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptcha}`
       );
       if (!verifyRes.data || !verifyRes.data.success) {
+        if (isAjax) {
+          return res.status(400).json({
+            success: false,
+            type: "error",
+            text: "Captcha verification failed. Please try again."
+          });
+        }
         return res.render("frontend/contact", {
           title: "Contact Us",
           msg: { type: "error", text: "Captcha verification failed. Please try again." }
         });
       }
-
       // --- Defensive checks (reject on dangerous patterns) ---
       // Check *decoded* inputs for suspicious/encoded attack shapes
       if (
@@ -226,19 +239,24 @@ router.post("/contact",
       ) {
         // Log the attempt server-side (you can add more detail)
         console.warn("Blocked contact submission due to dangerous input patterns from IP:", req.ip);
+        if (isAjax) {
+          return res.status(400).json({
+            success: false,
+            type: "error",
+            text: "Your message contains disallowed content and cannot be submitted."
+          });
+        }
         return res.render("frontend/contact", {
           title: "Contact Us",
           msg: { type: "error", text: "Your message contains disallowed content and cannot be submitted." }
         });
       }
-
       // --- Sanitize & limit lengths ---
       const cleanName = sanitizeAndLimit(name, 200);
       const cleanEmail = sanitizeAndLimit(email, 255);
       const cleanPhone = sanitizeAndLimit(phone, 50);
       const cleanSubject = sanitizeAndLimit(subject, 255);
       const cleanMessage = sanitizeAndLimit(message, 4000);
-
       // Final defensive safety: ensure no javascript: or data: remains in cleaned values
       const suspiciousLeftoverRe = /javascript\s*:|data\s*:|vbscript\s*:/i;
       if (
@@ -249,25 +267,44 @@ router.post("/contact",
         suspiciousLeftoverRe.test(cleanMessage)
       ) {
         console.warn("Blocked contact submission due to leftover dangerous scheme after cleaning. IP:", req.ip);
+        if (isAjax) {
+          return res.status(400).json({
+            success: false,
+            type: "error",
+            text: "Your message contains disallowed content and cannot be submitted."
+          });
+        }
         return res.render("frontend/contact", {
           title: "Contact Us",
           msg: { type: "error", text: "Your message contains disallowed content and cannot be submitted." }
         });
       }
-
       // --- Insert into database using parameterized query ---
       await db.query(
         "INSERT INTO contact_submissions (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)",
         [cleanName, cleanEmail, cleanPhone, cleanSubject, cleanMessage]
       );
-
       // Success response
+      if (isAjax) {
+        return res.json({
+          success: true,
+          type: "success",
+          text: "Your message has been sent successfully!"
+        });
+      }
       return res.render("frontend/contact", {
         title: "Contact Us",
         msg: { type: "success", text: "Your message has been sent successfully!" }
       });
     } catch (err) {
       console.error("Contact form error:", err);
+      if (isAjax) {
+        return res.status(500).json({
+          success: false,
+          type: "error",
+          text: "Something went wrong. Please try again later."
+        });
+      }
       return res.render("frontend/contact", {
         title: "Contact Us",
         msg: { type: "error", text: "Something went wrong. Please try again later." }
