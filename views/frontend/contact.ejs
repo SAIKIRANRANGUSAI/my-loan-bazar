@@ -1,7 +1,7 @@
 <%- include('./partials/header') %>
 <!-- Banner Start -->
 <section class="banner">
-    <div class="container ">
+    <div class="container">
         <div class="row gy-4 gy-sm-0 align-items-center">
             <div class="col-12 col-sm-12">
                 <div class="banner__content">
@@ -23,61 +23,52 @@
     <div class="container">
         <div class="row gy-5 gy-xl-0 justify-content-center justify-content-lg-between">
             <div class="col-12 col-lg-7 col-xxl-8">
-                <form method="POST" autocomplete="off" id="contactForm" class="sign-up__form wow fadeInDown"
-                    data-wow-duration="0.8s">
+                <form method="POST" autocomplete="off" id="contactForm" class="sign-up__form wow fadeInDown" data-wow-duration="0.8s">
                     <h3 class="contact__title wow fadeInDown" data-wow-duration="0.8s">Get in touch with us.</h3>
                     <% if (msg) { %>
-                        <div class="alert <%= msg.type === 'success' ? 'alert-success' : 'alert-danger' %>"
-                            role="alert">
+                        <div class="alert <%= msg.type === 'success' ? 'alert-success' : 'alert-danger' %>" role="alert">
                             <span><%= msg.text %></span>
                             <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                         </div>
-                        <% } %>
-                            <div class="sign-up__form-part">
-                                <div class="input-group">
-                                    <div class="input-single">
-                                        <label class="label" for="name">Name</label>
-                                        <input type="text" class="form-control" name="name" id="name" value="<%= typeof req !== 'undefined' && req.body ? req.body.name : '' %>"
-                                            placeholder="Enter Your Name..." required>
-                                        <div class="invalid-feedback" id="name-error"></div>
-                                    </div>
-                                    <div class="input-single">
-                                        <label class="label" for="email">Email</label>
-                                        <input type="email" class="form-control" name="email" id="email" value="<%= typeof req !== 'undefined' && req.body ? req.body.email : '' %>"
-                                            placeholder="Enter Your Email..." required>
-                                        <div class="invalid-feedback" id="email-error"></div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-single">
-                                        <label class="label" for="phone">Phone</label>
-                                        <input type="tel" class="form-control" name="phone" id="phone" value="<%= typeof req !== 'undefined' && req.body ? req.body.phone : '' %>"
-                                            placeholder="Enter Your Number..." required pattern="[0-9]{10}">
-                                        <div class="invalid-feedback" id="phone-error"></div>
-                                    </div>
-                                    <div class="input-single">
-                                        <label class="label" for="subject">Subject</label>
-                                        <input type="text" class="form-control" name="subject" id="subject" value="<%= typeof req !== 'undefined' && req.body ? req.body.subject : '' %>"
-                                            placeholder="Enter Your Subject..." required minlength="3">
-                                        <div class="invalid-feedback" id="subject-error"></div>
-                                    </div>
-                                </div>
-                                <div class="input-single">
-                                    <label class="label" for="message">Message</label>
-                                    <textarea class="form-control" id="message" name="message" rows="8" minlength="10"
-                                        ><%= typeof req !== 'undefined' && req.body ? req.body.message : '' %></textarea>
-                                    <div class="invalid-feedback" id="message-error"></div>
-                                </div>
-                                <!-- Google reCAPTCHA -->
-                                <div class="g-recaptcha mt-3"
-                                    data-sitekey="6Ld7auErAAAAABbFD7KLAZMrNw1g9XWy86BUQLvt"></div>
-                                <div class="invalid-feedback" id="recaptcha-error" style="display: none;"></div>
+                    <% } %>
+                    <div class="sign-up__form-part">
+                        <div class="input-group">
+                            <div class="input-single">
+                                <label class="label" for="name">Name</label>
+                                <input type="text" class="form-control" name="name" id="name" value="<%= (typeof req !== 'undefined' && req.body && req.body.name) ? req.body.name : '' %>" placeholder="Enter Your Name..." required>
+                                <div class="invalid-feedback" id="name-error"></div>
                             </div>
-                            <span id="msg"></span>
-                            <button type="submit" class="btn_theme btn_theme_active mt_40" name="submit"
-                                id="submit">
-                                Send Message <i class="bi bi-arrow-up-right"></i><span></span>
-                            </button>
+                            <div class="input-single">
+                                <label class="label" for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" value="<%= (typeof req !== 'undefined' && req.body && req.body.email) ? req.body.email : '' %>" placeholder="Enter Your Email..." required>
+                                <div class="invalid-feedback" id="email-error"></div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-single">
+                                <label class="label" for="phone">Phone</label>
+                                <input type="tel" class="form-control" name="phone" id="phone" value="<%= (typeof req !== 'undefined' && req.body && req.body.phone) ? req.body.phone : '' %>" placeholder="Enter Your Number..." required pattern="[0-9]{10}">
+                                <div class="invalid-feedback" id="phone-error"></div>
+                            </div>
+                            <div class="input-single">
+                                <label class="label" for="subject">Subject</label>
+                                <input type="text" class="form-control" name="subject" id="subject" value="<%= (typeof req !== 'undefined' && req.body && req.body.subject) ? req.body.subject : '' %>" placeholder="Enter Your Subject..." required minlength="3">
+                                <div class="invalid-feedback" id="subject-error"></div>
+                            </div>
+                        </div>
+                        <div class="input-single">
+                            <label class="label" for="message">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="8" minlength="10" required><%= (typeof req !== 'undefined' && req.body && req.body.message) ? req.body.message : '' %></textarea>
+                            <div class="invalid-feedback" id="message-error"></div>
+                        </div>
+                        <!-- Google reCAPTCHA -->
+                        <div class="g-recaptcha mt-3" data-sitekey="6Ld7auErAAAAABbFD7KLAZMrNw1g9XWy86BUQLvt"></div>
+                        <div class="invalid-feedback" id="recaptcha-error" style="display: none;"></div>
+                    </div>
+                    <span id="msg"></span>
+                    <button type="submit" class="btn_theme btn_theme_active mt_40" name="submit" id="submit">
+                        Send Message <i class="bi bi-arrow-up-right"></i><span></span>
+                    </button>
                 </form>
                 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
             </div>
@@ -93,15 +84,15 @@
                             <div class="card--small-content">
                                 <h5 class="card--small-title">Call Now</h5>
                                 <div class="gap-1 flex-column">
-                                    <% if (settings.phone_numbers) { const
-                                        phoneList=settings.phone_numbers.split(',').map(num=> num.trim());
-                                        phoneList.forEach(number => {
-                                        const cleanNumber = number.replace(/\D/g, '');
-                                        %>
-                                        <a href="tel:+<%= cleanNumber %>" class="card--small-call">
-                                            <%= number %>
-                                        </a>
-                                        <% }); } %>
+                                    <% if (settings.phone_numbers) { %>
+                                        <% const phoneList = settings.phone_numbers.split(',').map(num => num.trim()); %>
+                                        <% phoneList.forEach(number => { %>
+                                            <% const cleanNumber = number.replace(/\D/g, ''); %>
+                                            <a href="tel:+<%= cleanNumber %>" class="card--small-call">
+                                                <%= number %>
+                                            </a>
+                                        <% }); %>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -113,14 +104,14 @@
                             <div class="card--small-content">
                                 <h5 class="card--small-title">Email Address</h5>
                                 <div class="text-left">
-                                    <% if (settings.emails) { const emailList=settings.emails.split(',').map(email=>
-                                        email.trim());
-                                        emailList.forEach(email => {
-                                        %>
-                                        <a href="mailto:<%= email %>" class="card--small-call">
-                                            <%= email %>
-                                        </a>
-                                        <% }); } %>
+                                    <% if (settings.emails) { %>
+                                        <% const emailList = settings.emails.split(',').map(email => email.trim()); %>
+                                        <% emailList.forEach(email => { %>
+                                            <a href="mailto:<%= email %>" class="card--small-call">
+                                                <%= email %>
+                                            </a>
+                                        <% }); %>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -132,9 +123,7 @@
                             <div class="card--small-content">
                                 <h5 class="card--small-title">Location</h5>
                                 <div class="gap-1 flex-column">
-                                    <p>
-                                        <%= settings.address %>
-                                    </p>
+                                    <p><%= settings.address %></p>
                                 </div>
                             </div>
                         </div>
@@ -226,16 +215,13 @@
             }
         }
 
-        // Client-side validation function - FIXED for name field
+        // Client-side validation function
         function validateField(field, errorId, customMsg = null) {
-            const rawValue = field.value;  // Log raw for debug
             const value = field.value.trim();
             let isValid = true;
             let errorMsg = '';
 
-            console.log(`Validating ${field.id}: raw="${rawValue}", trimmed="${value}"`);  // DEBUG LOG
-
-            if (!field.required && !value) return { valid: true };
+            if (!field.required && !value) return true;
 
             // Check required
             if (field.required && !value) {
@@ -245,7 +231,7 @@
                 isValid = false;
                 errorMsg = `Minimum ${field.minLength} characters required.`;
             } else if (field.id === 'name') {
-                // Specific relaxed validation for name: allow letters, spaces, hyphens, apostrophes; min 2 chars
+                // Relaxed validation for name
                 const nameRegex = /^[A-Za-z][A-Za-z\s\-']{1,198}$/;
                 if (!nameRegex.test(value)) {
                     isValid = false;
@@ -283,8 +269,6 @@
                 }
             }
 
-            console.log(`${field.id} valid: ${isValid}, error: "${errorMsg}"`);  // DEBUG LOG
-
             return isValid;
         }
 
@@ -292,7 +276,6 @@
         function validateForm() {
             let isValid = true;
 
-            // Validate inputs
             const fields = [
                 { el: document.getElementById('name'), error: 'name-error' },
                 { el: document.getElementById('email'), error: 'email-error' },
@@ -349,9 +332,7 @@
         // Form submit handler
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            e.stopPropagation();  // Extra prevent for bubbling
-
-            console.log('Form submit triggered');  // DEBUG LOG
+            e.stopPropagation();
 
             // Reset previous states
             document.querySelectorAll('.form-control').forEach(el => {
@@ -374,7 +355,6 @@
 
             try {
                 const formData = new FormData(form);
-                console.log('FormData name:', formData.get('name'));  // DEBUG: Should log "sai kiran"
                 const response = await fetch('/contact', {
                     method: 'POST',
                     body: formData,
@@ -388,7 +368,7 @@
                 if (data.success) {
                     showMessage('success', data.text);
                     form.reset();
-                    if (recaptchaLoaded) grecaptcha.reset(); // Reset reCAPTCHA
+                    if (recaptchaLoaded) grecaptcha.reset();
                 } else {
                     showMessage('error', data.text);
                 }
@@ -410,14 +390,12 @@
             });
             input.addEventListener('input', function() {
                 this.classList.remove('is-invalid');
-                // Validate on input for immediate feedback
                 validateField(this, `${this.id}-error`);
             });
         });
 
         // Initialize reCAPTCHA wait
         waitForRecaptcha(() => {
-            console.log('reCAPTCHA loaded');  // DEBUG LOG
             // reCAPTCHA is ready
         });
 
