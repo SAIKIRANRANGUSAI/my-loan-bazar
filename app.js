@@ -4,20 +4,17 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 require("dotenv").config(); // load .env variables
 const db = require("./config/db");
-const multer = require("multer"); // Add Multer for multipart/form-data parsing
 
 
 
 const app = express();
 const PORT = 3000;
-// Multer setup for form data (no file uploads needed, so use 'none' for fields only)
-const upload = multer({ storage: multer.memoryStorage() });
+
 // Routes
 const frontendRoutes = require("./routes/frontend");
 const adminRoutes = require("./routes/admin");
 
 // View engine setup
-app.use(upload.none()); // Global Multer for multipart/form-data (safe for all routes; overrides if needed per-route)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
