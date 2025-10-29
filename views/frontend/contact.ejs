@@ -37,15 +37,13 @@
                                     <div class="input-group">
                                         <div class="input-single">
                                             <label class="label" for="name">Name</label>
-                                            <input type="text" class="form-control" name="name" id="name" minlength="2"
-                                               pattern="^[A-Za-z][A-Za-z\s]{1,49}$"
-  title="Name must start with a letter and contain only letters and spaces (2–50 characters)"
+                                            <input type="text" class="form-control" name="name" id="name" value="<%= typeof req !== 'undefined' && req.body ? req.body.name : '' %>"
                                                 placeholder="Enter Your Name..." required>
                                             <div class="invalid-feedback" id="name-error"></div>
                                         </div>
                                         <div class="input-single">
                                             <label class="label" for="email">Email</label>
-                                            <input type="email" class="form-control" name="email" id="email"
+                                            <input type="email" class="form-control" name="email" id="email" value="<%= typeof req !== 'undefined' && req.body ? req.body.email : '' %>"
                                                 placeholder="Enter Your Email..." required>
                                             <div class="invalid-feedback" id="email-error"></div>
                                         </div>
@@ -53,21 +51,20 @@
                                     <div class="input-group">
                                         <div class="input-single">
                                             <label class="label" for="phone">Phone</label>
-                                            <input type="tel" class="form-control" name="phone" id="phone" pattern="[0-9]{10}"
-                                                title="Phone must be 10 digits" placeholder="Enter Your Number..." required>
+                                            <input type="tel" class="form-control" name="phone" id="phone" value="<%= typeof req !== 'undefined' && req.body ? req.body.phone : '' %>"
+                                                placeholder="Enter Your Number..." required>
                                             <div class="invalid-feedback" id="phone-error"></div>
                                         </div>
                                         <div class="input-single">
                                             <label class="label" for="subject">Subject</label>
-                                            <input type="text" class="form-control" name="subject" id="subject" minlength="3"
+                                            <input type="text" class="form-control" name="subject" id="subject" value="<%= typeof req !== 'undefined' && req.body ? req.body.subject : '' %>"
                                                 placeholder="Enter Your Subject..." required>
                                             <div class="invalid-feedback" id="subject-error"></div>
                                         </div>
                                     </div>
                                     <div class="input-single">
                                         <label class="label" for="message">Message</label>
-                                        <textarea class="form-control" id="message" name="message" rows="8" minlength="10"
-                                            placeholder="Enter Your Message..." required></textarea>
+                                        <textarea class="form-control" id="message" name="message" rows="8" ><%= typeof req !== 'undefined' && req.body ? req.body.message : '' %></textarea>
                                         <div class="invalid-feedback" id="message-error"></div>
                                     </div>
                                     <!-- Google reCAPTCHA -->
@@ -228,7 +225,7 @@
                 }
             }
 
-            // Client-side validation function
+            // Client-side validation function - FIXED for name field
             function validateField(field, errorId, customMsg = null) {
                 const value = field.value.trim();
                 let isValid = true;
@@ -243,6 +240,13 @@
                 } else if (field.hasAttribute('minlength') && value.length < parseInt(field.minLength)) {
                     isValid = false;
                     errorMsg = `Minimum ${field.minLength} characters required.`;
+                } else if (field.id === 'name') {
+                    // Specific relaxed validation for name: allow letters, spaces, hyphens, apostrophes; min 2 chars
+                    const nameRegex = /^[A-Za-z][A-Za-z\s\-']{1,198}$/;
+                    if (!nameRegex.test(value)) {
+                        isValid = false;
+                        errorMsg = 'Name must be 2-200 characters, starting with a letter (letters, spaces, hyphens, apostrophes only).';
+                    }
                 } else if (field.hasAttribute('pattern') && !field.checkValidity()) {
                     isValid = false;
                     errorMsg = field.validationMessage || customMsg || 'Invalid format.';
@@ -252,6 +256,9 @@
                 } else if (field.id === 'phone' && !/^\d{10}$/.test(value)) {
                     isValid = false;
                     errorMsg = 'Phone number must be exactly 10 digits.';
+                } else if (field.id === 'subject' && value.length < 3) {
+                    isValid = false;
+                    errorMsg = 'Subject must be at least 3 characters.';
                 }
 
                 const errorEl = document.getElementById(errorId);
@@ -259,11 +266,17 @@
 
                 if (!isValid) {
                     fieldEl.classList.add('is-invalid');
-                    if (errorEl) errorEl.textContent = errorMsg;
+                    if (errorEl) {
+                        errorEl.textContent = errorMsg;
+                        errorEl.style.display = 'block';
+                    }
                 } else {
                     fieldEl.classList.remove('is-invalid');
                     fieldEl.classList.add('is-valid');
-                    if (errorEl) errorEl.textContent = '';
+                    if (errorEl) {
+                        errorEl.textContent = '';
+                        errorEl.style.display = 'none';
+                    }
                 }
 
                 return isValid;
@@ -289,16 +302,18 @@
                 });
 
                 // Validate reCAPTCHA
-                const recaptchaResponse = grecaptcha.getResponse();
-                const recaptchaError = document.getElementById('recaptcha-error');
-                if (!recaptchaResponse) {
-                    if (recaptchaError) {
-                        recaptchaError.textContent = 'Please complete the reCAPTCHA verification.';
-                        recaptchaError.style.display = 'block';
+                if (recaptchaLoaded) {
+                    const recaptchaResponse = grecaptcha.getResponse();
+                    const recaptchaError = document.getElementById('recaptcha-error');
+                    if (!recaptchaResponse) {
+                        if (recaptchaError) {
+                            recaptchaError.textContent = 'Please complete the reCAPTCHA verification.';
+                            recaptchaError.style.display = 'block';
+                        }
+                        isValid = false;
+                    } else {
+                        if (recaptchaError) recaptchaError.style.display = 'none';
                     }
-                    isValid = false;
-                } else {
-                    if (recaptchaError) recaptchaError.style.display = 'none';
                 }
 
                 return isValid;
@@ -363,7 +378,7 @@
                     if (data.success) {
                         showMessage('success', data.text);
                         form.reset();
-                        grecaptcha.reset(); // Reset reCAPTCHA
+                        if (recaptchaLoaded) grecaptcha.reset(); // Reset reCAPTCHA
                     } else {
                         showMessage('error', data.text);
                     }
@@ -377,7 +392,7 @@
                 }
             });
 
-            // Real-time validation on input change
+            // Real-time validation on input change - FIXED blur event
             const inputs = form.querySelectorAll('input, textarea');
             inputs.forEach(input => {
                 input.addEventListener('blur', function() {
@@ -385,6 +400,8 @@
                 });
                 input.addEventListener('input', function() {
                     this.classList.remove('is-invalid');
+                    // Optional: validate on input for immediate feedback
+                    validateField(this, `${this.id}-error`);
                 });
             });
 
