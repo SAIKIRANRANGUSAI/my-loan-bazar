@@ -406,16 +406,25 @@
   </div>
 </div>
           <!-- OTP Step -->
-          <div class="row justify-content-center">
+         <!-- OTP Step -->
+<div class="row justify-content-center">
   <div class="col-md-12">
     <div class="enquiry-step d-none" data-step="6">
 
-      <!-- ✅ Added static mobile display field -->
+      <!-- Mobile (non-editable) -->
       <div class="mb-3">
         <label class="form-label">Mobile Number (for OTP):</label>
         <input type="text" class="form-control" id="otpMobile" name="otpMobile" readonly />
       </div>
 
+      <!-- Static OTP Display (non-editable) -->
+      <div class="mb-3">
+        <label class="form-label">Your OTP:</label>
+        <input type="text" class="form-control" id="staticOtpDisplay" name="static_otp" readonly />
+        <div class="form-text text-muted">(Displayed for demo purposes — cannot edit)</div>
+      </div>
+
+      <!-- Enter OTP Field -->
       <div class="mb-3">
         <label class="form-label">Enter OTP sent to your mobile number:</label>
         <input type="text" class="form-control" name="otp" maxlength="6"
@@ -424,7 +433,6 @@
         <div class="invalid-feedback">
           Please enter a valid 6-digit OTP
         </div>
-        <div class="form-text">(For demo purposes, enter any 6-digit number)</div>
       </div>
 
       <div class="d-flex justify-content-between">
@@ -434,6 +442,27 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const otpMobileField = document.getElementById("otpMobile");
+  const staticOtpDisplay = document.getElementById("staticOtpDisplay");
+
+  // Automatically fill from mobile number and set OTP
+  const mobileInput = document.querySelector('input[name="mobile"]');
+  mobileInput.addEventListener("blur", function () {
+    const mobile = mobileInput.value.trim();
+    if (/^[6-9][0-9]{9}$/.test(mobile)) {
+      otpMobileField.value = `+91 ${mobile}`;
+      staticOtpDisplay.value = "458921"; // example static OTP
+    } else {
+      otpMobileField.value = "";
+      staticOtpDisplay.value = "";
+    }
+  });
+});
+</script>
+
 
           <!-- Success Step -->
           <div class="row justify-content-center">
