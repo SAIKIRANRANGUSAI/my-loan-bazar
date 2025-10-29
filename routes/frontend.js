@@ -168,7 +168,6 @@ router.get("/personal-loan/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
 // Contact
 // GET Contact Page
 router.get("/contact", (req, res) => {
@@ -182,11 +181,11 @@ router.get("/contact", (req, res) => {
 // POST /contact route
 router.post("/contact",
   [
-    body("name").trim().notEmpty().withMessage("Name is required").isLength({ max: 200 }).withMessage("Name too long"),
+    body("name").trim().notEmpty().withMessage("Name is required").isLength({ min: 2, max: 200 }).withMessage("Name must be 2-200 characters"),
     body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
-    body("phone").trim().notEmpty().withMessage("Phone is required").isLength({ max: 50 }).withMessage("Phone too long"),
-    body("subject").trim().notEmpty().withMessage("Subject is required").isLength({ max: 255 }).withMessage("Subject too long"),
-    body("message").trim().notEmpty().withMessage("Message is required").isLength({ max: 4000 }).withMessage("Message too long"),
+    body("phone").trim().notEmpty().withMessage("Phone is required").matches(/^\d{10}$/).withMessage("Phone must be exactly 10 digits").isLength({ max: 50 }).withMessage("Phone too long"),
+    body("subject").trim().notEmpty().withMessage("Subject is required").isLength({ min: 3, max: 255 }).withMessage("Subject must be 3-255 characters"),
+    body("message").trim().notEmpty().withMessage("Message is required").isLength({ min: 10, max: 4000 }).withMessage("Message must be 10-4000 characters"),
     body("g-recaptcha-response").notEmpty().withMessage("reCAPTCHA verification failed")
   ],
   async (req, res) => {
@@ -196,6 +195,9 @@ router.post("/contact",
     // Basic express-validator checks
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      // DEBUG: Log the first error for troubleshooting
+      console.log('Validation error:', errors.array()[0].msg, 'for field:', errors.array()[0].param, 'value:', req.body[errors.array()[0].param]);
+      
       if (isAjax) {
         return res.status(400).json({
           success: false,
@@ -205,13 +207,19 @@ router.post("/contact",
       }
       return res.render("frontend/contact", {
         title: "Contact Us",
-        msg: { type: "error", text: errors.array()[0].msg }
+        msg: { type: "error", text: errors.array()[0].msg },
+        ...req.body  // Repopulate form fields on error
       });
     }
+
     const { name, email, phone, subject, message, "g-recaptcha-response": recaptcha } = req.body;
+
+    // DEBUG: Log received values for troubleshooting (remove in production)
+    console.log('Received form data:', { name: name?.trim(), email, phone, subject: subject?.trim(), message: message?.trim() });
+
     try {
       // --- Verify reCAPTCHA ---
-      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A";
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A"; // Move to env var in production
       const verifyRes = await axios.post(
         `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptcha}`
       );
