@@ -190,9 +190,9 @@
                   </div>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Present Address (With Pin Code):</label>
+                  <!-- <label class="form-label">Present Address (With Pin Code):</label>
                   <textarea class="form-control" name="address" rows="3" required
-                            minlength="10" maxlength="500"></textarea>
+                            minlength="10" maxlength="500"></textarea> -->
                   <div class="invalid-feedback">
                     Please enter your complete address (minimum 10 characters)
                   </div>
@@ -331,7 +331,7 @@
             <input type="radio" name="preferred_type" value="NBFC" required /> NBFC
           </label>
           <label class="btn btn-outline-secondary p-2 mb-0 preferred-type-btn">
-            <input type="radio" name="preferred_type" value="Other" required /> Other
+            <input type="radio" name="preferred_type" value="Other" required /> Optional
           </label>
         </div>
         <div class="invalid-feedback" id="preferredTypeError">
@@ -407,25 +407,34 @@
 </div>
           <!-- OTP Step -->
           <div class="row justify-content-center">
-            <div class="col-md-12">
-              <div class="enquiry-step d-none" data-step="6">
-                <div class="mb-3">
-                  <label class="form-label">Enter OTP sent to your mobile number:</label>
-                  <input type="text" class="form-control" name="otp" maxlength="6"
-                         pattern="[0-9]{6}" required
-                         title="Please enter a valid 6-digit OTP" />
-                  <div class="invalid-feedback">
-                    Please enter a valid 6-digit OTP
-                  </div>
-                  <div class="form-text">(For demo purposes, enter any 6-digit number)</div>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <button type="button" class="btn btn-secondary prev-step">Back</button>
-                  <button type="submit" class="btn btn_theme btn_theme_active">Verify & Submit</button>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="col-md-12">
+    <div class="enquiry-step d-none" data-step="6">
+
+      <!-- ✅ Added static mobile display field -->
+      <div class="mb-3">
+        <label class="form-label">Mobile Number (for OTP):</label>
+        <input type="text" class="form-control" id="otpMobile" name="otpMobile" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Enter OTP sent to your mobile number:</label>
+        <input type="text" class="form-control" name="otp" maxlength="6"
+               pattern="[0-9]{6}" required
+               title="Please enter a valid 6-digit OTP" />
+        <div class="invalid-feedback">
+          Please enter a valid 6-digit OTP
+        </div>
+        <div class="form-text">(For demo purposes, enter any 6-digit number)</div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary prev-step">Back</button>
+        <button type="submit" class="btn btn_theme btn_theme_active">Verify & Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
           <!-- Success Step -->
           <div class="row justify-content-center">
             <div class="col-md-12">
@@ -444,6 +453,23 @@
     </div>
   </div>
 </section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const mobileInput = document.querySelector('input[name="mobile"]');
+  const otpMobileField = document.getElementById('otpMobile');
+
+  // Auto-fill read-only field when valid mobile entered
+  mobileInput.addEventListener("blur", function () {
+    const mobile = mobileInput.value.trim();
+    if (/^[6-9][0-9]{9}$/.test(mobile)) {
+      otpMobileField.value = `+91 ${mobile}`;
+    } else {
+      otpMobileField.value = '';
+    }
+  });
+});
+</script>
+
 <script>
 // Multi-step form logic
 document.addEventListener('DOMContentLoaded', function () {

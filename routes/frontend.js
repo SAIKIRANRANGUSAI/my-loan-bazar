@@ -398,7 +398,7 @@ router.post("/enquiry/:serviceId", async (req, res) => {
 // ------------------------------
 async function saveEnquiry(body, serviceId, service_name) {
   const {
-    name, mobile, address, pincode, gender,
+    name, mobile, pincode, gender,
     company_name, loan_amount, monthly_salary, emis,
     preferred_type, preferred_institution, otp,
     state_id, district_id, employment_type
@@ -411,7 +411,7 @@ async function saveEnquiry(body, serviceId, service_name) {
 
   // ✅ Validation
   if (
-    !name || !mobile || !address || !pincode ||
+    !name || !mobile || !pincode ||
     !gender || !company_name || !loan_amount ||
     !monthly_salary || !emis || !preferred_type || !otp || !type_of_employment
   ) {
@@ -446,10 +446,10 @@ async function saveEnquiry(body, serviceId, service_name) {
   // ✅ Insert record
   const sql = `
     INSERT INTO enquirie_s
-    (service_id, service_name, type_of_employment, name, mobile, address, pincode, gender,
+    (service_id, service_name, type_of_employment, name, mobile, pincode, gender,
      company_name, loan_amount, monthly_salary, emis, preferred_type, preferred_institution,
      institution_name, state, district, otp_verified)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const insertValues = [
@@ -458,7 +458,6 @@ async function saveEnquiry(body, serviceId, service_name) {
     type_of_employment,
     name,
     mobile,
-    address,
     pincode,
     gender,
     company_name,
