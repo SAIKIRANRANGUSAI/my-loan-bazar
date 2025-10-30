@@ -58,15 +58,15 @@
     const enquiryTrendClass = enquiryTrendVal >= 0 ? 'up' : 'down';
   %>
   <h3 class="stat-number"><%= enquiryTotal %></h3>
-  <span class="stat-trend <%= enquiryTrendClass %>">
+  <!-- <span class="stat-trend <%= enquiryTrendClass %>">
     <%= enquiryTrendVal >= 0 ? '+' + enquiryTrendVal + '%' : enquiryTrendVal + '%' %>
-  </span>
+  </span> -->
 </div>
                     <p class="stat-label">Loan Enquiries</p>
                     <div class="stat-meta">
                         <span class="stat-meta-item">
                             <i class="fas fa-calendar-day"></i>
-                            <%= enquiryStats?.today || 0 %> today
+                            <%= enquiryStats?.today> today
                         </span>
                     </div>
                 </div>
