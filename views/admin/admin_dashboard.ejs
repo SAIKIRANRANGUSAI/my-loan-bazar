@@ -448,14 +448,17 @@
                                         </td>
                                         <td>
                                             <div class="message-preview-premium"
-                                                 onclick="showMessage('<%= contact.message.replace(/'/g, "\\'").replace(/"/g, '&quot;') %>')">
-                                                <div class="message-text">
-                                                    <%= contact.message.length > 80 ? contact.message.substring(0, 80) + '...' : contact.message %>
-                                                </div>
-                                                <% if (contact.message.length > 80) { %>
-                                                    <span class="read-more-link">Read full message</span>
-                                                <% } %>
-                                            </div>
+     onclick="showMessage('<%= contact.message.replace(/'/g, "\\'").replace(/"/g, '&quot;') %>')">
+    <div class="message-text">
+        <%= contact.message.length > 25 
+            ? contact.message.substring(0, 25) + '...' 
+            : contact.message %>
+    </div>
+    <% if (contact.message.length > 25) { %>
+        <span class="read-more-link">Read full message</span>
+    <% } %>
+</div>
+
                                         </td>
                                         <td>
                                             <div class="date-display">
@@ -829,7 +832,34 @@ async function updateNotificationBadge() {
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     updateNotificationBadge();
+
+    // ✅ Show success/error message from URL (after redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const message = urlParams.get('message');
+
+    if (message) {
+        const isError = message.toLowerCase().includes('error');
+        Swal.fire({
+            icon: isError ? 'error' : 'success',
+            title: decodeURIComponent(message.replace(/\+/g, ' ')),
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#1f2937',
+            color: '#f9fafb',
+            customClass: {
+                popup: 'premium-swal',
+                title: 'swal-title-premium'
+            }
+        });
+
+        // Clean up URL after showing message
+        setTimeout(() => {
+            window.history.replaceState({}, document.title, '/admin/dashboard');
+        }, 2200);
+    }
 });
+
+
 </script>
 <style>
 /* Premium Dashboard Styles */
@@ -1377,11 +1407,50 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    max-width: 100%;
 }
+
 .message-preview-premium:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
 }
+
+.message-text {
+    font-size: 0.95rem;
+    color: #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.read-more-link {
+    color: var(--accent-color, #00bcd4);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    display: inline-block;
+}
+
+
+/* Inner text truncated visually */
+.message-text {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 👈 limits number of lines before ellipsis */
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+/* Optional: style read more link */
+.read-more-link {
+    color: var(--accent-color, #00bcd4);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    text-align: right;
+    display: inline-block;
+}
+
 .message-text {
     color: var(--text-light);
     line-height: 1.4;

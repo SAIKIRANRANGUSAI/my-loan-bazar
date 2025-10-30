@@ -224,8 +224,8 @@
                 speed: 1500,
                 arrows: true,
                 dots: false,
-                prevArrow: $(".prev-testimonials2"),
-                nextArrow: $(".next-testimonials2"),
+                prevArrow: $(".prev-testimonials"),
+                nextArrow: $(".next-testimonials"),
                 responsive: [
                     {
                         breakpoint: 992,
