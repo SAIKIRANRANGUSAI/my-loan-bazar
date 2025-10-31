@@ -17,7 +17,7 @@ const frontendRoutes = require("./routes/frontend");
 const adminRoutes = require("./routes/admin");
 
 // View engine setup
-app.use(upload.none()); // Global Multer for multipart/form-data (safe for all routes; overrides if needed per-route)
+// app.use(upload.none()); // Global Multer for multipart/form-data (safe for all routes; overrides if needed per-route)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
