@@ -8,6 +8,10 @@ const axios = require("axios");
 // --------- Frontend Pages ---------
 
 const he = require("he");
+const multer = require('multer'); // Add at top if not imported
+
+// Create Multer instance (memory storage for no files)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Helper: check for dangerous patterns after decoding entities
 function containsDangerousPattern(str) {
@@ -178,8 +182,8 @@ router.get("/contact", (req, res) => {
 });
 
 // POST Contact Form
-// POST /contact route
 router.post("/contact",
+  upload.none(),  // Parses multipart/form-data fields (add this first)
   [
     body("name").trim().notEmpty().withMessage("Name is required").isLength({ min: 2, max: 200 }).withMessage("Name must be 2-200 characters"),
     body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
@@ -189,6 +193,9 @@ router.post("/contact",
     body("g-recaptcha-response").notEmpty().withMessage("reCAPTCHA verification failed")
   ],
   async (req, res) => {
+    // DEBUG: Log req.body to confirm parsing (remove in production)
+    console.log('Parsed req.body:', req.body);
+
     // Check if it's an AJAX request
     const isAjax = req.headers['x-requested-with'] === 'XMLHttpRequest' || req.xhr;
 
@@ -219,7 +226,7 @@ router.post("/contact",
 
     try {
       // --- Verify reCAPTCHA ---
-      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A"; // Move to env var in production
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6Ld7auErAAAAAC1-Z0iQ10CQgpbUwWE0DRFajl7A";
       const verifyRes = await axios.post(
         `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptcha}`
       );
@@ -237,7 +244,6 @@ router.post("/contact",
         });
       }
       // --- Defensive checks (reject on dangerous patterns) ---
-      // Check *decoded* inputs for suspicious/encoded attack shapes
       if (
         containsDangerousPattern(name) ||
         containsDangerousPattern(email) ||
@@ -245,7 +251,6 @@ router.post("/contact",
         containsDangerousPattern(subject) ||
         containsDangerousPattern(message)
       ) {
-        // Log the attempt server-side (you can add more detail)
         console.warn("Blocked contact submission due to dangerous input patterns from IP:", req.ip);
         if (isAjax) {
           return res.status(400).json({
@@ -320,7 +325,6 @@ router.post("/contact",
     }
   }
 );
-
 // ------------------------------
 // GET: Enquiry form without serviceId (menu)
 // ------------------------------
