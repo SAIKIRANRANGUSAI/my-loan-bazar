@@ -9235,3 +9235,19 @@ label.error {
 .faq-section li {
   margin-bottom: 6px;
 }
+.card__link-wrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.card--custom {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card--custom:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+

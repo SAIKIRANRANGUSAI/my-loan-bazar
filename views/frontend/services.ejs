@@ -50,11 +50,12 @@
         <div class="row justify-content-center">
   <% if (services && services.length > 0) { %>
     <% services.forEach((service) => { %>
-      <div class="col-md-3 mb-3">
+      <!-- <div class="col-md-3 mb-3">
         <div class="card card--custom">
           <div class="card__icon">
             <img src="<%= service.icon_image %>" width="50" alt="" />
           </div>
+          
           <div class="card__content">
             <h4 class="card__title">
               <a href="/personal-loan/<%- service.id %>"><%- service.heading %></a>
@@ -67,7 +68,26 @@
             </a>
           </div>
         </div>
+      </div> -->
+      <div class="col-md-3 mb-3">
+  <a href="/personal-loan/<%- service.id %>" class="card__link-wrapper">
+    <div class="card card--custom">
+      <div class="card__icon">
+        <img src="<%= service.icon_image %>" width="50" alt="" />
       </div>
+
+      <div class="card__content">
+        <h4 class="card__title"><%- service.heading %></h4>
+        <p class="fs-small"><%- service.short_description %></p>
+
+        <div class="btn_theme social_box">
+          <i class="bi bi-arrow-up-right"></i><span></span>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
     <% }); %>
   <% } else { %>
     <p>No services found.</p>
