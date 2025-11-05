@@ -445,12 +445,16 @@ router.post("/enquiry/:serviceId", async (req, res) => {
 // ------------------------------
 // SAVE ENQUIRY (Unified Function)
 // ------------------------------
+// ------------------------------
+// SAVE ENQUIRY (Unified Function)
+// ------------------------------
 async function saveEnquiry(body, serviceId, service_name) {
   const {
     name, mobile, pincode, gender,
     company_name, loan_amount, monthly_salary, emis,
     preferred_type, preferred_institution, otp,
-    state_id, district_id, employment_type
+    state_id, district_id, employment_type,
+    city // 🆕 added city from the form
   } = body;
 
   const type_of_employment = employment_type || body.type_of_employment;
@@ -492,13 +496,13 @@ async function saveEnquiry(body, serviceId, service_name) {
   // Handle preferred_type for enum constraint
   const insert_preferred_type = preferred_type === 'Other' ? null : preferred_type;
 
-  // ✅ Insert record
+  // ✅ Insert record (added address column for city)
   const sql = `
     INSERT INTO enquirie_s
     (service_id, service_name, type_of_employment, name, mobile, pincode, gender,
      company_name, loan_amount, monthly_salary, emis, preferred_type, preferred_institution,
-     institution_name, state, district, otp_verified)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     institution_name, state, district, address, otp_verified)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const insertValues = [
@@ -518,11 +522,13 @@ async function saveEnquiry(body, serviceId, service_name) {
     preferred_institution, // institution_name
     state_name,
     district_name,
+    city || null, // 🆕 store city name in address column
     1 // otp_verified
   ];
 
   await db.query(sql, insertValues);
 }
+
 
 
 module.exports = router;
