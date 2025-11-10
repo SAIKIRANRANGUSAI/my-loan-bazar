@@ -694,15 +694,20 @@ function viewEnquiryDetails(enquiryData) {
                 </div>
                
                 <div class="detail-section">
-                    <h4>🏢 Company Information</h4>
-                    <div class="detail-grid">
-                        <div class="detail-item full-width">
-                            <label>Company Name:</label>
-                            <span class="detail-value">${formatValue(enquiry.company_name)}</span>
-                        </div>
-                       
-                    </div>
-                </div>
+    <h4>🏢 Company Information</h4>
+    <div class="detail-grid">
+        <div class="detail-item full-width">
+            <label>Company Name:</label>
+            <span class="detail-value">${formatValue(enquiry.company_name)}</span>
+        </div>
+        
+        <div class="detail-item full-width">
+            <label>Firm Name:</label>
+            <span class="detail-value">${formatValue(enquiry.firm_name)}</span>
+        </div>
+        </#if>
+    </div>
+</div>
                
                 <div class="detail-section">
                     <h4>💰 Financial Information</h4>

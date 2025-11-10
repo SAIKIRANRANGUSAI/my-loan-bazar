@@ -82,12 +82,6 @@
 
 
 @keyframes spin {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-  @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
@@ -129,13 +123,25 @@
         <!-- <form id="enquiryForm" action="/enquiry/<%= service.id %>" method="POST" novalidate> -->
           <form id="enquiryForm" action="/enquiry<%= service.id && service.id > 0 ? '/' + service.id : '' %>
 " method="POST" novalidate>
-<!-- Step 1 -->
+<!-- Step 1: Employment Type -->
           <div class="row justify-content-center">
             <div class="col-md-12">
-              <div class="enquiry-step" data-step="1">
+              <div class="enquiry-step" data-step="0">
                 <div class="mb-3 text-center">
                   <label class="form-label text-center">Type of Employment</label>
                   <div class="row">
+                    <% 
+                      let allowedEmployments = []; 
+                      let headingLower = (service.heading || '').toLowerCase();
+                      if (service.id === 0 || headingLower.includes('general')) { 
+                        allowedEmployments = ['Salaried', 'Business Owner', 'Self-employed Professional', 'Independent Worker', 'Student', 'Retired', 'Homemaker']; 
+                      } else if (headingLower.includes('doctor') || headingLower.includes('ca') || headingLower.includes('aqua') || headingLower.includes('agri')) { 
+                        allowedEmployments = ['Self-employed Professional', 'Business Owner']; 
+                      } else { 
+                        allowedEmployments = ['Salaried', 'Business Owner']; 
+                      } 
+                    %>
+                    <% if (allowedEmployments.includes('Salaried')) { %>
                     <div class="col-md-6">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Salaried" /><br>
@@ -144,6 +150,8 @@
                         <small>Earn regular monthly income</small>
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Business Owner')) { %>
                     <div class="col-md-6">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Business Owner" /><br>
@@ -152,6 +160,8 @@
                         <small>Run own business</small>
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Self-employed Professional')) { %>
                     <div class="col-md-6">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Self-employed Professional" /><br>
@@ -160,6 +170,8 @@
                         <small>Own a practice (e.g. Doctor, CA)</small>
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Independent Worker')) { %>
                     <div class="col-md-6">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Independent Worker" /><br>
@@ -168,6 +180,8 @@
                         <small>(e.g. driver, electrician, farmer, shopkeeper, etc.)</small>
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Student')) { %>
                     <div class="col-md-4">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Student" /><br>
@@ -175,6 +189,8 @@
                         Student
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Retired')) { %>
                     <div class="col-md-4">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Retired" /><br>
@@ -182,6 +198,8 @@
                         Retired
                       </label>
                     </div>
+                    <% } %>
+                    <% if (allowedEmployments.includes('Homemaker')) { %>
                     <div class="col-md-4">
                       <label class="employment-btn">
                         <input type="radio" name="employment_type" value="Homemaker" /><br>
@@ -189,8 +207,9 @@
                         Homemaker
                       </label>
                     </div>
+                    <% } %>
                   </div>
-                  <div class="invalid-feedback" id="genderError">
+                  <div class="invalid-feedback" id="employmentError">
                     Please select employment type
                   </div>
                 </div>
@@ -200,10 +219,10 @@
               </div>
             </div>
           </div>
-          <!-- Step 1 -->
+          <!-- Step 2: Personal Details -->
           <div class="row justify-content-center">
             <div class="col-md-12">
-              <div class="enquiry-step" data-step="1">
+              <div class="enquiry-step d-none" data-step="1">
                 <div class="mb-3">
                   <label class="form-label">Name (As per PAN Card):</label>
                   <input type="text" class="form-control" name="name" required
@@ -220,14 +239,6 @@
                          title="Please enter a valid 10-digit mobile number starting with 6-9" />
                   <div class="invalid-feedback">
                     Please enter a valid 10-digit mobile number starting with 6-9
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <!-- <label class="form-label">Present Address (With Pin Code):</label>
-                  <textarea class="form-control" name="address" rows="3" required
-                            minlength="10" maxlength="500"></textarea> -->
-                  <div class="invalid-feedback">
-                    Please enter your complete address (minimum 10 characters)
                   </div>
                 </div>
 <div class="row">
@@ -286,34 +297,39 @@
               </div>
             </div>
           </div>
-          <!-- Step 2 -->
+          <!-- Step 3: Gender -->
           <div class="row justify-content-center">
             <div class="col-md-12">
               <div class="enquiry-step d-none" data-step="2">
-                <div class="mb-3">
-                  <label class="form-label">Gender:</label>
-                  <div class="d-flex gap-3">
-                    <label class="btn btn-outline-secondary gender-btn">
-                      <input type="radio" name="gender" value="Male" required hidden />
-                      <i class="bi bi-gender-male" style="font-size:2rem;"></i> Male
-                    </label>
-                    <label class="btn btn-outline-secondary gender-btn">
-                      <input type="radio" name="gender" value="Female" required hidden />
-                      <i class="bi bi-gender-female" style="font-size:2rem;"></i> Female
-                    </label>
-                  </div>
-                  <div class="invalid-feedback" id="genderError">
-                    Please select your gender
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <button type="button" class="btn btn-secondary prev-step">Back</button>
-                  <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
-                </div>
-              </div>
+  <div class="mb-3">
+    <label class="form-label">Gender:</label>
+    <div class="d-flex gap-3">
+      <label class="btn btn-outline-secondary gender-btn d-flex flex-column align-items-center p-2">
+        <input type="radio" name="gender" value="Male" required hidden />
+        <img src="/images/male.png" alt="Male" class="img-fluid mb-2" style="width:60px; height:auto;">
+        <span>Male</span>
+      </label>
+
+      <label class="btn btn-outline-secondary gender-btn d-flex flex-column align-items-center p-2">
+        <input type="radio" name="gender" value="Female" required hidden />
+        <img src="/images/female.png" alt="Female" class="img-fluid mb-2" style="width:60px; height:auto;">
+        <span>Female</span>
+      </label>
+    </div>
+    <div class="invalid-feedback" id="genderError">
+      Please select your gender
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-secondary prev-step">Back</button>
+    <div></div>
+  </div>
+</div>
+
             </div>
           </div>
-          <!-- Step 3 -->
+          <!-- Step 4: Company Details -->
           <div class="row justify-content-center">
             <div class="col-md-12">
               <div class="enquiry-step d-none" data-step="3">
@@ -323,6 +339,14 @@
                          minlength="2" maxlength="100" />
                   <div class="invalid-feedback">
                     Please enter your company name (2-100 characters)
+                  </div>
+                </div>
+                <div class="mb-3 firm-name-field d-none">
+                  <label class="form-label">Firm Name:</label>
+                  <input type="text" class="form-control" name="firm_name" maxlength="150"
+                         minlength="2" />
+                  <div class="invalid-feedback">
+                    Please enter your firm name (2-150 characters)
                   </div>
                 </div>
                 <div class="mb-3">
@@ -352,14 +376,6 @@
                     EMI amount must be between ₹0 and ₹10,00,000
                   </div>
                 </div>
-                <!-- <div class="mb-3">
-                  <label class="form-label">Company Address:</label>
-                  <textarea class="form-control" name="company_address" rows="3" required
-                            minlength="10" maxlength="500"></textarea>
-                  <div class="invalid-feedback">
-                    Please enter your company address (minimum 10 characters)
-                  </div>
-                </div> -->
                 <div class="d-flex justify-content-between">
                   <button type="button" class="btn btn-secondary prev-step">Back</button>
                   <button type="button" class="btn btn_theme btn_theme_active next-step">Continue</button>
@@ -367,7 +383,7 @@
               </div>
             </div>
           </div>
-          <!-- Step 4: Preferred Type -->
+          <!-- Step 5: Preferred Type -->
 <div class="row justify-content-center">
   <div class="col-md-12">
     <div class="enquiry-step d-none" data-step="4">
@@ -397,7 +413,7 @@
     </div>
   </div>
 </div>
-<!-- Step 5: Institution List -->
+<!-- Step 6: Institution List -->
 <div class="row justify-content-center">
   <div class="col-md-12">
     <div class="enquiry-step d-none" data-step="5">
@@ -455,7 +471,7 @@
     </div>
   </div>
 </div>
-          <!-- OTP Step -->
+          <!-- Step 7: OTP -->
          <!-- OTP Step -->
 <div class="row justify-content-center">
   <div class="col-md-12">
@@ -466,13 +482,6 @@
         <label class="form-label">Mobile Number (for OTP):</label>
         <input type="text" class="form-control" id="otpMobile" name="otpMobile" readonly />
       </div>
-
-      <!-- Static OTP Display (non-editable) -->
-      <!-- <div class="mb-3">
-        <label class="form-label">Your OTP:</label>
-        <input type="text" class="form-control" id="staticOtpDisplay" name="static_otp" readonly />
-        <div class="form-text text-muted">(Displayed for demo purposes — cannot edit)</div>
-      </div> -->
 
       <!-- Enter OTP Field -->
       <div class="mb-3">
@@ -496,27 +505,6 @@
   </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const otpMobileField = document.getElementById("otpMobile");
-  const staticOtpDisplay = document.getElementById("staticOtpDisplay");
-
-  // Automatically fill from mobile number and set OTP
-  const mobileInput = document.querySelector('input[name="mobile"]');
-  mobileInput.addEventListener("blur", function () {
-    const mobile = mobileInput.value.trim();
-    if (/^[6-9][0-9]{9}$/.test(mobile)) {
-      otpMobileField.value = `+91 ${mobile}`;
-      staticOtpDisplay.value = "458921"; // example static OTP
-    } else {
-      otpMobileField.value = "";
-      staticOtpDisplay.value = "";
-    }
-  });
-});
-</script>
-
-
           <!-- Success Step -->
           <div class="row justify-content-center">
             <div class="col-md-12">
@@ -536,24 +524,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 </section>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const mobileInput = document.querySelector('input[name="mobile"]');
-  const otpMobileField = document.getElementById('otpMobile');
-
-  // Auto-fill read-only field when valid mobile entered
-  mobileInput.addEventListener("blur", function () {
-    const mobile = mobileInput.value.trim();
-    if (/^[6-9][0-9]{9}$/.test(mobile)) {
-      otpMobileField.value = `+91 ${mobile}`;
-    } else {
-      otpMobileField.value = '';
-    }
-  });
-});
-</script>
-
-<script>
-// Multi-step form logic
+// Consolidated script: Multi-step form logic, OTP fill, gender auto-advance
 document.addEventListener('DOMContentLoaded', function () {
   const steps = document.querySelectorAll('.enquiry-step');
   const form = document.getElementById('enquiryForm');
@@ -562,10 +533,64 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentStep = 0;
   let isStateChangeBound = false;
   let popoversInitialized = false;
+  const serviceId = <%- service.id || 0 %>;
+  const serviceHeading = "<%= service.heading || '' %>";
+  const headingLower = serviceHeading.toLowerCase();
+  let allowedEmployments = ['Salaried', 'Business Owner', 'Self-employed Professional', 'Independent Worker', 'Student', 'Retired', 'Homemaker'];
+  let needsFirm = false;
+  if (serviceId > 0) {
+    if (headingLower.includes('doctor') || headingLower.includes('ca') || headingLower.includes('aqua') || headingLower.includes('agri')) {
+      allowedEmployments = ['Self-employed Professional', 'Business Owner'];
+    } else {
+      allowedEmployments = ['Salaried', 'Business Owner'];
+    }
+    if (headingLower.includes('business') || headingLower.includes('doctor') || headingLower.includes('ca') || headingLower.includes('aqua') || headingLower.includes('agri')) {
+      needsFirm = true;
+    }
+  }
+  // Hide disallowed employment types (redundant with EJS but safe)
+  document.querySelectorAll('input[name="employment_type"]').forEach(input => {
+    const label = input.closest('.employment-btn');
+    if (!allowedEmployments.includes(input.value)) {
+      label.classList.add('d-none');
+    } else {
+      label.classList.remove('d-none');
+    }
+  });
+  // Handle firm field
+  const firmField = document.querySelector('.firm-name-field');
+  if (firmField) {
+    if (needsFirm) {
+      firmField.classList.remove('d-none');
+      const firmInput = firmField.querySelector('input[name="firm_name"]');
+      if (firmInput) {
+        firmInput.required = true;
+      }
+    } else {
+      firmField.classList.add('d-none');
+      const firmInput = firmField.querySelector('input[name="firm_name"]');
+      if (firmInput) {
+        firmInput.required = false;
+        firmInput.value = '';
+      }
+    }
+  }
+  // OTP mobile auto-fill
+  const otpMobileField = document.getElementById("otpMobile");
+  const mobileInput = document.querySelector('input[name="mobile"]');
+  if (mobileInput && otpMobileField) {
+    mobileInput.addEventListener("blur", function () {
+      const mobile = mobileInput.value.trim();
+      if (/^[6-9][0-9]{9}$/.test(mobile)) {
+        otpMobileField.value = `+91 ${mobile}`;
+      } else {
+        otpMobileField.value = "";
+      }
+    });
+  }
   // Loading spinner for district fetch
   const districtLoading = document.createElement('div');
   districtLoading.className = 'loading-spinner';
-  districtLoading.style = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: #0d6efd; display: none;';
   districtLoading.innerHTML = '<i class="bi bi-arrow-repeat"></i> Loading...';
   if (districtSelect && districtSelect.parentElement) {
     districtSelect.parentElement.appendChild(districtLoading);
@@ -668,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Employment type validation (step 0)
     if (stepIndex === 0) {
       const selected = step.querySelector('input[name="employment_type"]:checked');
-      const error = step.querySelector('.invalid-feedback');
+      const error = document.getElementById('employmentError');
       if (!selected) {
         if (error) error.style.display = 'block';
         isValid = false;
@@ -679,7 +704,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Gender validation (step 2)
     if (stepIndex === 2) {
       const selected = step.querySelector('input[name="gender"]:checked');
-      const error = step.querySelector('.invalid-feedback');
+      const error = document.getElementById('genderError');
       if (!selected) {
         if (error) error.style.display = 'block';
         isValid = false;
@@ -848,8 +873,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.parentElement.querySelectorAll('.employment-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       btn.querySelector('input[type="radio"]').checked = true;
-      const step0 = steps[0];
-      const error = step0 ? step0.querySelector('.invalid-feedback') : null;
+      const error = document.getElementById('employmentError');
       if (error) error.style.display = 'none';
     }
     if (e.target.closest('.gender-btn')) {
@@ -857,9 +881,12 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.parentElement.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       btn.querySelector('input[type="radio"]').checked = true;
-      const step2 = steps[2];
-      const error = step2 ? step2.querySelector('.invalid-feedback') : null;
+      const error = document.getElementById('genderError');
       if (error) error.style.display = 'none';
+      // Auto-advance to next step after gender selection
+      setTimeout(() => {
+        showStep(3);
+      }, 300);
     }
     if (e.target.closest('.preferred-type-btn')) {
       const btn = e.target.closest('.preferred-type-btn');
@@ -878,12 +905,6 @@ document.addEventListener('DOMContentLoaded', function () {
         radio.checked = true;
         document.getElementById('preferredInstitution').value = radio.value;
         document.getElementById('institutionError').style.display = 'none';
-      }
-    }
-    if (e.target.id === 'showOtpStep') {
-      e.preventDefault();
-      if (validateStep(currentStep)) {
-        showStep(currentStep + 1);
       }
     }
   });
@@ -949,59 +970,6 @@ document.addEventListener('DOMContentLoaded', function () {
   showStep(0);
   console.log('Enquiry form initialized successfully');
 });
-// Handle Verify & Submit button loading + show success message
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("enquiryForm");
-  const submitBtn = form.querySelector('button[type="submit"]');
-
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault(); // Stop form reload
-
-    // Disable button + show spinner
-    submitBtn.disabled = true;
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = `
-      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-      Submitting...
-    `;
-
-    try {
-      // Send form data (fake or real)
-      const res = await fetch(form.action, {
-        method: "POST",
-        body: new FormData(form)
-      });
-      const data = await res.json().catch(() => ({}));
-
-      // Show success alert
-      Swal.fire({
-        icon: 'success',
-        title: 'Submitted!',
-        text: 'Your enquiry has been submitted successfully.',
-        showConfirmButton: false,
-        timer: 2000
-      });
-
-      // Optional: move to thank you step if multi-step form
-      if (typeof showStep === 'function') {
-        showStep(7);
-      }
-
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Submission Failed',
-        text: 'Something went wrong. Please try again.'
-      });
-    } finally {
-      // Reset button after 2s
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-      }, 2000);
-    }
-  });
-});
-
 </script>
+
 <%- include('./partials/footer') %>

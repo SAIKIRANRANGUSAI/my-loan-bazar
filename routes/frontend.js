@@ -333,11 +333,11 @@ router.get("/enquiry", async (req, res) => {
     const [serviceRows] = await db.query(
       "SELECT id, heading, enquiry_icon_image FROM services ORDER BY id ASC LIMIT 1"
     );
-    const service = serviceRows[0] || {
+    const firstService = serviceRows[0];
+    const service = {
       id: 0,
       heading: "General Enquiry",
-      short_description: "Fill the form below for general enquiries",
-      icon_image: "/default-icon.png",
+      enquiry_icon_image: firstService ? firstService.enquiry_icon_image : "/images/fallback-service.png",
     };
 
     const [states] = await db.query("SELECT id, name FROM states ORDER BY name");
@@ -364,7 +364,7 @@ router.get("/enquiry/:serviceId", async (req, res) => {
   try {
     const serviceId = req.params.serviceId;
     const [serviceRows] = await db.query(
-      "SELECT id, enquiry_icon_image FROM services WHERE id = ?",
+      "SELECT id, heading, enquiry_icon_image FROM services WHERE id = ?",
       [serviceId]
     );
 
@@ -412,12 +412,7 @@ router.get("/districts/:stateId", async (req, res) => {
 // ------------------------------
 router.post("/enquiry", async (req, res) => {
   try {
-    const [serviceRows] = await db.query(
-      "SELECT id, heading FROM services ORDER BY id ASC LIMIT 1"
-    );
-    const service = serviceRows[0] || { id: 0, heading: "General Enquiry" };
-
-    await saveEnquiry(req.body, service.id, service.heading);
+    await saveEnquiry(req.body, 0, "General Enquiry");
     res.json({ success: true, message: "Enquiry submitted successfully!" });
   } catch (err) {
     console.error("Enquiry submission error:", err);
@@ -445,12 +440,9 @@ router.post("/enquiry/:serviceId", async (req, res) => {
 // ------------------------------
 // SAVE ENQUIRY (Unified Function)
 // ------------------------------
-// ------------------------------
-// SAVE ENQUIRY (Unified Function)
-// ------------------------------
 async function saveEnquiry(body, serviceId, service_name) {
   const {
-    name, mobile, pincode, gender,
+    name, mobile, firm_name, pincode, gender,
     company_name, loan_amount, monthly_salary, emis,
     preferred_type, preferred_institution, otp,
     state_id, district_id, employment_type,
@@ -462,6 +454,13 @@ async function saveEnquiry(body, serviceId, service_name) {
   // ✅ Log what is received
   console.log('Received data:', body);
 
+  // Determine if firm_name is required
+  const service_name_lower = service_name.toLowerCase();
+  const needsFirm = serviceId > 0 && 
+                    (service_name_lower.includes('business') || service_name_lower.includes('doctor') || 
+                     service_name_lower.includes('ca') || service_name_lower.includes('aqua') || 
+                     service_name_lower.includes('agri'));
+
   // ✅ Validation
   if (
     !name || !mobile || !pincode ||
@@ -469,6 +468,10 @@ async function saveEnquiry(body, serviceId, service_name) {
     !monthly_salary || !emis || !preferred_type || !otp || !type_of_employment
   ) {
     throw new Error("All fields are required");
+  }
+
+  if (needsFirm && (!firm_name || firm_name.trim().length < 2 || firm_name.trim().length > 150)) {
+    throw new Error("Firm name is required and must be 2-150 characters");
   }
 
   if (preferred_type !== 'Other' && !preferred_institution) {
@@ -496,13 +499,13 @@ async function saveEnquiry(body, serviceId, service_name) {
   // Handle preferred_type for enum constraint
   const insert_preferred_type = preferred_type === 'Other' ? null : preferred_type;
 
-  // ✅ Insert record (added address column for city)
+  // ✅ Insert record (added firm_name after mobile)
   const sql = `
     INSERT INTO enquirie_s
-    (service_id, service_name, type_of_employment, name, mobile, pincode, gender,
+    (service_id, service_name, type_of_employment, name, mobile, firm_name, pincode, gender,
      company_name, loan_amount, monthly_salary, emis, preferred_type, preferred_institution,
      institution_name, state, district, address, otp_verified)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const insertValues = [
@@ -511,6 +514,7 @@ async function saveEnquiry(body, serviceId, service_name) {
     type_of_employment,
     name,
     mobile,
+    firm_name || null,
     pincode,
     gender,
     company_name,
@@ -528,7 +532,6 @@ async function saveEnquiry(body, serviceId, service_name) {
 
   await db.query(sql, insertValues);
 }
-
 
 
 module.exports = router;
