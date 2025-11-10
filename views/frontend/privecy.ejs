@@ -1,39 +1,169 @@
 <%- include('./partials/header') %>
-
-<section class="banner">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-12">
-        <div class="banner__content text-center">
-          <h1 class="banner__title display-4"><%= title %></h1>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center">
-              <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
-            </ol>
-          </nav>
+    <!-- Banner Start -->
+    <section class="banner">
+        <div class="container ">
+            <div class="row gy-4 gy-sm-0 align-items-center">
+                <div class="col-12 col-sm-12">
+                    <div class="banner__content">
+                        <h1 class="banner__title display-4 wow fadeInLeft" data-wow-duration="0.8s">Privacy Policy</h1> 
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb wow fadeInRight" data-wow-duration="0.8s">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Privacy Policy</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="py-5 bg-light">
+<!-- Dynamic Content Section -->
+<section class="choose-us choose-us--secondary py-5">
+  <div class="animation">
+    <img src="/images/hero_vector_arrow.png" alt="Image">
+    <img src="/images/choose_vector.png" alt="Image">
+  </div>
+
   <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center section">
       <div class="col-lg-10">
-        <div class="card shadow-sm p-4 border-0">
-          <div class="dynamic-content">
-            <%- content %> <!-- dynamic database content -->
+        <div class="section__content text-center ms-lg-4 ms-xl-0">
+          <p class="section__content-sub-title headingFour wow fadeInDown d-flex align-items-center justify-content-center"
+             data-wow-duration="0.8s">
+            <img src="/images/title_vector.png" alt="vector" class="me-2">
+            My Loan Bazar - Policy Privacy Policy
+          </p>
+
+          <h2 class="section__content-title text-center wow fadeInUp mb-4" data-wow-duration="0.8s">
+            Please Review Our Privacy Policy Carefully
+          </h2>
+
+          <div class="section__content-text text-start wow fadeInDown mt-3" data-wow-duration="0.8s">
+            <% if (content) { %>
+              <%- content %>
+            <% } else { %>
+              <p class="text-center text-muted">No content available right now. Please check back later.</p>
+            <% } %>
           </div>
 
           <div class="text-center mt-5">
-            <a href="/" class="btn btn_theme btn_theme_active px-4">Back to Home</a>
+            <a href="/" class="btn btn_theme btn_theme_active px-4 py-2 rounded-pill fw-semibold">
+              <i class="bi bi-arrow-left-circle me-2"></i> Back to Home
+            </a>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
 <%- include('./partials/footer') %>
+
+<!-- Consistent Styling -->
+<style>
+  /* --- Banner --- */
+  .banner {
+    background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+    padding: 90px 0 70px;
+  }
+
+  .banner__title {
+    font-weight: 700;
+    color: #222;
+    text-transform: capitalize;
+    margin-bottom: 15px;
+  }
+
+  .breadcrumb {
+    background: transparent;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: #999;
+    font-weight: bold;
+  }
+
+  .breadcrumb-item a {
+    color: #ff6a00;
+    transition: color 0.3s ease;
+  }
+
+  .breadcrumb-item a:hover {
+    color: #ff3c3c;
+  }
+
+  /* --- Section --- */
+  .choose-us {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .choose-us .animation img:first-child {
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: 0.05;
+  }
+
+  .choose-us .animation img:last-child {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    opacity: 0.05;
+  }
+
+  .section__content-sub-title img {
+    width: 22px;
+  }
+
+  .section__content-title {
+    color: #222;
+    font-weight: 700;
+  }
+
+  .section__content-text p {
+    color: #444;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .section__content-text h3, 
+  .section__content-text h4, 
+  .section__content-text h5 {
+    color: #ff6a00;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 10px;
+  }
+
+  /* --- Button --- */
+  .btn_theme {
+    background-color: #ff6a00;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .btn_theme:hover {
+    background-color: #ff3c3c;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .banner {
+      padding: 70px 0 50px;
+    }
+
+    .banner__title {
+      font-size: 1.8rem;
+    }
+
+    .section__content-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
