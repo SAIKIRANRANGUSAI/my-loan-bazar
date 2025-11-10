@@ -533,5 +533,54 @@ async function saveEnquiry(body, serviceId, service_name) {
   await db.query(sql, insertValues);
 }
 
+// ✅ Dynamic route for Terms & Privacy based on DB IDs
+router.get("/:page", async (req, res) => {
+  try {
+    const { page } = req.params;
+
+    // ✅ Page mapping (URL → ID + Template)
+    const pageMap = {
+      "terms-and-conditions": {
+        id: 1,
+        title: "Terms and Conditions",
+        view: "frontend/terms",
+      },
+      "privacy-policy": {
+        id: 2,
+        title: "Privacy Policy",
+        view: "frontend/privecy",
+      },
+    };
+
+    // ✅ Validate
+    const currentPage = pageMap[page];
+    if (!currentPage) {
+      return res.status(404).render("frontend/404", { title: "Page Not Found" });
+    }
+
+    // ✅ Fetch record from DB
+    const [rows] = await db.query(
+      "SELECT content FROM terms_policies WHERE id = ? LIMIT 1",
+      [currentPage.id]
+    );
+
+    const content =
+      rows.length > 0
+        ? rows[0].content
+        : `<p>No content found for <strong>${currentPage.title}</strong>. Please update it in the admin panel.</p>`;
+
+    // ✅ Render with dynamic data
+    res.render(currentPage.view, {
+      title: currentPage.title,
+      content,
+    });
+  } catch (error) {
+    console.error("❌ Error loading policy page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+
 
 module.exports = router;

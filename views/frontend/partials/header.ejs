@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="<%= settings.favicon_url %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="<%= settings.favicon_url || '/images/favicon.png' %>" type="image/x-icon" />
 
   <!-- Primary Meta Tags -->
   <title><%= seo.title || 'My Loan Bazar' %></title>
@@ -69,7 +69,7 @@
       <div class="row">
         <div class="col-12">
           <nav class="navbar navbar-expand-xl nav-shadow" id="#navbar">
-            <a class="navbar-brand" href="/"><img width="210" src="<%= settings.logo_url %>" class="logo" alt="logo" /></a>
+            <a class="navbar-brand" href="/"><img width="210" src="<%= settings.logo_url || '/images/logo.png' %>" class="logo" alt="logo" /></a>
             <a class="navbar-toggler" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
               aria-controls="offcanvasRight">
               <i class="bi bi-list"></i>

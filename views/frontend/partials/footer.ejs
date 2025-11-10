@@ -7,7 +7,7 @@
             <div class="footer-secondary__content">
               <div class="footer__logo">
                 <a href="/">
-                  <img width="250" src="<%= settings.logo_url %>" alt="Logo" />
+                  <img width="250" src="<%= settings.logo_url || '/images/logo.png' %>" alt="Logo" />
                 </a>
               </div>
               <div class="quick-link order-1 order-lg-0">
@@ -43,8 +43,14 @@
           <div class="col-12">
             <div class="footer__copyright">
               <p class="copyright text-center">
-                Copyright 2025 | My Loan Bazar | All Rights Reserved 
-              </p>
+  Copyright <span id="yearRange"></span> | My Loan Bazar | 
+  <a href="/terms-and-conditions" class="text-decoration-underline text-primary">Terms & Conditions</a> |
+  <a href="/privacy-policy" class="text-decoration-underline text-primary">Privacy Policy</a> |
+  All Rights Reserved
+</p>
+
+
+
             </div>
           </div>
         </div>
@@ -87,6 +93,13 @@
     <script src="/vendor/wow/wow.min.js"></script>
 
     <script src="/vendor/jquery-validate/jquery.validate.min.js"></script>
+    <script>
+  // ✅ Automatically show year range like 2025–26, 2026–27, etc.
+  const yearSpan = document.getElementById('yearRange');
+  const currentYear = new Date().getFullYear();
+  const nextYearShort = (currentYear + 1).toString().slice(-2); // e.g. "26"
+  yearSpan.textContent = `${currentYear} - ${nextYearShort}`;
+</script>
 
     <!--  / js dependencies end  -->
 

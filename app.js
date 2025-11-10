@@ -89,6 +89,8 @@ app.use(async (req, res, next) => {
   }
 });
 
+
+
 // -------- SETTINGS (Frontend Header & Footer Data) -------
 // Middleware to make settings available in all frontend pages
 app.use(async (req, res, next) => {

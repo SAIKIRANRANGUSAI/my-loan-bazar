@@ -1,0 +1,179 @@
+<%- include('../layouts/admin_layouts_header', { title: 'Admin | Terms & Privacy', currentPage: 'terms-privacy' }) %>
+<%- include('../layouts/admin_layouts_sidebar', { currentPage: 'terms-privacy' }) %>
+
+<div class="main-content p-4">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-primary mb-0">
+        <i class="fas fa-file-contract me-2"></i> Manage Terms & Privacy
+      </h2>
+      <small class="text-muted">Last updated: <%= new Date().toLocaleString() %></small>
+    </div>
+
+    <!-- Terms & Conditions -->
+    <div class="card shadow-lg border-0 mb-5 premium-card">
+      <div class="card-header bg-gradient-primary text-white py-3 d-flex align-items-center">
+        <i class="fas fa-scroll me-2 fs-5"></i>
+        <h5 class="mb-0 fw-semibold">Terms & Conditions</h5>
+      </div>
+      <div class="card-body p-4">
+        <form id="termsForm" class="editor-form">
+          <input type="hidden" id="termsId" value="<%= terms.id %>">
+          <textarea id="termsContent"><%- terms.content || '' %></textarea>
+
+          <div class="text-end mt-4">
+            <button type="submit" class="btn btn-lg btn-success px-5 shadow-sm update-btn">
+              <i class="fas fa-save me-2"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Privacy Policy -->
+    <div class="card shadow-lg border-0 premium-card">
+      <div class="card-header bg-gradient-primary text-white py-3 d-flex align-items-center">
+        <i class="fas fa-user-shield me-2 fs-5"></i>
+        <h5 class="mb-0 fw-semibold">Privacy Policy</h5>
+      </div>
+      <div class="card-body p-4">
+        <form id="privacyForm" class="editor-form">
+          <input type="hidden" id="privacyId" value="<%= privacy.id %>">
+          <textarea id="privacyContent"><%- privacy.content || '' %></textarea>
+
+          <div class="text-end mt-4">
+            <button type="submit" class="btn btn-lg btn-success px-5 shadow-sm update-btn">
+              <i class="fas fa-save me-2"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Libraries -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Premium Page Styles -->
+<style>
+  .premium-card {
+    border-radius: 16px;
+    background: #fff;
+    transition: all 0.3s ease;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(90deg, #ff6a00, #ff3c3c);
+  }
+
+  .update-btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .update-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .ck-editor__editable_inline {
+    min-height: 250px;
+    border-radius: 10px;
+    background: #fafafa;
+    padding: 1rem;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .ck-editor__editable_inline:focus {
+    border-color: #ff6a00 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 106, 0, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .update-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<!-- Initialize CKEditor & SweetAlert -->
+<script>
+  let termsEditor, privacyEditor;
+
+  const editorConfig = {
+    toolbar: [
+      'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'link',
+      'bulletedList', 'numberedList', '|', 'blockQuote', 'insertTable',
+      'alignment', '|', 'removeFormat'
+    ]
+  };
+
+  // Initialize CKEditors
+  ClassicEditor.create(document.querySelector('#termsContent'), editorConfig)
+    .then(editor => termsEditor = editor)
+    .catch(console.error);
+
+  ClassicEditor.create(document.querySelector('#privacyContent'), editorConfig)
+    .then(editor => privacyEditor = editor)
+    .catch(console.error);
+
+  // Reusable centered alert
+  const showCenteredAlert = (success, message) => {
+    Swal.fire({
+      icon: success ? 'success' : 'error',
+      title: success ? 'Updated Successfully!' : 'Update Failed!',
+      text: message,
+      timer: 2000,
+      showConfirmButton: false,
+      position: 'center',
+      customClass: {
+        popup: 'animated fadeInDown faster'
+      },
+      background: '#fff',
+      backdrop: 'rgba(0,0,0,0.4)'
+    });
+  };
+
+  // Handle Terms Update
+  document.getElementById('termsForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('termsId').value;
+    const content = termsEditor.getData();
+
+    const res = await fetch(`/admin/terms-privacy/update/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ content })
+    });
+
+    const data = await res.json();
+    showCenteredAlert(data.success, data.message);
+  });
+
+  // Handle Privacy Update
+  document.getElementById('privacyForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('privacyId').value;
+    const content = privacyEditor.getData();
+
+    const res = await fetch(`/admin/terms-privacy/update/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ content })
+    });
+
+    const data = await res.json();
+    showCenteredAlert(data.success, data.message);
+  });
+</script>
+
+<%- include('../layouts/admin_layouts_footer') %>

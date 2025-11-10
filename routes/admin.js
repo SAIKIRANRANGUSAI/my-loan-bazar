@@ -1566,5 +1566,45 @@ router.post('/districts/delete/:id', async (req, res) => {
         res.redirect('/admin/enquiry?error=Error deleting district');
     }
 });
+
+// ✅ GET route — show Terms & Privacy
+router.get("/terms-privacy", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM terms_policies ORDER BY id ASC");
+
+    // Safely find both records or use defaults
+    const terms = rows.find(r => r.name?.toLowerCase().includes("terms")) || { id: 0, content: "" };
+    const privacy = rows.find(r => r.name?.toLowerCase().includes("privacy")) || { id: 0, content: "" };
+
+    res.render("admin/admin_terms_pravecy", {
+      title: "Admin | Terms & Privacy",
+      currentPage: "terms-privacy",
+      terms,
+      privacy
+    });
+  } catch (error) {
+    console.error("❌ Error fetching terms/privacy:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ POST route — update
+router.post("/terms-privacy/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+
+    if (!id || id === "0") {
+      return res.status(400).json({ success: false, message: "Invalid record ID" });
+    }
+
+    await db.query("UPDATE terms_policies SET content = ? WHERE id = ?", [content, id]);
+    res.json({ success: true, message: "Updated successfully!" });
+  } catch (error) {
+    console.error("❌ Update error:", error);
+    res.status(500).json({ success: false, message: "Failed to update" });
+  }
+});
+
 module.exports = router;
 module.exports.upload = upload; // Export multer to reuse in other admin routes

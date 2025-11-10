@@ -32,6 +32,9 @@
   .was-validated .form-select:invalid ~ .invalid-feedback {
     display: block;
   }
+  .form-check.is-invalid .form-check-input {
+    border-color: #dc3545;
+  }
   .gender-btn.active {
     background-color: #0d6efd;
     color: white;
@@ -485,21 +488,49 @@
 
       <!-- Enter OTP Field -->
       <div class="mb-3">
-        <label class="form-label">Enter OTP sent to your mobile number:</label>
-        <input type="text" class="form-control" name="otp" maxlength="6"
-               pattern="[0-9]{6}" required
-               title="Please enter a valid 6-digit OTP" />
-        <div class="invalid-feedback">
-          Please enter a valid 6-digit OTP
-        </div>
-      </div>
+  <label class="form-label">Enter OTP sent to your mobile number:</label>
+  <input
+    type="text"
+    class="form-control"
+    name="otp"
+    maxlength="6"
+    pattern="[0-9]{6}"
+    required
+    title="Please enter a valid 6-digit OTP"
+  />
+  <div class="invalid-feedback">
+    Please enter a valid 6-digit OTP
+  </div>
+</div>
 
-      <div class="d-flex justify-content-between">
+<!-- ✅ Terms and Conditions Checkbox -->
+<div class="form-check mb-3">
+  <input
+    type="checkbox"
+    class="form-check-input"
+    id="termsCheck"
+    name="terms"
+    required
+  />
+  <label class="form-check-label" for="termsCheck">
+    I agree to the
+    <a href="/terms-and-conditions" target="_blank" class="text-primary text-decoration-underline">
+      Terms & Conditions
+    </a>
+    and Privacy Policy.
+  </label>
+  <div class="invalid-feedback">
+    You must agree to the Terms & Conditions before submitting.
+  </div>
+</div>
+
+<div class="d-flex justify-content-between">
   <button type="button" class="btn btn-secondary prev-step">Back</button>
   <button type="submit" class="btn btn_theme btn_theme_active" id="submitBtn">
     Verify & Submit
   </button>
 </div>
+
 
     </div>
   </div>
@@ -585,6 +616,18 @@ document.addEventListener('DOMContentLoaded', function () {
         otpMobileField.value = `+91 ${mobile}`;
       } else {
         otpMobileField.value = "";
+      }
+    });
+  }
+  // Terms checkbox validation on change
+  const termsCheck = document.getElementById('termsCheck');
+  if (termsCheck) {
+    termsCheck.addEventListener('change', function () {
+      const formCheck = this.closest('.form-check');
+      const invalidFeedback = formCheck.querySelector('.invalid-feedback');
+      if (this.checked) {
+        formCheck.classList.remove('is-invalid');
+        if (invalidFeedback) invalidFeedback.style.display = 'none';
       }
     });
   }
@@ -914,6 +957,20 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Form submission started');
    
     if (currentStep === 6) {
+      // Terms and Conditions validation
+      const termsCheck = document.getElementById('termsCheck');
+      if (!termsCheck || !termsCheck.checked) {
+        const formCheck = termsCheck?.closest('.form-check');
+        if (formCheck) formCheck.classList.add('is-invalid');
+        const invalidFeedback = formCheck?.querySelector('.invalid-feedback');
+        if (invalidFeedback) invalidFeedback.style.display = 'block';
+        Swal.fire({
+          icon: 'error',
+          title: 'Terms Required',
+          text: 'You must agree to the Terms & Conditions before submitting.'
+        });
+        return;
+      }
       const otpInput = this.querySelector('input[name="otp"]');
       if (!/^\d{6}$/.test(otpInput.value)) {
         otpInput.classList.add('is-invalid');

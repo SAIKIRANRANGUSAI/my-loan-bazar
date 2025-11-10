@@ -88,25 +88,34 @@
     </div>
 
     <!-- Settings Section -->
-    <div class="menu-section">
-        <div class="menu-label">Settings</div>
+<div class="menu-section">
+    <div class="menu-label">Settings</div>
 
-        <a href="/admin/settings"
-            class="menu-item <%= currentPage === 'settings' ? 'active' : '' %>">
-            <div class="menu-icon">
-                <i class="fas fa-cog"></i>
-            </div>
-            <span class="menu-text">Settings</span>
-        </a>
+    <a href="/admin/settings"
+        class="menu-item <%= currentPage === 'settings' ? 'active' : '' %>">
+        <div class="menu-icon">
+            <i class="fas fa-cog"></i>
+        </div>
+        <span class="menu-text">Settings</span>
+    </a>
 
-        <a href="/admin/seo-settings"
-            class="menu-item <%= currentPage === 'seo-settings' ? 'active' : '' %>">
-            <div class="menu-icon">
-                <i class="fas fa-search"></i>
-            </div>
-            <span class="menu-text">SEO Settings</span>
-        </a>
-    </div>
+    <a href="/admin/seo-settings"
+        class="menu-item <%= currentPage === 'seo-settings' ? 'active' : '' %>">
+        <div class="menu-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <span class="menu-text">SEO Settings</span>
+    </a>
+
+    <!-- ✅ New menu item for Terms & Privacy -->
+    <a href="/admin/terms-privacy"
+        class="menu-item <%= currentPage === 'terms-privacy' ? 'active' : '' %>">
+        <div class="menu-icon">
+            <i class="fas fa-file-contract"></i>
+        </div>
+        <span class="menu-text">Terms & Privacy</span>
+    </a>
+</div>
 
     <!-- Logout -->
     <div class="menu-section">
