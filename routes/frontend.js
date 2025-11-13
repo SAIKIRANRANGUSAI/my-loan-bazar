@@ -34,6 +34,30 @@ function sanitizeAndLimit(str, maxLen = 2000) {
   const trimmed = cleaned.trim();
   return trimmed.slice(0, maxLen);
 }
+
+router.use(async (req, res, next) => {
+  try {
+    const stripHtml = (html) => html.replace(/<[^>]*>/g, '').trim();
+
+    const [rows] = await db.query(
+      "SELECT id, heading FROM services ORDER BY id ASC"
+    );
+
+    const servicesClean = rows.map(s => ({
+      id: s.id,
+      heading: stripHtml(s.heading)
+    }));
+
+    res.locals.allServices = servicesClean;
+
+    next();
+  } catch (err) {
+    console.error("Footer services error:", err);
+    res.locals.allServices = [];
+    next();
+  }
+});
+
 // Home
 router.get("/", async (req, res) => {
   try {

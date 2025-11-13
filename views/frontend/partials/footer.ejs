@@ -11,13 +11,19 @@
                 </a>
               </div>
               <div class="quick-link order-1 order-lg-0">
-                <ul class="quick-link__list">
-                  <li><a href="/personal-loan/1">Personal Loan</a></li>
-                  <li><a href="/personal-loan/7">Car Loan</a></li>
-                  <li><a href="/personal-loan/2">Home Loan</a></li>
-                  <li><a href="/personal-loan/3">Business Loan</a></li>
-                </ul>
-              </div>
+  <ul class="quick-link__list">
+  <% allServices.forEach(service => { %>
+    <li>
+      <a href="/personal-loan/<%= service.id %>">
+        <%= service.heading %>
+      </a>
+    </li>
+  <% }) %>
+</ul>
+
+
+</div>
+
               <div class="social">
                 <a href="<%= settings.facebook_url %>" class="btn_theme social_box"
                   ><i class="bi bi-facebook"></i><span></span

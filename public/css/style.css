@@ -3477,6 +3477,7 @@ label.error {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  justify-content: center;
 }
 .quick-link ul li:hover a {
   transform: translateX(8px);
@@ -3521,8 +3522,9 @@ label.error {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 20px 60px;
+  flex-direction: row;
 }
 .footer-secondary .footer-secondary__content .btn_theme {
   border-color: #f8d7b6;

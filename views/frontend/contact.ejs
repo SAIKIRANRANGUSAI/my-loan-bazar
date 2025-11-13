@@ -1,413 +1,449 @@
 <%- include('./partials/header') %>
-<!-- Banner Start -->
-<section class="banner">
-    <div class="container">
-        <div class="row gy-4 gy-sm-0 align-items-center">
-            <div class="col-12 col-sm-12">
-                <div class="banner__content">
-                    <h1 class="banner__title display-4 wow fadeInLeft" data-wow-duration="0.8s">Contact Us</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb wow fadeInRight" data-wow-duration="0.8s">
-                            <li class="breadcrumb-item"><a href="/">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
-                        </ol>
-                    </nav>
+    <!-- Banner Start -->
+    <section class="banner">
+        <div class="container">
+            <div class="row gy-4 gy-sm-0 align-items-center">
+                <div class="col-6 col-sm-6">
+                    <div class="banner__content">
+                        <h1 class="banner__title display-4 wow fadeInLeft" data-wow-duration="0.8s">Contact Us</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb wow fadeInRight" data-wow-duration="0.8s">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-6 text-end">
+                    <div class="banner__thumb wow fadeInRight" data-wow-duration="0.8s">
+                        <img src="/images/loan_comparison_banner.png" width="300" alt="banner image">
+                    </div>
+                </div>
+        </div>
+        </div>
+    </section>
+    <!-- Banner End -->
+    <!-- contact start -->
+    <section class="sign-up contact section">
+        <div class="container">
+            <div class="row gy-5 gy-xl-0 justify-content-center justify-content-lg-between">
+                <div class="col-12 col-lg-7 col-xxl-8">
+                    <form method="POST" autocomplete="off" id="contactForm" class="sign-up__form wow fadeInDown"
+                        data-wow-duration="0.8s">
+                        <h3 class="contact__title wow fadeInDown" data-wow-duration="0.8s">Get in touch with us.</h3>
+                        <% if (msg) { %>
+                            <div class="alert <%= msg.type === 'success' ? 'alert-success' : 'alert-danger' %>"
+                                role="alert">
+                                <span>
+                                    <%= msg.text %>
+                                </span>
+                                <button type="button" class="btn-close"
+                                    onclick="this.parentElement.style.display='none';">&times;</button>
+                            </div>
+                            <% } %>
+                                <div class="sign-up__form-part">
+                                    <div class="input-group">
+                                        <div class="input-single">
+                                            <label class="label" for="name">Name</label>
+                                            <input type="text" class="form-control" name="name" id="name"
+                                                value="<%= (typeof req !== 'undefined' && req.body && req.body.name) ? req.body.name : '' %>"
+                                                placeholder="Enter Your Name..." required>
+                                            <div class="invalid-feedback" id="name-error"></div>
+                                        </div>
+                                        <div class="input-single">
+                                            <label class="label" for="email">Email</label>
+                                            <input type="email" class="form-control" name="email" id="email"
+                                                value="<%= (typeof req !== 'undefined' && req.body && req.body.email) ? req.body.email : '' %>"
+                                                placeholder="Enter Your Email..." required>
+                                            <div class="invalid-feedback" id="email-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-single">
+                                            <label class="label" for="phone">Phone</label>
+                                            <input type="tel" class="form-control" name="phone" id="phone"
+                                                value="<%= (typeof req !== 'undefined' && req.body && req.body.phone) ? req.body.phone : '' %>"
+                                                placeholder="Enter Your Number..." required pattern="[0-9]{10}">
+                                            <div class="invalid-feedback" id="phone-error"></div>
+                                        </div>
+                                        <div class="input-single">
+                                            <label class="label" for="subject">Subject</label>
+                                            <input type="text" class="form-control" name="subject" id="subject"
+                                                value="<%= (typeof req !== 'undefined' && req.body && req.body.subject) ? req.body.subject : '' %>"
+                                                placeholder="Enter Your Subject..." required minlength="3">
+                                            <div class="invalid-feedback" id="subject-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="input-single">
+                                        <label class="label" for="message">Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="8"
+                                            minlength="10"
+                                            required><%= (typeof req !== 'undefined' && req.body && req.body.message) ? req.body.message : '' %></textarea>
+                                        <div class="invalid-feedback" id="message-error"></div>
+                                    </div>
+                                    <!-- Google reCAPTCHA -->
+                                    <div class="g-recaptcha mt-3"
+                                        data-sitekey="6Ld7auErAAAAABbFD7KLAZMrNw1g9XWy86BUQLvt"></div>
+                                    <div class="invalid-feedback" id="recaptcha-error" style="display: none;"></div>
+                                </div>
+                                <span id="msg"></span>
+                                <button type="submit" class="btn_theme btn_theme_active mt_40" name="submit"
+                                    id="submit">
+                                    Send Message <i class="bi bi-arrow-up-right"></i><span></span>
+                                </button>
+                    </form>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                </div>
+                <div class="col-12 col-lg-5 col-xxl-4">
+                    <div class="more-help wow fadeInUp" data-wow-duration="0.8s">
+                        <h3 class="contact__title wow fadeInUp" data-wow-duration="0.8s">Need more help?</h3>
+                        <div class="more-help__content">
+                            <!-- Call Now Card -->
+                            <div class="card card--small">
+                                <div class="card--small-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </div>
+                                <div class="card--small-content">
+                                    <h5 class="card--small-title">Call Now</h5>
+                                    <div class="gap-1 flex-column">
+                                        <% if (settings.phone_numbers) { %>
+                                            <% const phoneList=settings.phone_numbers.split(',').map(num=> num.trim());
+                                                %>
+                                                <% phoneList.forEach(number=> { %>
+                                                    <% const cleanNumber=number.replace(/\D/g, '' ); %>
+                                                        <a href="tel:+<%= cleanNumber %>" class="card--small-call">
+                                                            <%= number %>
+                                                        </a>
+                                                        <% }); %>
+                                                            <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Email Address Card -->
+                            <div class="card card--small">
+                                <div class="card--small-icon">
+                                    <i class="bi bi-envelope-open"></i>
+                                </div>
+                                <div class="card--small-content">
+                                    <h5 class="card--small-title">Email Address</h5>
+                                    <div class="text-left">
+                                        <% if (settings.emails) { %>
+                                            <% const emailList=settings.emails.split(',').map(email=> email.trim()); %>
+                                                <% emailList.forEach(email=> { %>
+                                                    <a href="mailto:<%= email %>" class="card--small-call">
+                                                        <%= email %>
+                                                    </a>
+                                                    <% }); %>
+                                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Location Card -->
+                            <div class="card card--small">
+                                <div class="card--small-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <div class="card--small-content">
+                                    <h5 class="card--small-title">Location</h5>
+                                    <div class="gap-1 flex-column">
+                                        <p>
+                                            <%= settings.address %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<!-- Banner End -->
-<!-- contact start -->
-<section class="sign-up contact section">
-    <div class="container">
-        <div class="row gy-5 gy-xl-0 justify-content-center justify-content-lg-between">
-            <div class="col-12 col-lg-7 col-xxl-8">
-                <form method="POST" autocomplete="off" id="contactForm" class="sign-up__form wow fadeInDown" data-wow-duration="0.8s">
-                    <h3 class="contact__title wow fadeInDown" data-wow-duration="0.8s">Get in touch with us.</h3>
-                    <% if (msg) { %>
-                        <div class="alert <%= msg.type === 'success' ? 'alert-success' : 'alert-danger' %>" role="alert">
-                            <span><%= msg.text %></span>
-                            <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
-                        </div>
-                    <% } %>
-                    <div class="sign-up__form-part">
-                        <div class="input-group">
-                            <div class="input-single">
-                                <label class="label" for="name">Name</label>
-                                <input type="text" class="form-control" name="name" id="name" value="<%= (typeof req !== 'undefined' && req.body && req.body.name) ? req.body.name : '' %>" placeholder="Enter Your Name..." required>
-                                <div class="invalid-feedback" id="name-error"></div>
-                            </div>
-                            <div class="input-single">
-                                <label class="label" for="email">Email</label>
-                                <input type="email" class="form-control" name="email" id="email" value="<%= (typeof req !== 'undefined' && req.body && req.body.email) ? req.body.email : '' %>" placeholder="Enter Your Email..." required>
-                                <div class="invalid-feedback" id="email-error"></div>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <div class="input-single">
-                                <label class="label" for="phone">Phone</label>
-                                <input type="tel" class="form-control" name="phone" id="phone" value="<%= (typeof req !== 'undefined' && req.body && req.body.phone) ? req.body.phone : '' %>" placeholder="Enter Your Number..." required pattern="[0-9]{10}">
-                                <div class="invalid-feedback" id="phone-error"></div>
-                            </div>
-                            <div class="input-single">
-                                <label class="label" for="subject">Subject</label>
-                                <input type="text" class="form-control" name="subject" id="subject" value="<%= (typeof req !== 'undefined' && req.body && req.body.subject) ? req.body.subject : '' %>" placeholder="Enter Your Subject..." required minlength="3">
-                                <div class="invalid-feedback" id="subject-error"></div>
-                            </div>
-                        </div>
-                        <div class="input-single">
-                            <label class="label" for="message">Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="8" minlength="10" required><%= (typeof req !== 'undefined' && req.body && req.body.message) ? req.body.message : '' %></textarea>
-                            <div class="invalid-feedback" id="message-error"></div>
-                        </div>
-                        <!-- Google reCAPTCHA -->
-                        <div class="g-recaptcha mt-3" data-sitekey="6Ld7auErAAAAABbFD7KLAZMrNw1g9XWy86BUQLvt"></div>
-                        <div class="invalid-feedback" id="recaptcha-error" style="display: none;"></div>
-                    </div>
-                    <span id="msg"></span>
-                    <button type="submit" class="btn_theme btn_theme_active mt_40" name="submit" id="submit">
-                        Send Message <i class="bi bi-arrow-up-right"></i><span></span>
-                    </button>
-                </form>
-                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-            </div>
-            <div class="col-12 col-lg-5 col-xxl-4">
-                <div class="more-help wow fadeInUp" data-wow-duration="0.8s">
-                    <h3 class="contact__title wow fadeInUp" data-wow-duration="0.8s">Need more help?</h3>
-                    <div class="more-help__content">
-                        <!-- Call Now Card -->
-                        <div class="card card--small">
-                            <div class="card--small-icon">
-                                <i class="bi bi-telephone"></i>
-                            </div>
-                            <div class="card--small-content">
-                                <h5 class="card--small-title">Call Now</h5>
-                                <div class="gap-1 flex-column">
-                                    <% if (settings.phone_numbers) { %>
-                                        <% const phoneList = settings.phone_numbers.split(',').map(num => num.trim()); %>
-                                        <% phoneList.forEach(number => { %>
-                                            <% const cleanNumber = number.replace(/\D/g, ''); %>
-                                            <a href="tel:+<%= cleanNumber %>" class="card--small-call">
-                                                <%= number %>
-                                            </a>
-                                        <% }); %>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Email Address Card -->
-                        <div class="card card--small">
-                            <div class="card--small-icon">
-                                <i class="bi bi-envelope-open"></i>
-                            </div>
-                            <div class="card--small-content">
-                                <h5 class="card--small-title">Email Address</h5>
-                                <div class="text-left">
-                                    <% if (settings.emails) { %>
-                                        <% const emailList = settings.emails.split(',').map(email => email.trim()); %>
-                                        <% emailList.forEach(email => { %>
-                                            <a href="mailto:<%= email %>" class="card--small-call">
-                                                <%= email %>
-                                            </a>
-                                        <% }); %>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Location Card -->
-                        <div class="card card--small">
-                            <div class="card--small-icon">
-                                <i class="bi bi-geo-alt"></i>
-                            </div>
-                            <div class="card--small-content">
-                                <h5 class="card--small-title">Location</h5>
-                                <div class="gap-1 flex-column">
-                                    <p><%= settings.address %></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- contact end -->
-<style>
-    .alert {
-        transition: 1s;
-        margin-bottom: -20px;
-        margin-top: -16px;
-        display: block;
-        margin-bottom: 10px;
-        position: relative;
-        padding: 1rem;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-    }
-    .alert-success {
-        color: #155724;
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-    }
-    .alert-danger {
-        color: #721c24;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-    }
-    .btn-close {
-        position: absolute;
-        top: 0.5rem;
-        right: 1rem;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: inherit;
-        cursor: pointer;
-        opacity: 0.5;
-    }
-    .btn-close:hover {
-        opacity: 0.8;
-    }
-    /* Bootstrap-like invalid styles */
-    .form-control.is-invalid {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-    }
-    .form-control.is-valid {
-        border-color: #28a745;
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
-    .invalid-feedback{
-    display: block;
-    line-height: 1;
-}
-    .invalid-feedback {
-        display: none;
-        width: 100%;
-        margin-top: 0.25rem;
-        font-size: 0.875em;
-        color: #dc3545;
-    }
-    .is-invalid ~ .invalid-feedback {
-        display: block;
-    }
-    .alert-server {
-        margin-top: 1rem;
-    }
-    #submit:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-</style>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('contactForm');
-        const submitBtn = document.getElementById('submit');
-        const msgSpan = document.getElementById('msg');
-        let recaptchaLoaded = false;
-
-        // Wait for reCAPTCHA to load
-        function waitForRecaptcha(callback) {
-            if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
-                recaptchaLoaded = true;
-                callback();
-            } else {
-                setTimeout(() => waitForRecaptcha(callback), 500);
-            }
+    </section>
+    <!-- contact end -->
+    <style>
+        .alert {
+            transition: 1s;
+            margin-bottom: -20px;
+            margin-top: -16px;
+            display: block;
+            margin-bottom: 10px;
+            position: relative;
+            padding: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.375rem;
         }
 
-        // Client-side validation function
-        function validateField(field, errorId, customMsg = null) {
-            const value = field.value.trim();
-            let isValid = true;
-            let errorMsg = '';
-
-            if (!field.required && !value) return true;
-
-            // Check required
-            if (field.required && !value) {
-                isValid = false;
-                errorMsg = 'This field is required.';
-            } else if (field.hasAttribute('minlength') && value.length < parseInt(field.minLength)) {
-                isValid = false;
-                errorMsg = `Minimum ${field.minLength} characters required.`;
-            } else if (field.id === 'name') {
-                // Relaxed validation for name
-                const nameRegex = /^[A-Za-z][A-Za-z\s\-']{1,198}$/;
-                if (!nameRegex.test(value)) {
-                    isValid = false;
-                    errorMsg = 'Name must be 2-200 characters, starting with a letter (letters, spaces, hyphens, apostrophes only).';
-                }
-            } else if (field.hasAttribute('pattern') && !field.checkValidity()) {
-                isValid = false;
-                errorMsg = field.validationMessage || customMsg || 'Invalid format.';
-            } else if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                isValid = false;
-                errorMsg = 'Please enter a valid email address.';
-            } else if (field.id === 'phone' && !/^\d{10}$/.test(value)) {
-                isValid = false;
-                errorMsg = 'Phone number must be exactly 10 digits.';
-            } else if (field.id === 'subject' && value.length < 3) {
-                isValid = false;
-                errorMsg = 'Subject must be at least 3 characters.';
-            }
-
-            const errorEl = document.getElementById(errorId);
-            const fieldEl = field;
-
-            if (!isValid) {
-                fieldEl.classList.add('is-invalid');
-                if (errorEl) {
-                    errorEl.textContent = errorMsg;
-                    errorEl.style.display = 'block';
-                }
-            } else {
-                fieldEl.classList.remove('is-invalid');
-                fieldEl.classList.add('is-valid');
-                if (errorEl) {
-                    errorEl.textContent = '';
-                    errorEl.style.display = 'none';
-                }
-            }
-
-            return isValid;
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
 
-        // Validate all fields
-        function validateForm() {
-            let isValid = true;
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
 
-            const fields = [
-                { el: document.getElementById('name'), error: 'name-error' },
-                { el: document.getElementById('email'), error: 'email-error' },
-                { el: document.getElementById('phone'), error: 'phone-error' },
-                { el: document.getElementById('subject'), error: 'subject-error' },
-                { el: document.getElementById('message'), error: 'message-error' }
-            ];
+        .btn-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: inherit;
+            cursor: pointer;
+            opacity: 0.5;
+        }
 
-            fields.forEach(({ el, error }) => {
-                if (!validateField(el, error)) {
-                    isValid = false;
-                }
-            });
+        .btn-close:hover {
+            opacity: 0.8;
+        }
 
-            // Validate reCAPTCHA
-            if (recaptchaLoaded) {
-                const recaptchaResponse = grecaptcha.getResponse();
-                const recaptchaError = document.getElementById('recaptcha-error');
-                if (!recaptchaResponse) {
-                    if (recaptchaError) {
-                        recaptchaError.textContent = 'Please complete the reCAPTCHA verification.';
-                        recaptchaError.style.display = 'block';
-                    }
-                    isValid = false;
+        /* Bootstrap-like invalid styles */
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .form-control.is-valid {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .invalid-feedback {
+            display: block;
+            line-height: 1;
+        }
+
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+
+        .is-invalid~.invalid-feedback {
+            display: block;
+        }
+
+        .alert-server {
+            margin-top: 1rem;
+        }
+
+        #submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submit');
+            const msgSpan = document.getElementById('msg');
+            let recaptchaLoaded = false;
+
+            // Wait for reCAPTCHA to load
+            function waitForRecaptcha(callback) {
+                if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+                    recaptchaLoaded = true;
+                    callback();
                 } else {
-                    if (recaptchaError) recaptchaError.style.display = 'none';
+                    setTimeout(() => waitForRecaptcha(callback), 500);
                 }
             }
 
-            return isValid;
-        }
+            // Client-side validation function
+            function validateField(field, errorId, customMsg = null) {
+                const value = field.value.trim();
+                let isValid = true;
+                let errorMsg = '';
 
-        // Show server message
-        function showMessage(type, text) {
-            if (msgSpan) {
-                msgSpan.innerHTML = `<div class="alert alert-server ${type === 'success' ? 'alert-success' : 'alert-danger'}" role="alert">
-                    <span>${text}</span>
-                    <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove();">&times;</button>
-                </div>`;
+                if (!field.required && !value) return true;
+
+                // Check required
+                if (field.required && !value) {
+                    isValid = false;
+                    errorMsg = 'This field is required.';
+                } else if (field.hasAttribute('minlength') && value.length < parseInt(field.minLength)) {
+                    isValid = false;
+                    errorMsg = `Minimum ${field.minLength} characters required.`;
+                } else if (field.id === 'name') {
+                    // Relaxed validation for name
+                    const nameRegex = /^[A-Za-z][A-Za-z\s\-']{1,198}$/;
+                    if (!nameRegex.test(value)) {
+                        isValid = false;
+                        errorMsg = 'Name must be 2-200 characters, starting with a letter (letters, spaces, hyphens, apostrophes only).';
+                    }
+                } else if (field.hasAttribute('pattern') && !field.checkValidity()) {
+                    isValid = false;
+                    errorMsg = field.validationMessage || customMsg || 'Invalid format.';
+                } else if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    isValid = false;
+                    errorMsg = 'Please enter a valid email address.';
+                } else if (field.id === 'phone' && !/^\d{10}$/.test(value)) {
+                    isValid = false;
+                    errorMsg = 'Phone number must be exactly 10 digits.';
+                } else if (field.id === 'subject' && value.length < 3) {
+                    isValid = false;
+                    errorMsg = 'Subject must be at least 3 characters.';
+                }
+
+                const errorEl = document.getElementById(errorId);
+                const fieldEl = field;
+
+                if (!isValid) {
+                    fieldEl.classList.add('is-invalid');
+                    if (errorEl) {
+                        errorEl.textContent = errorMsg;
+                        errorEl.style.display = 'block';
+                    }
+                } else {
+                    fieldEl.classList.remove('is-invalid');
+                    fieldEl.classList.add('is-valid');
+                    if (errorEl) {
+                        errorEl.textContent = '';
+                        errorEl.style.display = 'none';
+                    }
+                }
+
+                return isValid;
             }
 
-            // Auto-hide success after 5s
-            if (type === 'success') {
-                setTimeout(() => {
-                    const alert = msgSpan.querySelector('.alert');
-                    if (alert) alert.remove();
-                }, 5000);
-            }
+            // Validate all fields
+            function validateForm() {
+                let isValid = true;
 
-            // Scroll to message
-            msgSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+                const fields = [
+                    { el: document.getElementById('name'), error: 'name-error' },
+                    { el: document.getElementById('email'), error: 'email-error' },
+                    { el: document.getElementById('phone'), error: 'phone-error' },
+                    { el: document.getElementById('subject'), error: 'subject-error' },
+                    { el: document.getElementById('message'), error: 'message-error' }
+                ];
 
-        // Form submit handler
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Reset previous states
-            document.querySelectorAll('.form-control').forEach(el => {
-                el.classList.remove('is-invalid', 'is-valid');
-            });
-            document.querySelectorAll('.invalid-feedback').forEach(el => {
-                el.style.display = 'none';
-                el.textContent = '';
-            });
-
-            const isValid = validateForm();
-            if (!isValid) {
-                showMessage('error', 'Please fix the errors above and try again.');
-                return;
-            }
-
-            // Disable submit button
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Sending... <i class="bi bi-arrow-up-right"></i><span></span>';
-
-            try {
-                const formData = new FormData(form);
-                const response = await fetch('/contact', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                fields.forEach(({ el, error }) => {
+                    if (!validateField(el, error)) {
+                        isValid = false;
                     }
                 });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    showMessage('success', data.text);
-                    form.reset();
-                    if (recaptchaLoaded) grecaptcha.reset();
-                } else {
-                    showMessage('error', data.text);
+                // Validate reCAPTCHA
+                if (recaptchaLoaded) {
+                    const recaptchaResponse = grecaptcha.getResponse();
+                    const recaptchaError = document.getElementById('recaptcha-error');
+                    if (!recaptchaResponse) {
+                        if (recaptchaError) {
+                            recaptchaError.textContent = 'Please complete the reCAPTCHA verification.';
+                            recaptchaError.style.display = 'block';
+                        }
+                        isValid = false;
+                    } else {
+                        if (recaptchaError) recaptchaError.style.display = 'none';
+                    }
                 }
-            } catch (error) {
-                console.error('Submission error:', error);
-                showMessage('error', 'Something went wrong. Please try again later.');
-            } finally {
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Send Message <i class="bi bi-arrow-up-right"></i><span></span>';
+
+                return isValid;
+            }
+
+            // Show server message
+            function showMessage(type, text) {
+                if (msgSpan) {
+                    msgSpan.innerHTML = `<div class="alert alert-server ${type === 'success' ? 'alert-success' : 'alert-danger'}" role="alert">
+                    <span>${text}</span>
+                    <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove();">&times;</button>
+                </div>`;
+                }
+
+                // Auto-hide success after 5s
+                if (type === 'success') {
+                    setTimeout(() => {
+                        const alert = msgSpan.querySelector('.alert');
+                        if (alert) alert.remove();
+                    }, 5000);
+                }
+
+                // Scroll to message
+                msgSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Form submit handler
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Reset previous states
+                document.querySelectorAll('.form-control').forEach(el => {
+                    el.classList.remove('is-invalid', 'is-valid');
+                });
+                document.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.style.display = 'none';
+                    el.textContent = '';
+                });
+
+                const isValid = validateForm();
+                if (!isValid) {
+                    showMessage('error', 'Please fix the errors above and try again.');
+                    return;
+                }
+
+                // Disable submit button
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Sending... <i class="bi bi-arrow-up-right"></i><span></span>';
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch('/contact', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showMessage('success', data.text);
+                        form.reset();
+                        if (recaptchaLoaded) grecaptcha.reset();
+                    } else {
+                        showMessage('error', data.text);
+                    }
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    showMessage('error', 'Something went wrong. Please try again later.');
+                } finally {
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Send Message <i class="bi bi-arrow-up-right"></i><span></span>';
+                }
+            });
+
+            // Real-time validation on input change
+            const inputs = form.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function () {
+                    validateField(this, `${this.id}-error`);
+                });
+                input.addEventListener('input', function () {
+                    this.classList.remove('is-invalid');
+                    validateField(this, `${this.id}-error`);
+                });
+            });
+
+            // Initialize reCAPTCHA wait
+            waitForRecaptcha(() => {
+                // reCAPTCHA is ready
+            });
+
+            // Auto-hide initial success alert if present
+            const initialAlert = form.querySelector('.alert-success');
+            if (initialAlert) {
+                setTimeout(() => initialAlert.style.display = 'none', 5000);
             }
         });
-
-        // Real-time validation on input change
-        const inputs = form.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                validateField(this, `${this.id}-error`);
-            });
-            input.addEventListener('input', function() {
-                this.classList.remove('is-invalid');
-                validateField(this, `${this.id}-error`);
-            });
-        });
-
-        // Initialize reCAPTCHA wait
-        waitForRecaptcha(() => {
-            // reCAPTCHA is ready
-        });
-
-        // Auto-hide initial success alert if present
-        const initialAlert = form.querySelector('.alert-success');
-        if (initialAlert) {
-            setTimeout(() => initialAlert.style.display = 'none', 5000);
-        }
-    });
-</script>
-<%- include('./partials/footer') %>
+    </script>
+    <%- include('./partials/footer') %>
